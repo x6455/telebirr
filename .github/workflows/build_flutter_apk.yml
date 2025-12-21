@@ -32,12 +32,10 @@ jobs:
           cp pubspec.yaml temp_build/pubspec.yaml
           # Copy assets if folders exist
           if [ -d images ]; then 
-            mkdir -p temp_build/images
-            cp -r images/* temp_build/images/
+            cp -r images temp_build/
           fi
           if [ -d assets ]; then 
-            mkdir -p temp_build/assets
-            cp -r assets/* temp_build/assets/
+            cp -r assets temp_build/
           fi
 
       # Step 4: Fetch dependencies
