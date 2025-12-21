@@ -1,0 +1,51 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      # Step 3: Create a fresh Flutter project for building
+      - name: Create temporary Flutter project
+        run: |
+          flutter create -t app temp_build
+          # Copy your Dart code
+          cp -r lib temp_build/lib
+          cp pubspec.yaml temp_build/pubspec.yaml
+          # Copy assets if folder exists
+          if [ -d images ]; then cp -r images temp_build/images; fi
+          if [ -d assets ]; then cp -r assets temp_build/assets; fi
+
+      # Step 4: Fetch dependencies
+      - name: Install dependencies
+        run: |
+          cd temp_build
+          flutter pub get
+
+      # Step 5: Build the release APK
+      - name: Build release APK
+        run: |
+          cd temp_build
+          flutter build apk --release
+
+      # Step 6: Upload APK artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: temp_build/build/app/outputs/flutter-apk/app-release.apk
