@@ -17,65 +17,43 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.38.5'
+          flutter-version: '3.19.0'  # Specify version
 
-      - name: Create & Fix Project
+      - name: Prepare Project
         run: |
-          mkdir -p temp_build/{lib,images}
-          cp -f pubspec.yaml temp_build/
-          cp -rf lib/. temp_build/lib/ 2>/dev/null || true
-          cp -rf images/. temp_build/images/ 2>/dev/null || true
+          # Read original package name from pubspec.yaml
+          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          echo "Package name: $PACKAGE_NAME"
           
-          cd temp_build
-          flutter create --platforms android .
+          # Create fresh project with correct name
+          flutter create --org com.example --project-name $PACKAGE_NAME .
+          
+          # Copy your actual source files
+          cp -rf lib/* lib/ 2>/dev/null || echo "lib/ already has files"
+          cp -rf images/* images/ 2>/dev/null || echo "No images to copy"
+          cp -f pubspec.yaml pubspec.yaml.backup 2>/dev/null || true
 
-      - name: Fix main.dart (remove dot-shorthands)
+      - name: Fix Imports in main.dart
         run: |
-          cd temp_build
-          # Replace Flutter's template with YOUR clean main.dart
-          cat > lib/main.dart << 'EOF'
-import 'package:flutter/material.dart';
-import 'package:telebirrbybr7/colors.dart';
-import 'package:telebirrbybr7/screens/main_screen.dart';
+          # Read package name from pubspec.yaml
+          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          
+          # Update imports in main.dart to use correct package name
+          sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" lib/main.dart
+          
+          # Also check other files
+          find lib -name "*.dart" -type f | while read file; do
+            sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
+          done
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: mainColor,
-          primary: mainColor,
-        ),
-        useMaterial3: true,
-      ),
-      home: const MainScreen(),
-    );
-  }
-}
-EOF
-
-      - name: Update pubspec.yaml
-        run: |
-          cd temp_build
-          # Ensure package name matches
-          sed -i "s|name:.*|name: telebirrbybr7|" pubspec.yaml
+      - name: Get Dependencies
+        run: flutter pub get
 
       - name: Build APK
-        run: |
-          cd temp_build
-          flutter pub get
-          flutter build apk --release
+        run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: telebirr-release-apk
-          path: temp_build/build/app/outputs/flutter-apk/app-release.apk
+          name: flutter-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
