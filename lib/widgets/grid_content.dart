@@ -84,9 +84,9 @@ class GridContent extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
-          color: Colors.grey[50],
+          color: Colors.grey[50]!,
           borderRadius: BorderRadius.circular(10.0),
-          border: Border.all(color: Colors.grey[200], width: 1),
+          border: Border.all(color: Colors.grey[200]!, width: 1),
         ),
         child: Row(
           children: [
@@ -118,7 +118,7 @@ class GridContent extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: Colors.grey[600]!,
                       fontSize: 12,
                     ),
                   ),
@@ -181,7 +181,7 @@ class GridContent extends StatelessWidget {
                   gridLabel[index],
                   maxLines: 3,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     overflow: TextOverflow.ellipsis,
                     fontSize: 12,
@@ -207,7 +207,7 @@ class GridIcons extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContextcontext) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: icon == Icons.ad_units_outlined
