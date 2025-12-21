@@ -33,7 +33,7 @@ jobs:
         run: |
           cd temp_build
           # Replace Flutter's template with YOUR clean main.dart
-          cat > lib/main.dart << EOF
+          cat > lib/main.dart << 'EOF'
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/colors.dart';
 import 'package:telebirrbybr7/screens/main_screen.dart';
@@ -61,6 +61,12 @@ class MyApp extends StatelessWidget {
   }
 }
 EOF
+
+      - name: Update pubspec.yaml
+        run: |
+          cd temp_build
+          # Ensure package name matches
+          sed -i "s|name:.*|name: telebirrbybr7|" pubspec.yaml
 
       - name: Build APK
         run: |
