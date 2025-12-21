@@ -19,6 +19,8 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          # Pin to ensure Dart 3.10+ compatibility if needed
+          flutter-version: '3.38.5'
 
       # Step 3: Create temp Flutter project
       - name: Create new Flutter project
@@ -28,12 +30,12 @@ jobs:
           cp pubspec.yaml temp_build/pubspec.yaml
           if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
-      # Step 4: Build APK inside temp project
+      # Step 4: Build APK inside temp project (FIXED: Added experiment flag)
       - name: Build release APK
         run: |
           cd temp_build
           flutter pub get
-          flutter build apk --release
+          flutter build apk --release --enable-experiment=dot-shorthands
 
       # Step 5: Upload APK artifact
       - name: Upload APK artifact
