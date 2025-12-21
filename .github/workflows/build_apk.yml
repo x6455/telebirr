@@ -19,29 +19,28 @@ jobs:
           channel: stable
           flutter-version: '3.38.5'
 
-      - name: Create new Flutter project
+      - name: Create temp project & copy files
         run: |
-          flutter create -t app temp_build
-          cp -r lib temp_build/lib
-          cp pubspec.yaml temp_build/pubspec.yaml
-          if [ -d assets ]; then cp -r assets temp_build/assets; fi
+          flutter create --project-name telebirrbybr7 --org com.example temp_build
+          cp -r lib/* temp_build/lib/ 2>/dev/null || true
+          cp pubspec.yaml temp_build/
+          mkdir -p temp_build/images
+          cp -r images/* temp_build/images/ 2>/dev/null || true
 
-      - name: Configure Dart experiments
+      - name: Enable dot-shorthands & build
         run: |
           cd temp_build
-          echo '--enable-experiment=dot-shorthands' > analysis_options.yaml
+          # Enable experiment globally
+          mkdir -p .dart_tool
+          echo 'experiment: dot-shorthands' > .dart_tool/package_config.json
+          
           flutter pub get
-
-      - name: Build release APK
-        run: |
-          cd temp_build
           flutter build apk --release \
-            --dart-define=FLUTTER_WEB=true \
             --enable-experiment=dot-shorthands \
-            --no-pub
+            --dart-define=FLUTTER_WEB=false
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
+          name: telebirr-release-apk
           path: temp_build/build/app/outputs/flutter-apk/app-release.apk
