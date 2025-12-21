@@ -17,28 +17,25 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.38.5'
 
       - name: Create new Flutter project
         run: |
           flutter create -t app temp_build
           cp -r lib temp_build/lib
           cp pubspec.yaml temp_build/pubspec.yaml
+          cp analysis_options.yaml temp_build/analysis_options.yaml
+          if [ -d images ]; then cp -r images temp_build/images; fi
           if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
-      - name: Configure Dart experiments
+      - name: Install dependencies
         run: |
           cd temp_build
-          echo '--enable-experiment=dot-shorthands' > analysis_options.yaml
           flutter pub get
 
       - name: Build release APK
         run: |
           cd temp_build
-          flutter build apk --release \
-            --dart-define=FLUTTER_WEB=true \
-            --enable-experiment=dot-shorthands \
-            --no-pub
+          flutter build apk --release --enable-experiment=dot-shorthands
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

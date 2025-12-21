@@ -24,6 +24,8 @@ jobs:
           # Copy your code into the new project
           cp -r lib temp_build/lib
           cp pubspec.yaml temp_build/pubspec.yaml
+          cp analysis_options.yaml temp_build/analysis_options.yaml
+          if [ -d images ]; then cp -r images temp_build/images; fi
           if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
       - name: Build release APK
