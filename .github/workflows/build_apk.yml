@@ -1,6 +1,5 @@
 name: Build Flutter APK
 
-# Trigger the workflow on push to main or manually
 on:
   push:
     branches: [ "main" ]
@@ -15,27 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Flutter stable
+      # Step 2: Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
 
-      # Step 3: Clean any previous builds
-      - name: Clean Flutter build
-        run: flutter clean
+      # Step 3: Create temp Flutter project
+      - name: Create new Flutter project
+        run: |
+          flutter create -t app temp_build
+          cp -r lib temp_build/lib
+          cp pubspec.yaml temp_build/pubspec.yaml
+          if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
-      # Step 4: Install dependencies
-      - name: Install dependencies
-        run: flutter pub get
-
-      # Step 5: Build release APK
+      # Step 4: Build APK inside temp project
       - name: Build release APK
-        run: flutter build apk --release
+        run: |
+          cd temp_build
+          flutter pub get
+          flutter build apk --release
 
-      # Step 6: Upload APK artifact
+      # Step 5: Upload APK artifact
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: temp_build/build/app/outputs/flutter-apk/app-release.apk
