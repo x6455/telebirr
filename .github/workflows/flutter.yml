@@ -18,17 +18,22 @@ jobs:
         with:
           channel: stable
 
-      - name: Flutter doctor
-        run: flutter doctor -v
-
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Create new Flutter project
+        run: |
+          flutter create -t app temp_build
+          # Copy your code into the new project
+          cp -r lib temp_build/lib
+          cp pubspec.yaml temp_build/pubspec.yaml
+          if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
       - name: Build release APK
-        run: flutter build apk --release
+        run: |
+          cd temp_build
+          flutter pub get
+          flutter build apk --release
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+        run: |
+          cd temp_build
+          zip -r app-release-apk.zip build/app/outputs/flutter-apk/app-release.apk
+        # Use actions/upload-artifact if you prefer
