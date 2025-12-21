@@ -1,0 +1,75 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.38.5'
+
+      - name: Create & Fix Project
+        run: |
+          mkdir -p temp_build/{lib,images}
+          cp -f pubspec.yaml temp_build/
+          cp -rf lib/. temp_build/lib/ 2>/dev/null || true
+          cp -rf images/. temp_build/images/ 2>/dev/null || true
+          
+          cd temp_build
+          flutter create --platforms android .
+
+      - name: Fix main.dart (remove dot-shorthands)
+        run: |
+          cd temp_build
+          # Replace Flutter's template with YOUR clean main.dart
+          cat > lib/main.dart << EOF
+import 'package:flutter/material.dart';
+import 'package:telebirrbybr7/colors.dart';
+import 'package:telebirrbybr7/screens/main_screen.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: mainColor,
+          primary: mainColor,
+        ),
+        useMaterial3: true,
+      ),
+      home: const MainScreen(),
+    );
+  }
+}
+EOF
+
+      - name: Build APK
+        run: |
+          cd temp_build
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: telebirr-release-apk
+          path: temp_build/build/app/outputs/flutter-apk/app-release.apk
