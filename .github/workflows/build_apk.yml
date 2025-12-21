@@ -10,19 +10,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout your repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          # Pin to ensure Dart 3.10+ compatibility if needed
           flutter-version: '3.38.5'
 
-      # Step 3: Create temp Flutter project
       - name: Create new Flutter project
         run: |
           flutter create -t app temp_build
@@ -30,14 +26,20 @@ jobs:
           cp pubspec.yaml temp_build/pubspec.yaml
           if [ -d assets ]; then cp -r assets temp_build/assets; fi
 
-      # Step 4: Build APK inside temp project (FIXED: Added experiment flag)
+      - name: Configure Dart experiments
+        run: |
+          cd temp_build
+          echo '--enable-experiment=dot-shorthands' > analysis_options.yaml
+          flutter pub get
+
       - name: Build release APK
         run: |
           cd temp_build
-          flutter pub get
-          flutter build apk --release --enable-experiment=dot-shorthands
+          flutter build apk --release \
+            --dart-define=FLUTTER_WEB=true \
+            --enable-experiment=dot-shorthands \
+            --no-pub
 
-      # Step 5: Upload APK artifact
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
