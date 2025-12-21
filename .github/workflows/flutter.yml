@@ -30,10 +30,10 @@ jobs:
         run: |
           cd temp_build
           flutter pub get
-          flutter build apk --release
+          flutter build apk --release --enable-experiment=dot-shorthands
 
       - name: Upload APK artifact
-        run: |
-          cd temp_build
-          zip -r app-release-apk.zip build/app/outputs/flutter-apk/app-release.apk
-        # Use actions/upload-artifact if you prefer
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: temp_build/build/app/outputs/flutter-apk/app-release.apk
