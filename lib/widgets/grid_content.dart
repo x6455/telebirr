@@ -11,6 +11,130 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
+  // Function to show send money options dialog
+  void _showSendMoneyOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Send Money',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(140, 202, 59, 1),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              _buildOptionItem(
+                context,
+                title: 'To Individual',
+                subtitle: 'Send money to a single person',
+                icon: Icons.person_outline,
+                onTap: () {
+                  Navigator.pop(context);
+                  // Navigate to individual send money screen
+                  // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToIndividualScreen()));
+                },
+              ),
+              const SizedBox(height: 15),
+              _buildOptionItem(
+                context,
+                title: 'To Group',
+                subtitle: 'Send money to multiple people',
+                icon: Icons.group_outlined,
+                onTap: () {
+                  Navigator.pop(context);
+                  // Navigate to group send money screen
+                  // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToGroupScreen()));
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildOptionItem(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10.0),
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(10.0),
+          border: Border.all(color: Colors.grey[200], width: 1),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: const Color.fromRGBO(140, 202, 59, 0.1),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Icon(
+                icon,
+                color: const Color.fromRGBO(140, 202, 59, 1),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(
+              Icons.chevron_right,
+              color: Colors.grey,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -24,32 +148,50 @@ class GridContent extends StatelessWidget {
       ),
       itemCount: 8,
       itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              gridIcon[index],
-              const SizedBox(
-                height: 5,
-              ),
-              Text(
-                gridLabel[index],
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: 12,
-                  letterSpacing: 0.5,
-                  fontWeight: FontWeight.w500,
-                  height: 0,
+        // Check if this is the "Send Money" grid item
+        bool isSendMoney = gridLabel[index] == 'Send Money';
+        
+        return GestureDetector(
+          onTap: () {
+            if (isSendMoney) {
+              _showSendMoneyOptions(context);
+            } else {
+              // Handle other grid items
+              // You can add more conditionals for other items
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                gridIcon[index],
+                const SizedBox(height: 5),
+                Text(
+                  gridLabel[index],
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 12,
+                    letterSpacing: 0.5,
+                    fontWeight: FontWeight.w500,
+                    height: 0,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
