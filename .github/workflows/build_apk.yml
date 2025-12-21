@@ -19,25 +19,25 @@ jobs:
           channel: stable
           flutter-version: '3.38.5'
 
-      - name: Create temp project & copy files
+      # ✅ FIXED: Copy YOUR main.dart FIRST, then create project
+      - name: Prepare project
         run: |
-          flutter create --project-name telebirrbybr7 --org com.example temp_build
-          cp -r lib/* temp_build/lib/ 2>/dev/null || true
+          # Create empty project structure first
+          mkdir -p temp_build/lib temp_build/images
+          
+          # Copy YOUR files (overrides template)
+          cp lib/* temp_build/lib/ 2>/dev/null || true
           cp pubspec.yaml temp_build/
-          mkdir -p temp_build/images
           cp -r images/* temp_build/images/ 2>/dev/null || true
+          
+          # Generate Flutter boilerplate WITHOUT main.dart
+          flutter create --empty --project-name telebirrbybr7 --org com.example temp_build
 
-      - name: Enable dot-shorthands & build
+      - name: Build APK
         run: |
           cd temp_build
-          # Enable experiment globally
-          mkdir -p .dart_tool
-          echo 'experiment: dot-shorthands' > .dart_tool/package_config.json
-          
           flutter pub get
-          flutter build apk --release \
-            --enable-experiment=dot-shorthands \
-            --dart-define=FLUTTER_WEB=false
+          flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
