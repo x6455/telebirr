@@ -24,12 +24,21 @@ jobs:
       - name: Create temporary Flutter project
         run: |
           flutter create -t app temp_build
+          # Remove default lib directory  
+          rm -rf temp_build/lib
           # Copy your Dart code
           cp -r lib temp_build/lib
+          # Copy pubspec.yaml (will overwrite default one)
           cp pubspec.yaml temp_build/pubspec.yaml
-          # Copy assets if folder exists
-          if [ -d images ]; then cp -r images temp_build/images; fi
-          if [ -d assets ]; then cp -r assets temp_build/assets; fi
+          # Copy assets if folders exist
+          if [ -d images ]; then 
+            mkdir -p temp_build/images
+            cp -r images/* temp_build/images/
+          fi
+          if [ -d assets ]; then 
+            mkdir -p temp_build/assets
+            cp -r assets/* temp_build/assets/
+          fi
 
       # Step 4: Fetch dependencies
       - name: Install dependencies
