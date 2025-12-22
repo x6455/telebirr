@@ -12,64 +12,61 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  /// Shows options with a blur background anchored to the tile position
+  /// Shows options with a grayed-out background anchored to the tile position
   void _showSendMoneyOptions(BuildContext context, Offset position, Size size) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.black.withOpacity(0.2), // Slight dark overlay
+      // SET TO GRAYED OUT BACKGROUND
+      barrierColor: Colors.black.withOpacity(0.5), 
       builder: (BuildContext context) {
         const double popupWidth = 175.0;
         
         // Horizontal centering logic
         double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2) + 45;
 
-        return BackdropFilter(
-          // Blur effect for the background
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Stack(
-            children: [
-              Positioned(
-                top: position.dy + size.height + 1, // Directly below the tile
-                left: leftPosition,
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    width: popupWidth,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // To Individual Option
-                        _buildMenuAction(
-                          icon: Icons.person_outline,
-                          label: 'To Individual',
-                          onTap: () => Navigator.pop(context),
-                        ),
-                        Divider(height: 1, thickness: 1, color: Colors.grey[300]),
-                        // To Group Option
-                        _buildMenuAction(
-                          icon: Icons.group_outlined,
-                          label: 'To Group',
-                          onTap: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
+        return Stack(
+          children: [
+            Positioned(
+              top: position.dy + size.height + 1, // Directly below the tile
+              left: leftPosition,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  width: popupWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // To Individual Option
+                      _buildMenuAction(
+                        icon: Icons.person_outline,
+                        label: 'To Individual',
+                        onTap: () => Navigator.pop(context),
+                      ),
+                      Divider(height: 1, thickness: 1, color: Colors.grey[300]),
+                      // To Group Option
+                      _buildMenuAction(
+                        icon: Icons.group_outlined,
+                        label: 'To Group',
+                        onTap: () => Navigator.pop(context),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
