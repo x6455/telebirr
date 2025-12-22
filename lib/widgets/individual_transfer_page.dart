@@ -13,9 +13,9 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   // Slider Logic
   int _currentIndex = 0;
   final List<String> sliderImages = [
-    'images/banner1.png',
-    'images/banner2.png',
-    'images/banner3.png',
+    'images/banner-1.jpg',
+    'images/banner-2.jpg',
+    'images/banner-3.jpg',
   ];
 
   // Input & Button Logic
@@ -54,7 +54,8 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
         ),
         title: const Text(
           'Send Money to Individual',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -65,7 +66,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
-                aspectRatio: 39 / 15, // Adjusted to match banner height
+                aspectRatio: 39 / 15,
                 viewportFraction: 0.9,
                 onPageChanged: (index, reason) {
                   setState(() {
@@ -77,32 +78,38 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: AssetImage(imagePath),
+                    child: Image.asset(
+                      imagePath,
                       fit: BoxFit.cover,
+                      // Error builder helps if image path is wrong
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported),
+                      ),
                     ),
                   ),
                 );
               }).toList(),
             ),
-            
+
             // Slider Indicator
             DotsIndicator(
               dotsCount: sliderImages.length,
-              position: _currentIndex.toDouble().toInt(),
+              position: _currentIndex,
               decorator: DotsDecorator(
                 activeColor: Colors.green,
                 size: const Size.square(8.0),
                 activeSize: const Size(18.0, 8.0),
-                activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                activeShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0)),
               ),
             ),
 
             const SizedBox(height: 10),
 
-            // 2. Input Card with Prefix and Button Logic
+            // 2. Input Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(20),
@@ -113,28 +120,41 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Please Enter Mobile Number", 
-                    style: TextStyle(color: Colors.black87, fontSize: 14)),
+                  const Text("Please Enter Mobile Number",
+                      style: TextStyle(color: Colors.black87, fontSize: 14)),
                   const SizedBox(height: 12),
                   TextField(
                     controller: _numberController,
                     keyboardType: TextInputType.phone,
-                    maxLength: 9, // Limits to 9 digits
+                    maxLength: 9,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal),
                     decoration: InputDecoration(
-                      counterText: "", // Hides the counter
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                      // FIXED PREFIX
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(left: 12, top: 14),
-                        child: Text("+251 ", 
-                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
+                      counterText: "",
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12),
+                      // PREFIX: Normal weight to match user input
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 12, top: 14),
+                        child: Text(
+                          "+251 ",
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.8),
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
                       ),
                       suffixIcon: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.qr_code_scanner, color: Colors.lightGreen[600]),
+                          Icon(Icons.qr_code_scanner,
+                              color: Colors.lightGreen[600]),
                           const SizedBox(width: 12),
-                          Icon(Icons.contact_phone_outlined, color: Colors.lightGreen[600]),
+                          Icon(Icons.contact_phone_outlined,
+                              color: Colors.lightGreen[600]),
                           const SizedBox(width: 12),
                         ],
                       ),
@@ -143,31 +163,35 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green, width: 2),
+                        borderSide:
+                            const BorderSide(color: Colors.green, width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // BUTTON LOGIC
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? () {
-                        // Handle Next Action
-                      } : null, // Disables button if false
+                      onPressed: _isButtonEnabled ? () {} : null,
                       style: ElevatedButton.styleFrom(
-                        // Unblurred blue when active, faded blue/grey when disabled
-                        backgroundColor: _isButtonEnabled 
-                            ? const Color.fromRGBO(2, 135, 208, 1) 
-                            : const Color.fromRGBO(2, 135, 208, 0.3),
+                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
+                        // "Blurred"/Slightly blue color when disabled
+                        disabledBackgroundColor:
+                            const Color.fromRGBO(2, 135, 208, 0.25),
+                        disabledForegroundColor: Colors.white,
                         elevation: _isButtonEnabled ? 2 : 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text("Next", 
-                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: const Text("Next",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -180,7 +204,9 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Recent", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text("Recent",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   Icon(Icons.delete_outline, color: Colors.grey[400]),
                 ],
               ),
@@ -207,6 +233,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
         ),
         title: Text(name, style: const TextStyle(fontSize: 15)),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+        onTap: () {},
       ),
     );
   }
