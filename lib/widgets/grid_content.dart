@@ -18,16 +18,15 @@ void _showSendMoneyOptions(BuildContext context) {
       return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          width: 200, // Square width
-          height: 120, // Square height
+          width: 160,
+          height: 160,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(9.0),
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              // To Individual Option
+              // To Individual Option - half the square
               Expanded(
                 child: GestureDetector(
                   onTap: () {
@@ -35,24 +34,25 @@ void _showSendMoneyOptions(BuildContext context) {
                   },
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.person_outline,
-                          color: const Color.fromRGBO(140, 202, 59, 1),
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'To Individual',
-                          style: TextStyle(
-                            fontSize: 16, // Kept font 16
-                            color: Colors.black,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_outline,
+                            color: const Color.fromRGBO(140, 202, 59, 1),
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 8),
+                          Text(
+                            'To Individual',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -64,7 +64,7 @@ void _showSendMoneyOptions(BuildContext context) {
                 color: Colors.grey[300],
               ),
               
-              // To Group Option
+              // To Group Option - other half of the square
               Expanded(
                 child: GestureDetector(
                   onTap: () {
@@ -72,24 +72,25 @@ void _showSendMoneyOptions(BuildContext context) {
                   },
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.group_outlined,
-                          color: const Color.fromRGBO(140, 202, 59, 1),
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Text(
-                          'To Group',
-                          style: TextStyle(
-                            fontSize: 16, // Kept font 16
-                            color: Colors.black,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.group_outlined,
+                            color: const Color.fromRGBO(140, 202, 59, 1),
+                            size: 20,
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 8),
+                          Text(
+                            'To Group',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
