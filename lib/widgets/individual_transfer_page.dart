@@ -191,8 +191,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       child: const Text("Next",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold)),
+                              fontSize: 16 ),
                     ),
                   ),
                 ],
@@ -207,7 +206,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                 children: [
                   const Text("Recent",
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          TextStyle(fontSize: 14),
                   Icon(Icons.delete_outline, color: Colors.grey[400]),
                 ],
               ),
@@ -215,6 +214,8 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             _buildRecentTile("Hewan", Colors.amber),
             _buildRecentTile("TEWABE", Colors.amber),
             _buildRecentTile("Abera", Colors.amber),
+            _buildRecentTile("Rediet", Colors.amber),
+
           ],
         ),
       ),
