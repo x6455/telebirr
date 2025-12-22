@@ -256,7 +256,7 @@ class GridIcons extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: icon == Icons.ad_units_outlined
           ? Badge(
-              label: const Text('+10%'),
+              label: const Text('Up to +35%'),
               backgroundColor: Colors.amber,
               child: Icon(
                 icon,
