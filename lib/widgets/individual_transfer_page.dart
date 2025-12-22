@@ -66,7 +66,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
-                aspectRatio: 39 / 15,
+                aspectRatio: 39 / 9,
                 viewportFraction: 0.9,
                 onPageChanged: (index, reason) {
                   setState(() {
