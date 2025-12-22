@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 List<String> topGridLabel = [
   'Send Money',
   'Cash In/Out',
-  'Airtime/Packages',
-  'Request Money',
+  'Airtime/Buy Package',
+  'Zemen GEBYA',
   'Financial Service With Dashen',
   'Financial Service With CBE',
-  'Pay for Merchants',
-  'App'
+  'Finantial Service With Siinqee',
+  'Transfer to Bank'
 ];
 List<String> bottomGridLabel = [
-  '33rd Chrismass traid fair',
-  'Pay Ethio telecome Bill',
-  'Schedule Payment',
-  'Transfer to Bank',
-  'Transfer to Wallet',
-  'Fuel payment',
-  'Nearby Fuel Station',
+  'Financial Service With Awash',
+  'Pay for Merchant',
+  'Tele Device Financing',
+  'TeleEV Charging',
+  'Ethio Lottery',
+  'Hidase Gebya Christmas Expo 2018',
+  'NID (Fyda) Printing',
   'More'
 ];
 
@@ -25,4 +25,6 @@ List<Image> carouselImages = const [
   Image(image: AssetImage('images/banner-1.jpg')),
   Image(image: AssetImage('images/banner-2.jpg')),
   Image(image: AssetImage('images/banner-3.jpg')),
+  Image(image: AssetImage('images/banner-2.jpg')),
+
 ];
