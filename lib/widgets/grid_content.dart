@@ -280,7 +280,7 @@ List<Widget> topGridIcon = const [
   GridIcons(icon: Icons.wallet_giftcard),
   GridIcons(icon: Icons.ad_units_outlined),
   Image(
-    image: AssetImage('images/Zemen.pmg'),
+    image: AssetImage('images/Zemen.png'),
     width: 80,
   ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
@@ -296,7 +296,7 @@ List<Widget> topGridIcon = const [
 ];
 
 List<Widget> bottomGridIcon = const [
-  Image(image: AssetImage('images/Awash.png'), width: 40),
+  Image(image: AssetImage('images/Awash.png'), width: 36),
   Image(image: AssetImage('images/ethio-logo.png'), width: 30),
   GridIcons(icon: Icons.calendar_month_outlined),
   GridIcons(icon: FontAwesomeIcons.bank),
