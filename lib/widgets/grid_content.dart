@@ -10,8 +10,7 @@ class GridContent extends StatelessWidget {
 
   final List<Widget> gridIcon;
   final List<String> gridLabel;
-
- void _showSendMoneyOptions(BuildContext context) {
+void _showSendMoneyOptions(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -19,23 +18,26 @@ class GridContent extends StatelessWidget {
       return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
+          width: 200, // Square width
+          height: 120, // Square height
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.0),
           ),
-          child: IntrinsicWidth(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // To Individual Option
-                GestureDetector(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // To Individual Option
+              Expanded(
+                child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(30, 16, 30, 16), // Offset before/after
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.person_outline,
@@ -46,7 +48,7 @@ class GridContent extends StatelessWidget {
                         Text(
                           'To Individual',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16, // Kept font 16
                             color: Colors.black,
                           ),
                         ),
@@ -54,23 +56,25 @@ class GridContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                // Divider line with offset
-                Container(
-                  height: 1,
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  color: Colors.grey[300],
-                ),
-                
-                // To Group Option
-                GestureDetector(
+              ),
+              
+              // Divider line
+              Container(
+                height: 1,
+                color: Colors.grey[300],
+              ),
+              
+              // To Group Option
+              Expanded(
+                child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16), // Offset before/after
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.group_outlined,
@@ -81,7 +85,7 @@ class GridContent extends StatelessWidget {
                         Text(
                           'To Group',
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 16, // Kept font 16
                             color: Colors.black,
                           ),
                         ),
@@ -89,8 +93,8 @@ class GridContent extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
