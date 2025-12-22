@@ -12,10 +12,10 @@ class UserIntroduction extends StatelessWidget {
         Icon(
           Icons.person,
           color: Colors.white,
-          size: 35,
+          size: 37,
         ),
         Text(
-          'Selam, BirukBr7',
+          'Selam, DANIEL',
           style: TextStyle(
             color: Colors.white70,
             fontSize: 15,
