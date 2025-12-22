@@ -22,7 +22,7 @@ class GridContent extends StatelessWidget {
         const double popupWidth = 190.0;
         
         // Horizontal centering logic
-        double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2);
+        double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2) + 40;
 
         return BackdropFilter(
           // Blur effect for the background
@@ -30,7 +30,7 @@ class GridContent extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                top: position.dy + size.height + 5, // Directly below the tile
+                top: position.dy + size.height + 2, // Directly below the tile
                 left: leftPosition,
                 child: Material(
                   color: Colors.transparent,
