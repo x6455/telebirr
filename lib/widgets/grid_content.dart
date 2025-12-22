@@ -19,10 +19,10 @@ class GridContent extends StatelessWidget {
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.2), // Slight dark overlay
       builder: (BuildContext context) {
-        const double popupWidth = 190.0;
+        const double popupWidth = 175.0;
         
         // Horizontal centering logic
-        double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2) + 40;
+        double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2) + 45;
 
         return BackdropFilter(
           // Blur effect for the background
@@ -30,7 +30,7 @@ class GridContent extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                top: position.dy + size.height + 2, // Directly below the tile
+                top: position.dy + size.height + 1, // Directly below the tile
                 left: leftPosition,
                 child: Material(
                   color: Colors.transparent,
