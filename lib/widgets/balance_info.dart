@@ -33,7 +33,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
   @override
   Widget build(BuildContext context) {
     final String balance =
-        showBalance ? 163,874.78.toString() : '******';
+        showBalance ? '163,874.78' : '******';
     return Column(
       crossAxisAlignment: widget.crossAxisAlignment,
       children: [
