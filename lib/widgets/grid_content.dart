@@ -1,6 +1,7 @@
 import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:telebirrbybr7/individual_transfer_page.dart';
 
 class GridContent extends StatelessWidget {
   const GridContent({
@@ -12,7 +13,6 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  /// Shows options with a grayed-out background anchored to the tile position
   void _showSendMoneyOptions(BuildContext context, Offset position, Size size) {
     showDialog(
       context: context,
@@ -48,11 +48,19 @@ class GridContent extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // To Individual Option
+                      // To Individual Option - MODIFIED FOR NAVIGATION
                       _buildMenuAction(
                         icon: Icons.person_outline,
                         label: 'To Individual',
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {
+                          Navigator.pop(context); // Closes the popup
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const IndividualTransferPage(),
+                            ),
+                          );
+                        },
                       ),
                       Divider(height: 1, thickness: 1, color: Colors.grey[300]),
                       // To Group Option
