@@ -258,6 +258,7 @@ class GridIcons extends StatelessWidget {
           ? Badge(
               label: const Text('Up to +35%'),
               backgroundColor: Colors.amber,
+              alignment: Alignment.topRight,
               child: Icon(
                 icon,
                 color: const Color.fromRGBO(140, 197, 68, 0.85),
@@ -280,7 +281,7 @@ List<Widget> topGridIcon = const [
   GridIcons(icon: Icons.ad_units_outlined),
   Image(
     image: AssetImage('images/Zemen.jpeg'),
-    width: 40,
+    width: 60,
   ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(
@@ -291,12 +292,11 @@ List<Widget> topGridIcon = const [
     image: AssetImage('images/Sinqee.png'),
     width: 40,
   ),
-  GridIcons(icon: Icons.storefront),
-  GridIcons(icon: Icons.window_sharp),
+  GridIcons(icon: FontAwesomeIcons.bank),
 ];
 
 List<Widget> bottomGridIcon = const [
-  Image(image: AssetImage('images/christmas.png'), width: 70),
+  Image(image: AssetImage('images/Awash.png'), width: 70),
   Image(image: AssetImage('images/ethio-logo.png'), width: 30),
   GridIcons(icon: Icons.calendar_month_outlined),
   GridIcons(icon: FontAwesomeIcons.bank),
