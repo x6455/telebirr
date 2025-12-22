@@ -1,3 +1,4 @@
+import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -11,66 +12,70 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  /// New version of show options that takes position and size
+  /// Shows options with a blur background anchored to the tile position
   void _showSendMoneyOptions(BuildContext context, Offset position, Size size) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      barrierColor: Colors.transparent, // Keeps the background clear
+      barrierColor: Colors.black.withOpacity(0.2), // Slight dark overlay
       builder: (BuildContext context) {
-        const double popupWidth = 180.0;
+        const double popupWidth = 190.0;
         
         // Horizontal centering logic
         double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2);
 
-        return Stack(
-          children: [
-            Positioned(
-              top: position.dy + size.height + 5, // Directly below the tile
-              left: leftPosition,
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  width: popupWidth,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // To Individual Option
-                      _buildMenuAction(
-                        icon: Icons.person_outline,
-                        label: 'To Individual',
-                        onTap: () => Navigator.pop(context),
-                      ),
-                      Divider(height: 1, thickness: 1, color: Colors.grey[300]),
-                      // To Group Option
-                      _buildMenuAction(
-                        icon: Icons.group_outlined,
-                        label: 'To Group',
-                        onTap: () => Navigator.pop(context),
-                      ),
-                    ],
+        return BackdropFilter(
+          // Blur effect for the background
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Stack(
+            children: [
+              Positioned(
+                top: position.dy + size.height + 5, // Directly below the tile
+                left: leftPosition,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    width: popupWidth,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // To Individual Option
+                        _buildMenuAction(
+                          icon: Icons.person_outline,
+                          label: 'To Individual',
+                          onTap: () => Navigator.pop(context),
+                        ),
+                        Divider(height: 1, thickness: 1, color: Colors.grey[300]),
+                        // To Group Option
+                        _buildMenuAction(
+                          icon: Icons.group_outlined,
+                          label: 'To Group',
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
   }
 
-  /// Clean helper for the popup rows
+  /// Clean helper for the popup rows with added left padding
   Widget _buildMenuAction({
     required IconData icon,
     required String label,
@@ -78,13 +83,18 @@ class GridContent extends StatelessWidget {
   }) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20), // Increased horizontal padding
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Left aligned for menu look
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(icon, color: const Color.fromRGBO(140, 202, 59, 1), size: 20),
-            const SizedBox(width: 12),
+            Icon(
+              icon, 
+              color: const Color.fromRGBO(140, 202, 59, 1), 
+              size: 22,
+            ),
+            const SizedBox(width: 14), // Gap between icon and text
             Text(
               label,
               style: const TextStyle(
@@ -179,7 +189,6 @@ class GridContent extends StatelessWidget {
       itemBuilder: (context, index) {
         bool isSendMoney = gridLabel[index] == 'Send Money';
 
-        // Wrapped in Builder to find the tile's position on screen
         return Builder(builder: (itemContext) {
           return GestureDetector(
             onTap: () {
