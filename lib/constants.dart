@@ -25,6 +25,6 @@ List<Image> carouselImages = const [
   Image(image: AssetImage('images/banner-1.jpg')),
   Image(image: AssetImage('images/banner-2.jpg')),
   Image(image: AssetImage('images/banner-3.jpg')),
-  Image(image: AssetImage('images/banner-2.jpg')),
+  Image(image: AssetImage('images/banner-4.png')),
 
 ];
