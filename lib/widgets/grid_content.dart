@@ -11,90 +11,97 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 void _showSendMoneyOptions(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: Container(
-          width: 100, // Square width
-          height: 100, // Square height
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(9.0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // To Individual Option
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.person_outline,
-                        color: Color.fromRGBO(140, 202, 59, 1),
-                        size: 20,
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'To Individual',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(10), // Ensures dialog isn't squashed by screen edges
+          child: Container(
+            width: 200, // INCREASED: 100 was too small for the text
+            // REMOVED fixed height: Let the content determine the height
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10), // Add internal spacing
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // IMPORTANT: Makes the square wrap content tightly
+              children: [
+                // To Individual Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12), // Reduced padding slightly
+                    color: Colors.transparent, // Ensures the whole area is clickable
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.person_outline,
+                          color: Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 8),
+                        Text(
+                          'To Individual',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              // Divider line
-              Container(
-                height: 1,
-                color: Colors.grey[300],
-              ),
+                // Divider line
+                Divider(
+                  color: Colors.grey[300],
+                  height: 1, 
+                  thickness: 1,
+                ),
 
-              // To Group Option
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.group_outlined,
-                        color: Color.fromRGBO(140, 202, 59, 1),
-                        size: 20,
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'To Group',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
+                // To Group Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.group_outlined,
+                          color: Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 8),
+                        Text(
+                          'To Group',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
 
   Widget _buildOptionItem(
