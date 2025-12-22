@@ -11,65 +11,81 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  // Function to show send money options dialog
   void _showSendMoneyOptions(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Send Money',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color.fromRGBO(140, 202, 59, 1),
-            ),
-          ),
-          content: Column(
+  showDialog(
+    context: context,
+    barrierDismissible: true, // Allows tapping outside to close
+    builder: (BuildContext context) {
+      return Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Container(
+          width: 250,
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 10),
-              _buildOptionItem(
-                context,
-                title: 'To Individual',
-                subtitle: 'Send money to a single person',
-                icon: Icons.person_outline,
+              // To Individual Option
+              GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                   // Navigate to individual send money screen
                   // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToIndividualScreen()));
                 },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  child: Center(
+                    child: Text(
+                      'To Individual',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(140, 202, 59, 1),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(height: 15),
-              _buildOptionItem(
-                context,
-                title: 'To Group',
-                subtitle: 'Send money to multiple people',
-                icon: Icons.group_outlined,
+              
+              // Divider line
+              Container(
+                height: 1,
+                color: Colors.grey[300],
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+              ),
+              
+              // To Group Option
+              GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                   // Navigate to group send money screen
                   // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToGroupScreen()));
                 },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                  child: Center(
+                    child: Text(
+                      'To Group',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(140, 202, 59, 1),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-          ],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildOptionItem(
     BuildContext context, {
