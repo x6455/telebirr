@@ -1,12 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 
-class IndividualTransferPage extends StatelessWidget {
+class IndividualTransferPage extends StatefulWidget {
   const IndividualTransferPage({super.key});
+
+  @override
+  State<IndividualTransferPage> createState() => _IndividualTransferPageState();
+}
+
+class _IndividualTransferPageState extends State<IndividualTransferPage> {
+  // Slider Logic
+  int _currentIndex = 0;
+  final List<String> sliderImages = [
+    'images/banner1.png',
+    'images/banner2.png',
+    'images/banner3.png',
+  ];
+
+  // Input & Button Logic
+  final TextEditingController _numberController = TextEditingController();
+  bool _isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _numberController.addListener(_checkInput);
+  }
+
+  void _checkInput() {
+    setState(() {
+      // Enables button only if exactly 9 digits are entered
+      _isButtonEnabled = _numberController.text.length == 9;
+    });
+  }
+
+  @override
+  void dispose() {
+    _numberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Light grey background
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -22,26 +60,49 @@ class IndividualTransferPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Green Promotion Banner
-            Container(
-              margin: const EdgeInsets.all(16),
-              height: 140,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF8CC644), Color(0xFF5E8A24)],
-                ),
+            // 1. Sliding Banners Logic
+            const SizedBox(height: 10),
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 39 / 15, // Adjusted to match banner height
+                viewportFraction: 0.9,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
               ),
-              child: Stack(
-                children: [
-                   // Replace with your actual banner image asset
-                   const Center(child: Text("Invite Banner Asset Here", style: TextStyle(color: Colors.white))),
-                ],
+              items: sliderImages.map((imagePath) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            
+            // Slider Indicator
+            DotsIndicator(
+              dotsCount: sliderImages.length,
+              position: _currentIndex.toDouble().toInt(),
+              decorator: DotsDecorator(
+                activeColor: Colors.green,
+                size: const Size.square(8.0),
+                activeSize: const Size(18.0, 8.0),
+                activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
               ),
             ),
 
-            // 2. Input Card
+            const SizedBox(height: 10),
+
+            // 2. Input Card with Prefix and Button Logic
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(20),
@@ -56,9 +117,18 @@ class IndividualTransferPage extends StatelessWidget {
                     style: TextStyle(color: Colors.black87, fontSize: 14)),
                   const SizedBox(height: 12),
                   TextField(
+                    controller: _numberController,
+                    keyboardType: TextInputType.phone,
+                    maxLength: 9, // Limits to 9 digits
                     decoration: InputDecoration(
+                      counterText: "", // Hides the counter
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                      prefixText: "+251 ",
+                      // FIXED PREFIX
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(left: 12, top: 14),
+                        child: Text("+251 ", 
+                          style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
                       suffixIcon: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -72,17 +142,28 @@ class IndividualTransferPage extends StatelessWidget {
                         borderSide: BorderSide(color: Colors.lightGreen[400]!),
                         borderRadius: BorderRadius.circular(8),
                       ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
+                  
+                  // BUTTON LOGIC
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _isButtonEnabled ? () {
+                        // Handle Next Action
+                      } : null, // Disables button if false
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFD1E4F3), // Light blue from screenshot
-                        elevation: 0,
+                        // Unblurred blue when active, faded blue/grey when disabled
+                        backgroundColor: _isButtonEnabled 
+                            ? const Color.fromRGBO(2, 135, 208, 1) 
+                            : const Color.fromRGBO(2, 135, 208, 0.3),
+                        elevation: _isButtonEnabled ? 2 : 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text("Next", 
@@ -126,7 +207,6 @@ class IndividualTransferPage extends StatelessWidget {
         ),
         title: Text(name, style: const TextStyle(fontSize: 15)),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {},
       ),
     );
   }
