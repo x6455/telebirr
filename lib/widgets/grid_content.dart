@@ -18,80 +18,73 @@ void _showSendMoneyOptions(BuildContext context) {
       return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          width: 100,
-          height: 100,
+          width: 100, // Square width
+          height: 100, // Square height
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(9.0),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // To Individual Option - half the square
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.person_outline,
-                            color: const Color.fromRGBO(140, 202, 59, 1),
-                            size: 20,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'To Individual',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+              // To Individual Option
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.person_outline,
+                        color: Color.fromRGBO(140, 202, 59, 1),
+                        size: 20,
                       ),
-                    ),
+                      SizedBox(width: 8),
+                      Text(
+                        'To Individual',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              
+
               // Divider line
               Container(
                 height: 1,
                 color: Colors.grey[300],
               ),
-              
-              // To Group Option - other half of the square
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.group_outlined,
-                            color: const Color.fromRGBO(140, 202, 59, 1),
-                            size: 20,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'To Group',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+
+              // To Group Option
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.group_outlined,
+                        color: Color.fromRGBO(140, 202, 59, 1),
+                        size: 20,
                       ),
-                    ),
+                      SizedBox(width: 8),
+                      Text(
+                        'To Group',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -102,6 +95,7 @@ void _showSendMoneyOptions(BuildContext context) {
     },
   );
 }
+
 
   Widget _buildOptionItem(
     BuildContext context, {
