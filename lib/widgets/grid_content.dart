@@ -18,8 +18,8 @@ void _showSendMoneyOptions(BuildContext context) {
       return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
-          width: 160,
-          height: 160,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(9.0),
