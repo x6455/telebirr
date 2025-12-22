@@ -17,80 +17,80 @@ class GridContent extends StatelessWidget {
     barrierDismissible: true,
     builder: (BuildContext context) {
       return Dialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0), // Rounded edges
-        ),
+        backgroundColor: Colors.transparent,
         child: Container(
-          width: 250,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // To Individual Option
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.person_outline,
-                        color: const Color.fromRGBO(140, 202, 59, 1), // Green icon
-                        size: 20,
-                      ),
-                      SizedBox(width: 12),
-                      Text(
-                        'To Individual',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: IntrinsicWidth(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // To Individual Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(30, 16, 30, 16), // Offset before/after
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          color: const Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 12),
+                        Text(
+                          'To Individual',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              
-              // Divider line with offset
-              Container(
-                height: 1,
-                margin: const EdgeInsets.symmetric(horizontal: 20), // Offset from ends
-                color: Colors.grey[300],
-              ),
-              
-              // To Group Option
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.group_outlined,
-                        color: const Color.fromRGBO(140, 202, 59, 1), // Green icon
-                        size: 20,
-                      ),
-                      SizedBox(width: 12),
-                      Text(
-                        'To Group',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
+                
+                // Divider line with offset
+                Container(
+                  height: 1,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  color: Colors.grey[300],
+                ),
+                
+                // To Group Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(30, 16, 30, 16), // Offset before/after
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.group_outlined,
+                          color: const Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 12),
+                        Text(
+                          'To Group',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
