@@ -10,100 +10,96 @@ class GridContent extends StatelessWidget {
 
   final List<Widget> gridIcon;
   final List<String> gridLabel;
-void _showSendMoneyOptions(BuildContext context) {
+
+  /// New version of show options that takes position and size
+  void _showSendMoneyOptions(BuildContext context, Offset position, Size size) {
     showDialog(
       context: context,
       barrierDismissible: true,
+      barrierColor: Colors.transparent, // Keeps the background clear
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.all(10), // Ensures dialog isn't squashed by screen edges
-          child: Container(
-            width: 200, // INCREASED: 100 was too small for the text
-            // REMOVED fixed height: Let the content determine the height
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 10), // Add internal spacing
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // IMPORTANT: Makes the square wrap content tightly
-              children: [
-                // To Individual Option
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12), // Reduced padding slightly
-                    color: Colors.transparent, // Ensures the whole area is clickable
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.person_outline,
-                          color: Color.fromRGBO(140, 202, 59, 1),
-                          size: 20,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          'To Individual',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+        const double popupWidth = 180.0;
+        
+        // Horizontal centering logic
+        double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2);
+
+        return Stack(
+          children: [
+            Positioned(
+              top: position.dy + size.height + 5, // Directly below the tile
+              left: leftPosition,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  width: popupWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // To Individual Option
+                      _buildMenuAction(
+                        icon: Icons.person_outline,
+                        label: 'To Individual',
+                        onTap: () => Navigator.pop(context),
+                      ),
+                      Divider(height: 1, thickness: 1, color: Colors.grey[300]),
+                      // To Group Option
+                      _buildMenuAction(
+                        icon: Icons.group_outlined,
+                        label: 'To Group',
+                        onTap: () => Navigator.pop(context),
+                      ),
+                    ],
                   ),
                 ),
-
-                // Divider line
-                Divider(
-                  color: Colors.grey[300],
-                  height: 1, 
-                  thickness: 1,
-                ),
-
-                // To Group Option
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    color: Colors.transparent,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.group_outlined,
-                          color: Color.fromRGBO(140, 202, 59, 1),
-                          size: 20,
-                        ),
-                        SizedBox(width: 8),
-                        Text(
-                          'To Group',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );
   }
 
+  /// Clean helper for the popup rows
+  Widget _buildMenuAction({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start, // Left aligned for menu look
+          children: [
+            Icon(icon, color: const Color.fromRGBO(140, 202, 59, 1), size: 20),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
+  /// RETAINED: Your original option item helper
   Widget _buildOptionItem(
     BuildContext context, {
     required String title,
@@ -181,52 +177,53 @@ void _showSendMoneyOptions(BuildContext context) {
       ),
       itemCount: 8,
       itemBuilder: (context, index) {
-        // Check if this is the "Send Money" grid item
         bool isSendMoney = gridLabel[index] == 'Send Money';
-        
-        return GestureDetector(
-          onTap: () {
-            if (isSendMoney) {
-              _showSendMoneyOptions(context);
-            } else {
-              // Handle other grid items
-              // You can add more conditionals for other items
-            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                gridIcon[index],
-                const SizedBox(height: 5),
-                Text(
-                  gridLabel[index],
-                  maxLines: 3,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 12,
-                    letterSpacing: 0.5,
-                    fontWeight: FontWeight.w500,
-                    height: 0,
+
+        // Wrapped in Builder to find the tile's position on screen
+        return Builder(builder: (itemContext) {
+          return GestureDetector(
+            onTap: () {
+              if (isSendMoney) {
+                final RenderBox renderBox = itemContext.findRenderObject() as RenderBox;
+                final offset = renderBox.localToGlobal(Offset.zero);
+                final size = renderBox.size;
+                _showSendMoneyOptions(context, offset, size);
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  gridIcon[index],
+                  const SizedBox(height: 5),
+                  Text(
+                    gridLabel[index],
+                    maxLines: 3,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 12,
+                      letterSpacing: 0.5,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }
@@ -262,6 +259,7 @@ class GridIcons extends StatelessWidget {
   }
 }
 
+// RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
   GridIcons(icon: Icons.wallet),
   GridIcons(icon: Icons.wallet_giftcard),
@@ -275,6 +273,7 @@ List<Widget> topGridIcon = const [
   GridIcons(icon: Icons.storefront),
   GridIcons(icon: Icons.window_sharp),
 ];
+
 List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/christmas.png'), width: 70),
   Image(image: AssetImage('images/ethio-logo.png'), width: 30),
