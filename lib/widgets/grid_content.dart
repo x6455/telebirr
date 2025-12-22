@@ -14,7 +14,7 @@ class GridContent extends StatelessWidget {
   void _showSendMoneyOptions(BuildContext context) {
   showDialog(
     context: context,
-    barrierDismissible: true, // Allows tapping outside to close
+    barrierDismissible: true,
     builder: (BuildContext context) {
       return Dialog(
         backgroundColor: Colors.white,
@@ -23,7 +23,6 @@ class GridContent extends StatelessWidget {
         ),
         child: Container(
           width: 250,
-          padding: const EdgeInsets.symmetric(vertical: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -31,21 +30,27 @@ class GridContent extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
-                  // Navigate to individual send money screen
-                  // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToIndividualScreen()));
                 },
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  child: Center(
-                    child: Text(
-                      'To Individual',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: const Color.fromRGBO(140, 202, 59, 1),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.person_outline,
+                        color: Colors.black,
+                        size: 20,
                       ),
-                    ),
+                      SizedBox(width: 12),
+                      Text(
+                        'To Individual',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -54,28 +59,33 @@ class GridContent extends StatelessWidget {
               Container(
                 height: 1,
                 color: Colors.grey[300],
-                margin: const EdgeInsets.symmetric(horizontal: 20),
               ),
               
               // To Group Option
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
-                  // Navigate to group send money screen
-                  // Navigator.push(context, MaterialPageRoute(builder: (_) => SendToGroupScreen()));
                 },
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                  child: Center(
-                    child: Text(
-                      'To Group',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: const Color.fromRGBO(140, 202, 59, 1),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.group_outlined,
+                        color: Colors.black,
+                        size: 20,
                       ),
-                    ),
+                      SizedBox(width: 12),
+                      Text(
+                        'To Group',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
