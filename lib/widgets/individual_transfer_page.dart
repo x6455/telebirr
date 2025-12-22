@@ -16,6 +16,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     'images/banner-1.jpg',
     'images/banner-2.jpg',
     'images/banner-3.jpg',
+'images/Banner-4.jpg',
   ];
 
   // Input & Button Logic
