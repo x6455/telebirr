@@ -11,7 +11,7 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  void _showSendMoneyOptions(BuildContext context) {
+ void _showSendMoneyOptions(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: true,
@@ -19,7 +19,7 @@ class GridContent extends StatelessWidget {
       return Dialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(16.0), // Rounded edges
         ),
         child: Container(
           width: 250,
@@ -39,7 +39,7 @@ class GridContent extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.person_outline,
-                        color: Colors.black,
+                        color: const Color.fromRGBO(140, 202, 59, 1), // Green icon
                         size: 20,
                       ),
                       SizedBox(width: 12),
@@ -55,9 +55,10 @@ class GridContent extends StatelessWidget {
                 ),
               ),
               
-              // Divider line
+              // Divider line with offset
               Container(
                 height: 1,
+                margin: const EdgeInsets.symmetric(horizontal: 20), // Offset from ends
                 color: Colors.grey[300],
               ),
               
@@ -74,7 +75,7 @@ class GridContent extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.group_outlined,
-                        color: Colors.black,
+                        color: const Color.fromRGBO(140, 202, 59, 1), // Green icon
                         size: 20,
                       ),
                       SizedBox(width: 12),
