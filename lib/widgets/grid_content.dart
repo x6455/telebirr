@@ -11,98 +11,92 @@ class GridContent extends StatelessWidget {
   final List<Widget> gridIcon;
   final List<String> gridLabel;
 
-  void _showSendMoneyOptions(BuildContext context, RenderBox gridItemBox) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: EdgeInsets.only(
-            left: gridItemBox.localToGlobal(Offset.zero).dx,
-            top: gridItemBox.localToGlobal(Offset.zero).dy + gridItemBox.size.height,
-          ),
-          child: Material(
-            borderRadius: BorderRadius.circular(12.0),
+ void _showSendMoneyOptions(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
             color: Colors.white,
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: 180,
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // To Individual Option
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.person_outline,
-                            color: const Color.fromRGBO(140, 202, 59, 1),
-                            size: 18,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: IntrinsicWidth(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // To Individual Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(30, 16, 30, 16), // Offset before/after
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          color: const Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'To Individual',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            'To Individual',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  
-                  // Divider line
-                  Container(
-                    height: 1,
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
-                    color: Colors.grey[300],
-                  ),
-                  
-                  // To Group Option
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.group_outlined,
-                            color: const Color.fromRGBO(140, 202, 59, 1),
-                            size: 18,
+                ),
+                
+                // Divider line with offset
+                Container(
+                  height: 1,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  color: Colors.grey[300],
+                ),
+                
+                // To Group Option
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 16), // Offset before/after
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.group_outlined,
+                          color: const Color.fromRGBO(140, 202, 59, 1),
+                          size: 20,
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          'To Group',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            'To Group',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildOptionItem(
     BuildContext context, {
@@ -187,8 +181,7 @@ class GridContent extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             if (isSendMoney) {
-              final RenderBox gridItemBox = context.findRenderObject() as RenderBox;
-              _showSendMoneyOptions(context, gridItemBox);
+              _showSendMoneyOptions(context);
             } else {
               // Handle other grid items
               // You can add more conditionals for other items
