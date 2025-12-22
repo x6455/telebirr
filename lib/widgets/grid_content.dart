@@ -1,7 +1,7 @@
 import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:telebirrbybr7/individual_transfer_page.dart';
+import 'individual_transfer_page.dart';
 
 class GridContent extends StatelessWidget {
   const GridContent({
