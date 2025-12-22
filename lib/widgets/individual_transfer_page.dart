@@ -16,7 +16,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     'images/banner-1.jpg',
     'images/banner-2.jpg',
     'images/banner-3.jpg',
-'images/Banner-4.jpg',
+'images/Banner-4.png',
   ];
 
   // Input & Button Logic
@@ -191,7 +191,8 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       child: const Text("Next",
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16 ),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -206,7 +207,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                 children: [
                   const Text("Recent",
                       style:
-                          TextStyle(fontSize: 14),
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   Icon(Icons.delete_outline, color: Colors.grey[400]),
                 ],
               ),
@@ -214,8 +215,6 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             _buildRecentTile("Hewan", Colors.amber),
             _buildRecentTile("TEWABE", Colors.amber),
             _buildRecentTile("Abera", Colors.amber),
-            _buildRecentTile("Rediet", Colors.amber),
-
           ],
         ),
       ),
