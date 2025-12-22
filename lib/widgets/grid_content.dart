@@ -253,7 +253,7 @@ class GridIcons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: icon == Icons.ad_units_outlined
           ? Badge(
               label: const Text('Up to +35%'),
@@ -278,10 +278,17 @@ List<Widget> topGridIcon = const [
   GridIcons(icon: Icons.wallet),
   GridIcons(icon: Icons.wallet_giftcard),
   GridIcons(icon: Icons.ad_units_outlined),
-  GridIcons(icon: Icons.clean_hands_sharp),
+  Image(
+    image: AssetImage('images/Zemen.jpeg'),
+    width: 40,
+  ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(
     image: AssetImage('images/cbe.png'),
+    width: 40,
+  ),
+  Image(
+    image: AssetImage('images/Sinqee.png'),
     width: 40,
   ),
   GridIcons(icon: Icons.storefront),
