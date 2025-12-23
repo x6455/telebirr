@@ -7,7 +7,7 @@ List<String> topGridLabel = [
   'Zemen GEBYA',
   'Financial Service With Dashen',
   'Financial Service With CBE',
-  'Finantial Service With Siinqee',
+  'Financial Service With Siinqee',
   'Transfer to Bank'
 ];
 List<String> bottomGridLabel = [
@@ -25,6 +25,6 @@ List<Image> carouselImages = const [
   Image(image: AssetImage('images/banner-1.jpg')),
   Image(image: AssetImage('images/banner-2.jpg')),
   Image(image: AssetImage('images/banner-3.jpg')),
-  Image(image: AssetImage('images/banner-4.png')),
+  Image(image: AssetImage('images/Banner-4.png')),
 
 ];
