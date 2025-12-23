@@ -22,9 +22,10 @@ List<String> bottomGridLabel = [
 ];
 
 List<Image> carouselImages = const [
-  Image(image: AssetImage('images/banner-1.jpg')),
-  Image(image: AssetImage('images/banner-2.jpg')),
-  Image(image: AssetImage('images/banner-3.jpg')),
-  Image(image: AssetImage('images/Banner-4.png')),
+  Image(image: AssetImage('images/Banner1.jpg')),
+  Image(image: AssetImage('images/Banner2.jpg')),
+  Image(image: AssetImage('images/Banner3.jpg')),
+  Image(image: AssetImage('images/Banner4.jpg')),
+  Image(image: AssetImage('images/Banner5.jpg')),
 
 ];
