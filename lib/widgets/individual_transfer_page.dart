@@ -13,10 +13,11 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   // Slider Logic
   int _currentIndex = 0;
   final List<String> sliderImages = [
-    'images/banner-1.jpg',
-    'images/banner-2.jpg',
-    'images/banner-3.jpg',
-'images/Banner-4.png',
+    'images/Banner1.jpg',
+    'images/Banner2.jpg',
+    'images/Banner3.jpg',
+    'images/Banner4.jpg',
+    'images/Banner5.jpg',
   ];
 
   // Input & Button Logic
