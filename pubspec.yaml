@@ -78,10 +78,19 @@ flutter:
     - images/telebirr.png
     - images/cbe.png
     - images/dashen.png
-    - images/banner-1.jpg
-    - images/banner-2.jpg
-    - images/banner-3.jpg
-    - images/Banner-4.png
+    - images/Banner1.jpg
+    - images/Banner2.jpg
+    - images/Banner3.jpg
+    - images/Banner4.jpg
+    - images/Banner5.jpg
+    - images/Airtime.jpg
+    - images/Cashinout.jpg
+    - images/Devicefin.jpg
+    - images/Lottery.jpg
+    - images/More.jpg
+    - images/Paymerchant.jpg
+    - images/Teleev.jpg
+    - images/Transfertobank.jpg
     - images/Sinqee.png
     - images/Zemen.png
     - images/Fyda.png
