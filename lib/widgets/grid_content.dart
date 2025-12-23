@@ -276,12 +276,12 @@ class GridIcons extends StatelessWidget {
 
 // RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
-  Image(image: AssetImage('images/Test.jpg'), width: 20),
+  Image(image: AssetImage('images/Test.jpg'), width: 50),
   GridIcons(icon: Icons.wallet_giftcard),
   GridIcons(icon: Icons.ad_units_outlined),
   Image(
     image: AssetImage('images/Zemen.png'),
-    width: 45,
+    width: 40,
   ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(
