@@ -90,7 +90,7 @@ class GridContent extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20), // Increased horizontal padding
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20), // Increased horizontal padding
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -276,12 +276,12 @@ class GridIcons extends StatelessWidget {
 
 // RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
-  GridIcons(icon: Icons.wallet),
+  Image(image: AssetImage('images/Test.jpg'), width: 20),
   GridIcons(icon: Icons.wallet_giftcard),
   GridIcons(icon: Icons.ad_units_outlined),
   Image(
     image: AssetImage('images/Zemen.png'),
-    width: 80,
+    width: 45,
   ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(
