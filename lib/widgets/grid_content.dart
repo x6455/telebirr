@@ -254,7 +254,8 @@ class GridIcons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
-      child: icon == Icons.ad_units_outlined
+      child: Image(image: AssetImage('images/Airtime.jpg'), width: 65)
+
           ? Badge(
               label: const Text('Up to +35%'),
               backgroundColor: Colors.amber,
@@ -276,35 +277,23 @@ class GridIcons extends StatelessWidget {
 
 // RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
-  Image(image: AssetImage('images/Test.jpg'), width: 65),
-  Image(image: AssetImage('images/Cashinout.jpg'), width: 65),
-
+  Image(image: AssetImage('images/Test.jpg'), width: 75),
+  Image(image: AssetImage('images/Cashinout.jpg'), width: 50),
   Image(image: AssetImage('images/Airtime.jpg'), width: 65),
-
-  Image(
-    image: AssetImage('images/Zemen.png'),
-    width: 35,
-  ),
+  Image(image: AssetImage('images/Zemen.png'),width: 35,),
   Image(image: AssetImage('images/dashen.png'), width: 20),
-  Image(
-    image: AssetImage('images/cbe.png'),
-    width: 40,
-  ),
-  Image(
-    image: AssetImage('images/Sinqee.png'),
-    width: 40,
-  ),
-    Image(image: AssetImage('images/Transfertobank.jpg'), width: 65),
+  Image(image: AssetImage('images/cbe.png'),width: 40,),
+  Image(image: AssetImage('images/Sinqee.png'),width: 40,),
+  Image(image: AssetImage('images/Transfertobank.jpg'), width: 62),
 
 ];
 
 List<Widget> bottomGridIcon = const [
-  Image(image: AssetImage('images/Awash.png'), width: 36),
-  Image(image: AssetImage('images/Paymerchant.jpg'), width: 60),
+  Image(image: AssetImage('images/Awash.png'), width: 32),
+  Image(image: AssetImage('images/Paymerchant.jpg'), width: 64),
   Image(image: AssetImage('images/Devicefin.jpg'), width: 60),
   Image(image: AssetImage('images/Teleev.jpg'), width: 60),
-
-  Image(image: AssetImage('images/Lottery.jpg'), width: 60),
+  Image(image: AssetImage('images/Lottery.jpg'), width: 65),
     Image(image: AssetImage('images/christmas.png'), width: 45),
     Image(image: AssetImage('images/Fyda.png'), width: 40),
     Image(image: AssetImage('images/More.jpg'), width: 60),
