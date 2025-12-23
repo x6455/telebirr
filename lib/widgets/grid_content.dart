@@ -301,7 +301,7 @@ List<Widget> bottomGridIcon = const [
   GridIcons(icon: Icons.calendar_month_outlined),
   GridIcons(icon: FontAwesomeIcons.bank),
   GridIcons(icon: Icons.wallet_sharp),
-  GridIcons(icon: Icons.payments_outlined),
+    Image(image: AssetImage('images/christmas.png'), width: 70),
     Image(image: AssetImage('images/Fyda.png'), width: 40),
   GridIcons(icon: Icons.add_circle_outline_sharp),
 ];
