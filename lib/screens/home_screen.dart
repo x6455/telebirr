@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Stack(
             children: [
               Container(
-                height: 170,
+                height: 150,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
