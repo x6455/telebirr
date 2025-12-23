@@ -276,12 +276,14 @@ class GridIcons extends StatelessWidget {
 
 // RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
-  Image(image: AssetImage('images/Test.jpg'), width: 50),
-  GridIcons(icon: Icons.wallet_giftcard),
-  GridIcons(icon: Icons.ad_units_outlined),
+  Image(image: AssetImage('images/Test.jpg'), width: 65),
+  Image(image: AssetImage('images/Cashinout.jpg'), width: 65),
+
+  Image(image: AssetImage('images/Airtime.jpg'), width: 65),
+
   Image(
     image: AssetImage('images/Zemen.png'),
-    width: 40,
+    width: 35,
   ),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(
@@ -292,16 +294,19 @@ List<Widget> topGridIcon = const [
     image: AssetImage('images/Sinqee.png'),
     width: 40,
   ),
-  GridIcons(icon: FontAwesomeIcons.bank),
+    Image(image: AssetImage('images/Transfertobank.jpg'), width: 65),
+
 ];
 
 List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/Awash.png'), width: 36),
-  Image(image: AssetImage('images/ethio-logo.png'), width: 30),
-  GridIcons(icon: Icons.calendar_month_outlined),
-  GridIcons(icon: FontAwesomeIcons.bank),
-  GridIcons(icon: Icons.wallet_sharp),
-    Image(image: AssetImage('images/christmas.png'), width: 70),
+  Image(image: AssetImage('images/Paymerchant.jpg'), width: 60),
+  Image(image: AssetImage('images/Devicefin.jpg'), width: 60),
+  Image(image: AssetImage('images/Teleev.jpg'), width: 60),
+
+  Image(image: AssetImage('images/Lottery.jpg'), width: 60),
+    Image(image: AssetImage('images/christmas.png'), width: 45),
     Image(image: AssetImage('images/Fyda.png'), width: 40),
-  GridIcons(icon: Icons.add_circle_outline_sharp),
+    Image(image: AssetImage('images/More.jpg'), width: 60),
+
 ];
