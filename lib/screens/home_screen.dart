@@ -58,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 child: Container(
-                  color: Colors.black.withOpacity(0.3),
                   child: const Padding(
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
