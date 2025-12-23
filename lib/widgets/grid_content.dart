@@ -21,7 +21,7 @@ class GridContent extends StatelessWidget {
       barrierColor: Colors.black.withOpacity(0.5), 
       builder: (BuildContext context) {
         const double popupWidth = 175.0;
-        
+
         // Horizontal centering logic
         double leftPosition = position.dx + (size.width / 2) - (popupWidth / 2) + 45;
 
@@ -250,42 +250,44 @@ class GridIcons extends StatelessWidget {
     required this.icon,
   });
 
-@override
-Widget build(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.all(2.0),
-    child: Stack(
-      children: [
-        Image(
-          image: AssetImage('images/Airtime.jpg'), 
-          width: 65,
-        ),
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              'Around up to 35%',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Stack(
+        children: [
+          Image(
+            image: AssetImage('images/Airtime.jpg'), 
+            width: 65,
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(4),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
+              child: Text(
+                'Around up to 35%',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
+
 // RETAINED: All icons and images as defined in your file
 List<Widget> topGridIcon = const [
   Image(image: AssetImage('images/Test.jpg'), width: 75),
@@ -296,7 +298,6 @@ List<Widget> topGridIcon = const [
   Image(image: AssetImage('images/cbe.png'),width: 40,),
   Image(image: AssetImage('images/Sinqee.png'),width: 40,),
   Image(image: AssetImage('images/Transfertobank.jpg'), width: 62),
-
 ];
 
 List<Widget> bottomGridIcon = const [
@@ -305,8 +306,7 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/Devicefin.jpg'), width: 60),
   Image(image: AssetImage('images/Teleev.jpg'), width: 60),
   Image(image: AssetImage('images/Lottery.jpg'), width: 65),
-    Image(image: AssetImage('images/christmas.png'), width: 45),
-    Image(image: AssetImage('images/Fyda.png'), width: 40),
-    Image(image: AssetImage('images/More.jpg'), width: 60),
-
+  Image(image: AssetImage('images/christmas.png'), width: 45),
+  Image(image: AssetImage('images/Fyda.png'), width: 40),
+  Image(image: AssetImage('images/More.jpg'), width: 60),
 ];
