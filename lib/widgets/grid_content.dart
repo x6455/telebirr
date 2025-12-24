@@ -183,10 +183,10 @@ class GridContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.only(
-      left: 15,   // left offset
-      right: 15,  // right offset
+      left: 5,   // left offset
+      right: 5,  // right offset
       top: 20,    // top offset
-      bottom: 15,  // optional
+      bottom: 5,  // optional
     ),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -301,7 +301,7 @@ List<Widget> topGridIcon = const [
   Image(image: AssetImage('images/Airtime.jpg'), width: 65),
   Image(image: AssetImage('images/Zemen.png'),width: 35,),
   Image(image: AssetImage('images/dashen.png'), width: 20),
-  Image(image: AssetImage('images/cbe.png'),width: 40,),
+  Image(image: AssetImage('images/cbe.png'),width: 36,),
   Image(image: AssetImage('images/Sinqee.png'),width: 40,),
   Image(image: AssetImage('images/Transfertobank.jpg'), width: 62),
 ];
@@ -311,7 +311,7 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/Paymerchant.jpg'), width: 69),
   Image(image: AssetImage('images/Devicefin.jpg'), width: 64),
   Image(image: AssetImage('images/Teleev.jpg'), width: 64),
-  Image(image: AssetImage('images/Lottery.jpg'), width: 70),
+  Image(image: AssetImage('images/Lottery.jpg'), width: 80),
   Image(image: AssetImage('images/christmas.png'), width: 45),
   Image(image: AssetImage('images/Fyda.png'), width: 40),
   Image(image: AssetImage('images/More.jpg'), width: 60),
