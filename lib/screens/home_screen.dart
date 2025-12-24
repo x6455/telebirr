@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Container(
                   child: const Padding(
-                    padding: EdgeInsets.fromLTRB(15, 0, 15, 5),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: Column(
                       children: [
                         Row(
@@ -73,31 +73,35 @@ class _HomeScreenState extends State<HomeScreen> {
                             NotificationArea(),
                           ],
                         ),
-                        BalanceInfo(
-                          label: 'Balance (ETB) ',
-                          balanceFontSize: 27,
-                          labelFontSize: 20,
-                          isLabelBold: true,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            BalanceInfo(
-                              label: 'Endekise (ETB) ',
-                              balanceFontSize: 21,
-                              labelFontSize: 14,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              isLabelBold: true,
-                            ),
-                            BalanceInfo(
-                              label: 'Reward (ETB) ',
-                              balanceFontSize: 21,
-                              labelFontSize: 14,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              isLabelBold: true,
-                            ),
-                          ],
-                        ),
+                        Transform.translate(
+  offset: const Offset(0, -5), // 👈 moves UP by 5
+  child: Column(
+    children: [
+      BalanceInfo(
+        label: 'Balance (ETB) ',
+        balanceFontSize: 25,
+        labelFontSize: 16,
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          BalanceInfo(
+            label: 'Endekise (ETB) ',
+            balanceFontSize: 17,
+            labelFontSize: 13,
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          BalanceInfo(
+            label: 'Reward (ETB) ',
+            balanceFontSize: 17,
+            labelFontSize: 13,
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ],
+      ),
+    ],
+  ),
+),
                       ],
                     ),
                   ),
