@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
   // REDUCED HEIGHT: Setting toolbarHeight to 45 (Standard is 56)
-  toolbarHeight: 45, 
+  toolbarHeight: 40, 
   systemOverlayStyle: const SystemUiOverlayStyle(
     statusBarColor: Color.fromRGBO(140, 199, 63, 1),
     statusBarIconBrightness: Brightness.dark,
@@ -75,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         BalanceInfo(
                           label: 'Balance (ETB) ',
-                          balanceFontSize: 25,
-                          labelFontSize: 16,
+                          balanceFontSize: 29,
+                          labelFontSize: 20,
                           isLabelBold: true,
                         ),
                         Row(
@@ -84,15 +84,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             BalanceInfo(
                               label: 'Endekise (ETB) ',
-                              balanceFontSize: 17,
-                              labelFontSize: 13,
+                              balanceFontSize: 19,
+                              labelFontSize: 14,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               isLabelBold: true,
                             ),
                             BalanceInfo(
                               label: 'Reward (ETB) ',
-                              balanceFontSize: 17,
-                              labelFontSize: 13,
+                              balanceFontSize: 19,
+                              labelFontSize: 14,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               isLabelBold: true,
                             ),
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                bottom: 0,
+                bottom: 5,
                 child: Container(
                   height: 15,
                   width: MediaQuery.of(context).size.width,
@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     blankSpace: 400,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 12,
+                      fontSize: 13,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -146,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
   options: CarouselOptions(
     autoPlay: true,
     // CHANGED: 21/9 is taller than 39/9. Lowering the first number adds height.
-    aspectRatio: 21 / 9, 
+    aspectRatio: 30 / 9, 
     // ADDED: 1.0 makes the banner take up the full width of the screen
     viewportFraction: 1.0, 
     onPageChanged: (index, reason) {
