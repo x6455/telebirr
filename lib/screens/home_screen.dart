@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 child: Container(
                   child: const Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: EdgeInsets.fromLTRB(15, 0, 15, 5),
                     child: Column(
                       children: [
                         Row(
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         BalanceInfo(
                           label: 'Balance (ETB) ',
-                          balanceFontSize: 29,
+                          balanceFontSize: 27,
                           labelFontSize: 20,
                           isLabelBold: true,
                         ),
@@ -84,14 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             BalanceInfo(
                               label: 'Endekise (ETB) ',
-                              balanceFontSize: 19,
+                              balanceFontSize: 21,
                               labelFontSize: 14,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               isLabelBold: true,
                             ),
                             BalanceInfo(
                               label: 'Reward (ETB) ',
-                              balanceFontSize: 19,
+                              balanceFontSize: 21,
                               labelFontSize: 14,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               isLabelBold: true,
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Positioned(
-                bottom: 5,
+                bottom: 0,
                 child: Container(
                   height: 15,
                   width: MediaQuery.of(context).size.width,
@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // CHANGED: 21/9 is taller than 39/9. Lowering the first number adds height.
     aspectRatio: 30 / 9, 
     // ADDED: 1.0 makes the banner take up the full width of the screen
-    viewportFraction: 1.0, 
+    viewportFraction: 0.9, 
     onPageChanged: (index, reason) {
       setState(() {
         _currentIndex = index;
@@ -279,7 +279,7 @@ class DropDownLang extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButton(
       hint: const Text(
-        'Eng..',
+        'Eng',
         style: TextStyle(
           color: Colors.white,
           fontSize: 13,
