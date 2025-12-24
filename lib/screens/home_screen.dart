@@ -25,25 +25,29 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Color.fromRGBO(140, 199, 63, 1),
-          statusBarIconBrightness: Brightness.dark,
-        ),
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Image.asset(
-              'images/ethio.png',
-              width: 100,
-            ),
-            Image.asset(
-              'images/telebirr.png',
-              width: 60,
-            )
-          ],
-        ),
+  // REDUCED HEIGHT: Setting toolbarHeight to 45 (Standard is 56)
+  toolbarHeight: 45, 
+  systemOverlayStyle: const SystemUiOverlayStyle(
+    statusBarColor: Color.fromRGBO(140, 199, 63, 1),
+    statusBarIconBrightness: Brightness.dark,
+  ),
+  backgroundColor: Colors.white,
+  elevation: 0, // Optional: flattens the bar for a cleaner look
+  title: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Image.asset(
+        'images/ethio.png',
+        width: 80, // Reduced from 100 to fit the shorter bar
       ),
+      Image.asset(
+        'images/telebirr.png',
+        width: 50, // Reduced from 60 to fit the shorter bar
+      )
+    ],
+  ),
+),
+
       body: Column(
         children: [
           Stack(
@@ -139,33 +143,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 15,
                     ),
                     CarouselSlider(
-                      options: CarouselOptions(
-                        autoPlay: true,
-                        aspectRatio: 39 / 9,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        },
-                      ),
-                      items: carouselImages.map((image) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: 150,
-                              width: MediaQuery.of(context).size.width,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              decoration: const BoxDecoration(
-                                  color: Colors.transparent),
-                              child: Container(
-                                child: image,
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
+  options: CarouselOptions(
+    autoPlay: true,
+    // CHANGED: 21/9 is taller than 39/9. Lowering the first number adds height.
+    aspectRatio: 21 / 9, 
+    // ADDED: 1.0 makes the banner take up the full width of the screen
+    viewportFraction: 1.0, 
+    onPageChanged: (index, reason) {
+      setState(() {
+        _currentIndex = index;
+      });
+    },
+  ),
+  items: carouselImages.map((image) {
+    return Builder(
+      builder: (BuildContext context) {
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          // CHANGED: Reduced or removed margin to make it appear wider
+          margin: const EdgeInsets.symmetric(horizontal: 5.0), 
+          decoration: const BoxDecoration(color: Colors.transparent),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8), // Optional: rounds the banner corners
+            child: FittedBox(
+              fit: BoxFit.fill, // Ensures the image stretches to fill the new size
+              child: image,
+            ),
+          ),
+        );
+      },
+    );
+  }).toList(),
+),
+
                     ImageSliderIndicator(
                       carouselImages: carouselImages,
                       currentIndex: _currentIndex,
