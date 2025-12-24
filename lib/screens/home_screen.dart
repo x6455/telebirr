@@ -62,51 +62,50 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 child: Container(
-                  child: const Padding(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            UserIntroduction(),
-                            NotificationArea(),
-                          ],
-                        ),
-                        Transform.translate(
-  offset: const Offset(0, -5), // 👈 moves UP by 5
+                  child: Padding(
+  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
   child: Column(
     children: [
-      BalanceInfo(
-        label: 'Balance (ETB) ',
-        balanceFontSize: 25,
-        labelFontSize: 16,
-      ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          BalanceInfo(
-            label: 'Endekise (ETB) ',
-            balanceFontSize: 17,
-            labelFontSize: 13,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
-          BalanceInfo(
-            label: 'Reward (ETB) ',
-            balanceFontSize: 17,
-            labelFontSize: 13,
-            crossAxisAlignment: CrossAxisAlignment.start,
-          ),
+        children: const [
+          UserIntroduction(),
+          NotificationArea(),
         ],
+      ),
+
+      Transform.translate(
+        offset: const Offset(0, -5), // moves UP by 5
+        child: Column(
+          children: const [
+            BalanceInfo(
+              label: 'Balance (ETB) ',
+              balanceFontSize: 25,
+              labelFontSize: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                BalanceInfo(
+                  label: 'Endekise (ETB) ',
+                  balanceFontSize: 17,
+                  labelFontSize: 13,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                BalanceInfo(
+                  label: 'Reward (ETB) ',
+                  balanceFontSize: 17,
+                  labelFontSize: 13,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     ],
   ),
 ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               Positioned(
                 bottom: 0,
                 child: Container(
