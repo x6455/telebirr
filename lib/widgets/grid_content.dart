@@ -182,13 +182,19 @@ class GridContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      padding: const EdgeInsets.only(
+      left: 15,   // left offset
+      right: 15,  // right offset
+      top: 20,    // top offset
+      bottom: 15,  // optional
+    ),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         mainAxisSpacing: 19,
-        crossAxisSpacing: 19,
-        childAspectRatio: 0.85,
+        crossAxisSpacing: 10,
+        childAspectRatio: 0.97,
       ),
       itemCount: 8,
       itemBuilder: (context, index) {
