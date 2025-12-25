@@ -75,12 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Transform.translate(
-            offset: const Offset(0, -5),
+            offset: const Offset(0, -6),
             child: Column(
               children: const [
                 BalanceInfo(
                   label: 'Balance (ETB) ',
-                  balanceFontSize: 25,
+                  balanceFontSize: 30,
                   labelFontSize: 16,
                 ),
                 Row(
