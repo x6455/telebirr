@@ -81,20 +81,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 BalanceInfo(
                   label: 'Balance (ETB) ',
                   balanceFontSize: 30,
-                  labelFontSize: 16,
+                  labelFontSize: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     BalanceInfo(
                       label: 'Endekise (ETB) ',
-                      balanceFontSize: 17,
+                      balanceFontSize: 13,
                       labelFontSize: 13,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     BalanceInfo(
                       label: 'Reward (ETB) ',
-                      balanceFontSize: 17,
+                      balanceFontSize: 13,
                       labelFontSize: 13,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
