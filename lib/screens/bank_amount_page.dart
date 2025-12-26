@@ -93,11 +93,10 @@ class _BankAmountPageState extends State<BankAmountPage> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           // --- 2. RECTANGLE ICON CONTAINER ---
                           leading: Container(
-                            width: 44,
-                            height: 44,
+                            width: 35,
+                            height: 35,
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.all(1.0),
@@ -126,7 +125,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text("Amount", style: TextStyle(color: Colors.black54, fontSize: 16)),
+                              const Text("Amount", style: TextStyle(color: Colors.black, fontSize: 16)),
                               const SizedBox(height: 10),
                               Row(
                                 children: [
@@ -145,10 +144,10 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                     ),
                                   ),
                                   const Spacer(),
-                                  const Text("(ETB)", style: TextStyle(color: Colors.grey, fontSize: 16)),
+                                  const Text("(ETB)", style: TextStyle(color: Colors.grey, fontSize: 12)),
                                 ],
                               ),
-                              Divider(thickness: 0.5, height: 30, color: Colors.grey.withOpacity(0.3)),
+                              Divider(thickness: 0.5, height: 30, color: Colors.grey.withOpacity(0.2)),
                               const Text(
                                 "Balance: 123,975.41(ETB)",
                                 style: TextStyle(
@@ -181,7 +180,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
           Container(
             padding: const EdgeInsets.all(3),
             color: themeBgColor, 
-            height: 250,
+            height: 235,
             child: Row(
               children: [
                 Expanded(
@@ -207,23 +206,27 @@ class _BankAmountPageState extends State<BankAmountPage> {
                   child: Column(
                     children: [
                       _buildKey("back", isAction: true),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          margin: const EdgeInsets.all(3),
-                          child: Material(
-                            color: const Color(0xFF8DC73F).withOpacity(0.6),
-                            borderRadius: BorderRadius.circular(4),
-                            child: InkWell(
-                              onTap: () => print("Transferring $_amount"),
-                              child: const Center(
-                                child: Text("Transfer",
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                     Expanded(
+  flex: 3,
+  child: Container(
+    margin: const EdgeInsets.all(3),
+    child: Material(
+      color: (_amount.isNotEmpty && double.tryParse(_amount) != null && double.parse(_amount) > 0)
+          ? const Color(0xFF8DC73F)  // Green when valid amount
+          : const Color(0xFF8DC73F).withOpacity(0.5),  // Blurred when empty/invalid
+      borderRadius: BorderRadius.circular(4),
+      child: InkWell(
+        onTap: (_amount.isNotEmpty && double.tryParse(_amount) != null && double.parse(_amount) > 0)
+            ? () => print("Transferring $_amount")
+            : null,
+        child: const Center(
+          child: Text("Transfer",
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+      ),
+    ),
+  ),
+),
                     ],
                   ),
                 )
