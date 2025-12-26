@@ -100,6 +100,12 @@ flutter:
     - images/christmas.png
     - images/br7logo.png
     - images/Test.jpg
+    - images/home_icon.png
+    - images/payment_icon.png
+    - images/apps_icon.png
+    - images/engage_icon.png
+    - images/account_icon.png
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
