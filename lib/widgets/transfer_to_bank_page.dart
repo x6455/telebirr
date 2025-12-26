@@ -9,13 +9,117 @@ class TransferToBankPage extends StatefulWidget {
 }
 
 class _TransferToBankPageState extends State<TransferToBankPage> {
-  // Use a controller to track input changes if you want to enable the button later
   final TextEditingController _accountController = TextEditingController();
+  
+  // Variables to hold the selected bank state
+  String selectedBankName = 'Please Choose';
+  String? selectedBankIcon;
+
+  void _showBankSelection(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          decoration: const BoxDecoration(
+            color: Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
+              const SizedBox(height: 15),
+              const Text("Choose Bank", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 15),
+              
+              // Search Bar
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search",
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: EdgeInsets.zero,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                  ),
+                ),
+              ),
+              
+              const SizedBox(height: 15),
+
+              // Bank Grid
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  padding: const EdgeInsets.all(16),
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  children: [
+                    _buildBankItem("Abay Bank", "images/abay.png"),
+                    _buildBankItem("Addis Bank S.C.", "images/addis.png"),
+                    _buildBankItem("Ahadu Bank", "images/ahadu.png"),
+                    _buildBankItem("Amhara Bank", "images/amhara.png"),
+                    _buildBankItem("Awash Bank", "images/Awash.png"),
+                    _buildBankItem("Bank of Abyssinia", "images/abyssinia.png"),
+                    _buildBankItem("Berhan Bank", "images/berhan.png"),
+                    _buildBankItem("Bunna Bank", "images/bunna.png"),
+                    _buildBankItem("Commercial Bank of Ethiopia", "images/cbe.png"),
+                    _buildBankItem("Cooperative Bank of Oromia", "images/coop.png"),
+                    _buildBankItem("Dashen Bank", "images/dashen.png"),
+                    _buildBankItem("Global Bank Ethiopia", "images/global.png"),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBankItem(String name, String imagePath) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedBankName = name;
+          selectedBankIcon = imagePath;
+        });
+        Navigator.pop(context); // Close the sheet
+      },
+      child: Container(
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(imagePath, width: 45, height: 45, errorBuilder: (c, e, s) {
+              return const Icon(Icons.account_balance, color: Colors.blueGrey, size: 30);
+            }),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(
+                name,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Light grey background
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -25,11 +129,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
         ),
         title: Text(
           'Transfer to Bank',
-          style: GoogleFonts.roboto(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: GoogleFonts.roboto(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -39,23 +139,19 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             Container(
               margin: const EdgeInsets.all(16.0),
               width: double.infinity,
-              height: 140, // Adjust height as needed
+              height: 140,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 image: const DecorationImage(
-                  // Using your existing banner asset or a placeholder
                   image: AssetImage('images/Banner1.jpg'), 
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            // Green Dots Indicator
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.circle, size: 8, color: Colors.green),
-                SizedBox(width: 5),
-                Icon(Icons.circle_outlined, size: 8, color: Colors.green),
                 SizedBox(width: 5),
                 Icon(Icons.circle_outlined, size: 8, color: Colors.green),
                 SizedBox(width: 5),
@@ -69,80 +165,73 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Select Bank Label
                   Text('Select Bank', style: _labelStyle()),
                   const SizedBox(height: 8),
-                  // Select Bank Dropdown (Simulated)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Please Choose',
-                          style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
-                        ),
-                        Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
-                      ],
+                  
+                  // CLICKABLE DROPDOWN
+                  GestureDetector(
+                    onTap: () => _showBankSelection(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              if (selectedBankIcon != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Image.asset(selectedBankIcon!, width: 24, height: 24),
+                                ),
+                              Text(
+                                selectedBankName,
+                                style: TextStyle(
+                                  color: selectedBankName == 'Please Choose' ? Colors.grey.shade600 : Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
+                        ],
+                      ),
                     ),
                   ),
 
                   const SizedBox(height: 20),
-
-                  // Account No Label
                   Text('Account No', style: _labelStyle()),
                   const SizedBox(height: 8),
-                  // Account No Input
                   TextField(
                     controller: _accountController,
                     decoration: InputDecoration(
                       hintText: 'Enter Account Number',
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(8)),
+                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.green), borderRadius: BorderRadius.circular(8)),
                     ),
                   ),
-
                   const SizedBox(height: 25),
-
-                  // Next Button
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Action disabled for now as per UI
-                      },
+                      onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade300, // Disabled look
+                        backgroundColor: Colors.grey.shade300,
                         foregroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text(
-                        'Next',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                      child: const Text('Next', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -150,57 +239,26 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             ),
 
             const SizedBox(height: 25),
-
-            // 3. Recent Section Header
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Recent',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('Recent', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   Icon(Icons.delete_outline, color: Colors.grey.shade500, size: 20),
                 ],
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Recent List Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
               child: Column(
                 children: [
-                  _buildRecentItem(
-                    'Mrs Wagaye Kasa Alemu',
-                    'Commercial Bank of Ethiopia (100072931166)',
-                    'images/cbe.png', // Ensure this matches your asset name
-                    isLast: false,
-                  ),
-                  _buildRecentItem(
-                    'ZENEBECH HAILE GULUMA',
-                    'Dashen Bank (5010657636011)',
-                    'images/dashen.png',
-                    isLast: false,
-                  ),
-                  _buildRecentItem(
-                    'YOHANNES GETNET ABEBE...',
-                    'Dashen Bank (0239945076011)',
-                    'images/dashen.png',
-                    isLast: false,
-                  ),
-                  _buildRecentItem(
-                    'MILLION ABREHAM TESFAYE',
-                    'Awash Bank (01320253636800)',
-                    'images/Awash.png', // Assuming you have an Awash logo
-                    isLast: true,
-                  ),
+                  _buildRecentItem('Mrs Wagaye Kasa Alemu', 'Commercial Bank of Ethiopia (100072931166)', 'images/cbe.png', isLast: false),
+                  _buildRecentItem('ZENEBECH HAILE GULUMA', 'Dashen Bank (5010657636011)', 'images/dashen.png', isLast: false),
+                  _buildRecentItem('YOHANNES GETNET ABEBE...', 'Dashen Bank (0239945076011)', 'images/dashen.png', isLast: false),
+                  _buildRecentItem('MILLION ABREHAM TESFAYE', 'Awash Bank (01320253636800)', 'images/Awash.png', isLast: true),
                 ],
               ),
             ),
@@ -211,13 +269,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     );
   }
 
-  TextStyle _labelStyle() {
-    return TextStyle(
-      color: Colors.grey.shade600,
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-    );
-  }
+  TextStyle _labelStyle() => TextStyle(color: Colors.grey.shade600, fontSize: 14, fontWeight: FontWeight.w500);
 
   Widget _buildRecentItem(String name, String details, String imagePath, {required bool isLast}) {
     return Column(
@@ -225,20 +277,11 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           leading: Image.asset(imagePath, width: 40, height: 40),
-          title: Text(
-            name,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            details,
-            style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-            overflow: TextOverflow.ellipsis,
-          ),
+          title: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
+          subtitle: Text(details, style: TextStyle(fontSize: 12, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis),
           trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400),
         ),
-        if (!isLast)
-          Divider(height: 1, thickness: 1, color: Colors.grey.shade100, indent: 70),
+        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade100, indent: 70),
       ],
     );
   }
