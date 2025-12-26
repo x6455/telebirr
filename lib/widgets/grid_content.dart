@@ -2,6 +2,7 @@ import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'individual_transfer_page.dart';
+import 'transfer_to_bank_page.dart';
 
 class GridContent extends StatelessWidget {
   const GridContent({
@@ -183,11 +184,11 @@ class GridContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.only(
-      left: 5,   // left offset
-      right: 5,  // right offset
-      top: 20,    // top offset
-      bottom: 5,  // optional
-    ),
+        left: 5,   // left offset
+        right: 5,  // right offset
+        top: 20,    // top offset
+        bottom: 5,  // optional
+      ),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -199,6 +200,8 @@ class GridContent extends StatelessWidget {
       itemCount: 8,
       itemBuilder: (context, index) {
         bool isSendMoney = gridLabel[index] == 'Send Money';
+        // Check for Transfer to Bank label
+        bool isTransferToBank = gridLabel[index] == 'Transfer to Bank';
 
         return Builder(builder: (itemContext) {
           return GestureDetector(
@@ -208,6 +211,15 @@ class GridContent extends StatelessWidget {
                 final offset = renderBox.localToGlobal(Offset.zero);
                 final size = renderBox.size;
                 _showSendMoneyOptions(context, offset, size);
+              } 
+              // ADDED: Navigation logic for Transfer to Bank
+              else if (isTransferToBank) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TransferToBankPage(),
+                  ),
+                );
               }
             },
             child: Container(
@@ -247,7 +259,6 @@ class GridContent extends StatelessWidget {
       },
     );
   }
-}
 
 class GridIcons extends StatelessWidget {
   final IconData icon;
