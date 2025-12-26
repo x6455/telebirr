@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
+// 1. IMPORTS ADDED HERE
+import 'package:telebirrbybr7/screens/engage_page.dart'; // To access globalEngageList
+import 'package:telebirrbybr7/screens/bank_amount_page.dart'; // To navigate to next screen
+
 class TransferToBankPage extends StatefulWidget {
   const TransferToBankPage({super.key});
 
@@ -11,7 +15,7 @@ class TransferToBankPage extends StatefulWidget {
 }
 
 class _TransferToBankPageState extends State<TransferToBankPage> {
-  // 1. Controllers and State Variables
+  // Controllers and State Variables
   final TextEditingController _accountController = TextEditingController();
   int _currentIndex = 0;
   bool _isButtonEnabled = false;
@@ -28,13 +32,11 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
   @override
   void initState() {
     super.initState();
-    // Listener to enable button and change color when user types
     _accountController.addListener(_checkInput);
   }
 
   void _checkInput() {
     setState(() {
-      // Button turns blue/active if there is any text in the account field
       _isButtonEnabled = _accountController.text.isNotEmpty;
     });
   }
@@ -45,7 +47,71 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     super.dispose();
   }
 
-  // 2. The Bank Selection Overlay Logic
+  // 2. NEW LOGIC: HANDLE NEXT BUTTON PRESS
+  void _handleNextProcess() async {
+    // A. Show Loading Dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Container(
+          width: 80,
+          height: 80,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const CircularProgressIndicator(
+            color: Color.fromRGBO(141, 199, 63, 1), // Telebirr Green
+            strokeWidth: 3,
+          ),
+        ),
+      ),
+    );
+
+    // B. Wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 3));
+
+    // C. Close Loading Dialog
+    if (!mounted) return;
+    Navigator.pop(context);
+
+    // D. Check if account exists in globalEngageList
+    try {
+      final foundAccount = globalEngageList.firstWhere(
+        (item) => item['number'] == _accountController.text,
+      );
+
+      // --- IF FOUND: Navigate to BankAmountPage ---
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BankAmountPage(
+            accountName: foundAccount['name']!,
+            accountNumber: foundAccount['number']!,
+            bankName: selectedBankName,
+          ),
+        ),
+      );
+    } catch (e) {
+      // --- IF NOT FOUND: Show Floating Error ---
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('query not found'),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.redAccent,
+          margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height * 0.4, // Floating in middle
+            left: 50,
+            right: 50,
+          ),
+        ),
+      );
+    }
+  }
+  // -------------------------------------------
+
   void _showBankSelection(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -76,7 +142,6 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
               ),
               const SizedBox(height: 15),
               
-              // Search Bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: TextField(
@@ -95,7 +160,6 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
               ),
               const SizedBox(height: 15),
 
-              // Bank Grid
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 3,
@@ -129,7 +193,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedBankName = name; // Update only the text name
+          selectedBankName = name;
         });
         Navigator.pop(context);
       },
@@ -187,12 +251,11 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 3. Sliding Banners logic
             const SizedBox(height: 10),
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
-                aspectRatio: 39 / 13, // Aspect ratio tailored for banners
+                aspectRatio: 39 / 13,
                 viewportFraction: 0.9,
                 onPageChanged: (index, reason) {
                   setState(() {
@@ -233,7 +296,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
 
             const SizedBox(height: 15),
 
-            // 4. Input Form Card
+            // Input Form Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               padding: const EdgeInsets.all(20.0),
@@ -297,15 +360,15 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
 
                   const SizedBox(height: 25),
 
-                  // 5. NEXT BUTTON logic
+                  // 3. UPDATED BUTTON with _handleNextProcess
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? () {} : null,
+                      onPressed: _isButtonEnabled ? _handleNextProcess : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1), // Blue color
-                        disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25), // Faded blue when disabled
+                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
+                        disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25),
                         foregroundColor: Colors.white,
                         disabledForegroundColor: Colors.white,
                         elevation: _isButtonEnabled ? 2 : 0,
