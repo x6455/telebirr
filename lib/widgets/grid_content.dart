@@ -312,40 +312,45 @@ class GridIcons extends StatelessWidget {
 List<Widget> topGridIcon = const [
   Image(image: AssetImage('images/Test.jpg'), width: 75),
   Image(image: AssetImage('images/Cashinout.jpg'), width: 45),
-  // Airtime with amber overlay background
-  Stack(
-    children: [
-      Image(
-        image: AssetImage('images/Airtime.jpg'),
-        width: 65,
-      ),
-      Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Colors.amber, // AMBER BACKGROUND
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+Stack(
+  clipBehavior: Clip.none, // Allows the badge to sit cleanly on the edge
+  children: [
+    Image(
+      image: AssetImage('images/Airtime.jpg'),
+      width: 65,
+    ),
+    Positioned(
+      top: 0,
+      left: 0,
+      // Removed 'right: 0' so the badge only grows as wide as the text
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFF9B041), // Matching the exact orange color from the image
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),     // High roundness top-left
+            bottomRight: Radius.circular(12), // High roundness bottom-right
+            topRight: Radius.circular(2),     // Subtle roundness top-right
+            bottomLeft: Radius.circular(2),   // Subtle roundness bottom-left
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-            child: Text(
-              'Up to 35%',
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8), // Increased horizontal padding
+          child: Text(
+            'Up to +35%', // Added the '+' sign to match the image
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500, // Medium weight looks closer to the image
+              color: Colors.white,
             ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
           ),
         ),
       ),
-    ],
-  ),
+    ),
+  ],
+)
+
   Image(image: AssetImage('images/Zemen.png'),width: 35,),
   Image(image: AssetImage('images/dashen.png'), width: 20),
   Image(image: AssetImage('images/cbe.png'),width: 36,),
