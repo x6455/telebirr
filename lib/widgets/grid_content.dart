@@ -320,8 +320,8 @@ Stack(
       width: 65,
     ),
     Positioned(
-      top: 0,
-      left: 0,
+      top: -8,
+      left: 6,
       // Removed 'right: 0' so the badge only grows as wide as the text
       child: Container(
         decoration: const BoxDecoration(
