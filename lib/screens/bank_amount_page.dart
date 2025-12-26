@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class BankAmountPage extends StatefulWidget {
-  // These fields receive the data from Engage Page
   final String accountName;
   final String accountNumber;
   final String bankName;
@@ -19,8 +19,26 @@ class BankAmountPage extends StatefulWidget {
 
 class _BankAmountPageState extends State<BankAmountPage> {
   String _amount = "";
+  bool _showCursor = true;
+  Timer? _cursorTimer;
 
-  // Logic to handle custom keyboard taps
+  @override
+  void initState() {
+    super.initState();
+    // 5. Blinking cursor logic
+    _cursorTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      setState(() {
+        _showCursor = !_showCursor;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _cursorTimer?.cancel();
+    super.dispose();
+  }
+
   void _onKeyTap(String value) {
     setState(() {
       if (value == "back") {
@@ -42,10 +60,8 @@ class _BankAmountPageState extends State<BankAmountPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text(
-          'Transfer to Bank',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
+        title: const Text('Transfer to Bank',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -55,51 +71,40 @@ class _BankAmountPageState extends State<BankAmountPage> {
       ),
       body: Column(
         children: [
-          // SCROLLABLE TOP SECTION
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // 1. Purple Info Card
+                  // 1. Wider Container (+5 width logic via padding/margin)
                   Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFA349E5), // Telebirr Purple
+                      color: const Color(0xFFA349E5),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
                       children: [
                         ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          leading: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 20,
-                              child: Icon(Icons.account_balance, color: Color(0xFFA349E5)),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          // 2. CBE Icon leading
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 22,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Image.asset('images/cbe.png', errorBuilder: (c, e, s) => const Icon(Icons.account_balance)),
                             ),
                           ),
                           title: Text(
                             widget.accountName.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                           subtitle: Text(
                             "${widget.bankName} (${widget.accountNumber})",
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 13,
-                            ),
+                            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13),
                           ),
                         ),
-                        // White Amount Section
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
@@ -110,35 +115,36 @@ class _BankAmountPageState extends State<BankAmountPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Amount",
-                                style: TextStyle(color: Colors.black54, fontSize: 16),
-                              ),
+                              const Text("Amount", style: TextStyle(color: Colors.black54, fontSize: 16)),
                               const SizedBox(height: 10),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Display entered amount or placeholder
                                   Text(
-                                    _amount.isEmpty ? "" : _amount,
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                    _amount,
+                                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+                                  ),
+                                  // 5. Blinking Green Cursor
+                                  Opacity(
+                                    opacity: _showCursor ? 1.0 : 0.0,
+                                    child: Container(
+                                      width: 3,
+                                      height: 28,
+                                      color: const Color(0xFF8DC73F),
                                     ),
                                   ),
-                                  const Text(
-                                    "(ETB)",
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                                  ),
+                                  const Spacer(),
+                                  const Text("(ETB)", style: TextStyle(color: Colors.grey, fontSize: 16)),
                                 ],
                               ),
-                              const Divider(thickness: 1, height: 30),
-                              const Text(
+                              // 3. Thinner line with decreased opacity
+                              Divider(thickness: 0.5, height: 30, color: Colors.grey.withOpacity(0.3)),
+                              // 4. Balance text NOT bold
+                              Text(
                                 "Balance: 123,975.41(ETB)",
                                 style: TextStyle(
-                                  color: Color(0xFF4A6572),
-                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF4A6572),
+                                  fontWeight: FontWeight.normal, // Not bold
+                                  fontSize: 14,
                                 ),
                               ),
                             ],
@@ -147,59 +153,62 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Add notes(optional)",
-                      style: TextStyle(color: Color(0xFF8DC73F), fontSize: 15),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
 
-          // CUSTOM KEYBOARD SECTION
+          // CUSTOM KEYBOARD
           Container(
-            color: const Color(0xFFF0F0F0),
-            height: 260, // Fixed height for keyboard area
+            padding: const EdgeInsets.all(3), // 5. Spacing around keyboard
+            color: const Color(0xFFE0E0E0),
+            height: 300,
             child: Row(
               children: [
-                // Numbers Grid
                 Expanded(
                   flex: 3,
                   child: Column(
                     children: [
-                      _buildKeyRow(["1", "2", "3"]),
-                      _buildKeyRow(["4", "5", "6"]),
-                      _buildKeyRow(["7", "8", "9"]),
-                      _buildKeyRow([".", "0", "back"]),
+                      _row(["1", "2", "3"]),
+                      _row(["4", "5", "6"]),
+                      _row(["7", "8", "9"]),
+                      // 5. Wide 0 button below 7 & 8
+                      Expanded(
+                        child: Row(
+                          children: [
+                            _buildKey("0", flex: 2),
+                            _buildKey(".", flex: 1),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                // Transfer Button (Vertical Bar)
+                // 5. Backspace above Transfer
                 Expanded(
                   flex: 1,
-                  child: Material(
-                    color: const Color(0xFFD6E8BC), // Light Green button
-                    child: InkWell(
-                      onTap: () {
-                        print("Transfer Clicked: $_amount");
-                      },
-                      child: const Center(
-                        child: Text(
-                          "Transfer",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                  child: Column(
+                    children: [
+                      _buildKey("back", isAction: true),
+                      Expanded(
+                        flex: 3,
+                        child: Material(
+                          color: const Color(0xFF8DC73F).withOpacity(0.4),
+                          child: InkWell(
+                            onTap: () => print("Transferring $_amount"),
+                            child: const Center(
+                              child: RotatedBox(
+                                quarterTurns: 0,
+                                child: Text("Transfer",
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -208,32 +217,31 @@ class _BankAmountPageState extends State<BankAmountPage> {
     );
   }
 
-  Widget _buildKeyRow(List<String> keys) {
+  Widget _row(List<String> keys) {
     return Expanded(
       child: Row(
-        children: keys.map((key) {
-          return Expanded(
-            child: Material(
-              color: Colors.white,
-              child: InkWell(
-                onTap: () => _onKeyTap(key),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade200, width: 0.5),
-                  ),
-                  child: Center(
-                    child: key == "back"
-                        ? const Icon(Icons.backspace_outlined, size: 24)
-                        : Text(
-                            key,
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-                          ),
-                  ),
-                ),
-              ),
+        children: keys.map((k) => _buildKey(k)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildKey(String label, {int flex = 1, bool isAction = false}) {
+    return Expanded(
+      flex: flex,
+      child: Container(
+        margin: const EdgeInsets.all(3), // 5. Spacing between buttons
+        child: Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4),
+          child: InkWell(
+            onTap: () => _onKeyTap(label),
+            child: Center(
+              child: label == "back"
+                  ? const Icon(Icons.backspace_outlined, color: Colors.black54)
+                  : Text(label, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400)),
             ),
-          );
-        }).toList(),
+          ),
+        ),
       ),
     );
   }
