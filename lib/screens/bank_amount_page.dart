@@ -58,12 +58,11 @@ class _BankAmountPageState extends State<BankAmountPage> {
 
   @override
   Widget build(BuildContext context) {
-    const Color themeBgColor = Color(0xFFF5F5F5); // Standardized background
+    const Color themeBgColor = Color(0xFFF5F5F5);
 
     return Scaffold(
       backgroundColor: themeBgColor,
       appBar: AppBar(
-        // 1. App bar color matches the full page container
         backgroundColor: themeBgColor,
         elevation: 0,
         title: const Text(
@@ -79,7 +78,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              // 3. Move container to the top by 15 (reduced top padding)
               padding: const EdgeInsets.only(left: 16, right: 16, top: 1, bottom: 16),
               child: Column(
                 children: [
@@ -93,11 +91,16 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       children: [
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 22,
+                          // --- 2. RECTANGLE ICON CONTAINER ---
+                          leading: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                             child: Padding(
-                              padding: const EdgeInsets.all(4.0),
+                              padding: const EdgeInsets.all(1.0),
                               child: Image.asset(
                                 'images/cbe.png', 
                                 errorBuilder: (c, e, s) => const Icon(Icons.account_balance, color: Color(0xFFA349E5))
@@ -106,7 +109,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                           ),
                           title: Text(
                             widget.accountName.toUpperCase(),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           subtitle: Text(
                             "${widget.bankName} (${widget.accountNumber})",
@@ -131,11 +134,13 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                     _amount,
                                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
                                   ),
+                                  const SizedBox(width: 2),
+                                  // --- 1. TALLER AND THINNER CURSOR ---
                                   Opacity(
                                     opacity: _showCursor ? 1.0 : 0.0,
                                     child: Container(
-                                      width: 3,
-                                      height: 28,
+                                      width: 1.5, // Thinner
+                                      height: 32, // Taller
                                       color: const Color(0xFF8DC73F),
                                     ),
                                   ),
@@ -158,7 +163,15 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  // 'Add notes' has been removed as requested
+                  // --- 3. ADD NOTES BACK ON THE PANEL ---
+                  const SizedBox(height: 20),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Add notes(optional)",
+                      style: TextStyle(color: Color(0xFF8DC73F), fontSize: 15),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -167,10 +180,8 @@ class _BankAmountPageState extends State<BankAmountPage> {
           // CUSTOM KEYBOARD
           Container(
             padding: const EdgeInsets.all(3),
-            // 2. Keyboard spacing color blends with full container
             color: themeBgColor, 
-            // 2. Keyboard height shortened (300 -> 280)
-            height: 280,
+            height: 250,
             child: Row(
               children: [
                 Expanded(
@@ -245,7 +256,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
             child: Center(
               child: label == "back"
                   ? const Icon(Icons.backspace_outlined, color: Colors.black54)
-                  // 2. Numbers are now Bold
                   : Text(label, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
           ),
