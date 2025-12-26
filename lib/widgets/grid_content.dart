@@ -320,7 +320,7 @@ Stack(
       width: 65,
     ),
     Positioned(
-      top: -13,
+      top: -14,
       left: -6,
       // Removed 'right: 0' so the badge only grows as wide as the text
       child: Container(
@@ -329,7 +329,7 @@ Stack(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(12),     // High roundness top-left
             bottomRight: Radius.circular(12), // High roundness bottom-right
-            topRight: Radius.circular(2),     // Subtle roundness top-right
+            topRight: Radius.circular(12),     // Subtle roundness top-right
             bottomLeft: Radius.circular(2),   // Subtle roundness bottom-left
           ),
         ),
