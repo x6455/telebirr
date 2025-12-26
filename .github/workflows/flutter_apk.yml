@@ -46,6 +46,10 @@ jobs:
             sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
           done
 
+      # ✅ ADDED CLEAN STEP
+      - name: Flutter clean
+        run: flutter clean
+
       - name: Get Dependencies
         run: flutter pub get
 
