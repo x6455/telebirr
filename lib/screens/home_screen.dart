@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: const [
                 BalanceInfo(
                   label: 'Balance (ETB) ',
-                  balanceFontSize: 37,
+                  balanceFontSize: 24,
                   labelFontSize: 18,
                 ),
                 Row(
@@ -88,13 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     BalanceInfo(
                       label: 'Endekise (ETB) ',
-                      balanceFontSize: 21,
+                      balanceFontSize: 18,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     BalanceInfo(
                       label: 'Reward (ETB) ',
-                      balanceFontSize: 21,
+                      balanceFontSize: 18,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
