@@ -259,9 +259,12 @@ class GridContent extends StatelessWidget {
       },
     );
   }
+} // Missing closing brace was here
 
+// Moved outside of GridContent class
 class GridIcons extends StatelessWidget {
   final IconData icon;
+  
   const GridIcons({
     super.key,
     required this.icon,
