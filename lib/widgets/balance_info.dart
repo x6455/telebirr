@@ -63,7 +63,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
             ),
           ],
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 0),
         Text(
           balance,
           style: GoogleFonts.roboto(
