@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Transform.translate(
-            offset: const Offset(0, -16),
+            offset: const Offset(0, -12),
             child: Column(
               children: const [
                 BalanceInfo(
