@@ -25,11 +25,12 @@ class _BankAmountPageState extends State<BankAmountPage> {
   @override
   void initState() {
     super.initState();
-    // 5. Blinking cursor logic
     _cursorTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      setState(() {
-        _showCursor = !_showCursor;
-      });
+      if (mounted) {
+        setState(() {
+          _showCursor = !_showCursor;
+        });
+      }
     });
   }
 
@@ -57,13 +58,18 @@ class _BankAmountPageState extends State<BankAmountPage> {
 
   @override
   Widget build(BuildContext context) {
+    const Color themeBgColor = Color(0xFFF5F5F5); // Standardized background
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: themeBgColor,
       appBar: AppBar(
-        title: const Text('Transfer to Bank',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
+        // 1. App bar color matches the full page container
+        backgroundColor: themeBgColor,
         elevation: 0,
+        title: const Text(
+          'Transfer to Bank',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -73,10 +79,10 @@ class _BankAmountPageState extends State<BankAmountPage> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              // 3. Move container to the top by 15 (reduced top padding)
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 1, bottom: 16),
               child: Column(
                 children: [
-                  // 1. Wider Container (+5 width logic via padding/margin)
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -87,13 +93,15 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       children: [
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          // 2. CBE Icon leading
                           leading: CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 22,
                             child: Padding(
                               padding: const EdgeInsets.all(4.0),
-                              child: Image.asset('images/cbe.png', errorBuilder: (c, e, s) => const Icon(Icons.account_balance)),
+                              child: Image.asset(
+                                'images/cbe.png', 
+                                errorBuilder: (c, e, s) => const Icon(Icons.account_balance, color: Color(0xFFA349E5))
+                              ),
                             ),
                           ),
                           title: Text(
@@ -123,7 +131,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                     _amount,
                                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
                                   ),
-                                  // 5. Blinking Green Cursor
                                   Opacity(
                                     opacity: _showCursor ? 1.0 : 0.0,
                                     child: Container(
@@ -136,14 +143,12 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                   const Text("(ETB)", style: TextStyle(color: Colors.grey, fontSize: 16)),
                                 ],
                               ),
-                              // 3. Thinner line with decreased opacity
                               Divider(thickness: 0.5, height: 30, color: Colors.grey.withOpacity(0.3)),
-                              // 4. Balance text NOT bold
-                              Text(
+                              const Text(
                                 "Balance: 123,975.41(ETB)",
                                 style: TextStyle(
-                                  color: const Color(0xFF4A6572),
-                                  fontWeight: FontWeight.normal, // Not bold
+                                  color: Color(0xFF4A6572),
+                                  fontWeight: FontWeight.normal,
                                   fontSize: 14,
                                 ),
                               ),
@@ -153,6 +158,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
+                  // 'Add notes' has been removed as requested
                 ],
               ),
             ),
@@ -160,9 +166,11 @@ class _BankAmountPageState extends State<BankAmountPage> {
 
           // CUSTOM KEYBOARD
           Container(
-            padding: const EdgeInsets.all(3), // 5. Spacing around keyboard
-            color: const Color(0xFFE0E0E0),
-            height: 300,
+            padding: const EdgeInsets.all(3),
+            // 2. Keyboard spacing color blends with full container
+            color: themeBgColor, 
+            // 2. Keyboard height shortened (300 -> 280)
+            height: 280,
             child: Row(
               children: [
                 Expanded(
@@ -172,7 +180,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       _row(["1", "2", "3"]),
                       _row(["4", "5", "6"]),
                       _row(["7", "8", "9"]),
-                      // 5. Wide 0 button below 7 & 8
                       Expanded(
                         child: Row(
                           children: [
@@ -184,7 +191,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
                     ],
                   ),
                 ),
-                // 5. Backspace above Transfer
                 Expanded(
                   flex: 1,
                   child: Column(
@@ -192,13 +198,14 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       _buildKey("back", isAction: true),
                       Expanded(
                         flex: 3,
-                        child: Material(
-                          color: const Color(0xFF8DC73F).withOpacity(0.4),
-                          child: InkWell(
-                            onTap: () => print("Transferring $_amount"),
-                            child: const Center(
-                              child: RotatedBox(
-                                quarterTurns: 0,
+                        child: Container(
+                          margin: const EdgeInsets.all(3),
+                          child: Material(
+                            color: const Color(0xFF8DC73F).withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(4),
+                            child: InkWell(
+                              onTap: () => print("Transferring $_amount"),
+                              child: const Center(
                                 child: Text("Transfer",
                                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                               ),
@@ -229,7 +236,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
     return Expanded(
       flex: flex,
       child: Container(
-        margin: const EdgeInsets.all(3), // 5. Spacing between buttons
+        margin: const EdgeInsets.all(3),
         child: Material(
           color: Colors.white,
           borderRadius: BorderRadius.circular(4),
@@ -238,7 +245,8 @@ class _BankAmountPageState extends State<BankAmountPage> {
             child: Center(
               child: label == "back"
                   ? const Icon(Icons.backspace_outlined, color: Colors.black54)
-                  : Text(label, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w400)),
+                  // 2. Numbers are now Bold
+                  : Text(label, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             ),
           ),
         ),
