@@ -19,8 +19,8 @@ class UserIntroduction extends StatelessWidget {
           'Selam, MILLION',
           style: TextStyle(
             color: Colors.white70,
-            fontSize: 19,
-            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          
           ),
         ),
       ],
