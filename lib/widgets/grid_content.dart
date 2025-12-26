@@ -349,7 +349,7 @@ Stack(
       ),
     ),
   ],
-)
+),
 
   Image(image: AssetImage('images/Zemen.png'),width: 35,),
   Image(image: AssetImage('images/dashen.png'), width: 20),
