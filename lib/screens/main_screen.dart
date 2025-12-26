@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/screens/home_screen.dart';
+import 'package:telebirrbybr7/screens/engage_page.dart'; // Ensure the path is correct
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -11,18 +12,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final tabs = const [
-    HomeScreen(),
-    Center(
+  // 1. Removed 'const' to allow for dynamic Page injection
+  final List<Widget> tabs = [
+    const HomeScreen(),
+    const Center(
       child: Text('Payment'),
     ),
-    Center(
+    const Center(
       child: Text('Apps'),
     ),
-    Center(
-      child: Text('Engage'),
-    ),
-    Center(
+    const EngagePage(), // 2. Your actual Engage file integrated here
+    const Center(
       child: Text('Account'),
     ),
   ];
@@ -63,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             BottomNavigationBarItem(
               label: 'Engage',
-              // This provides the rounded, non-filled speech bubble look
+              // The rounded, outlined speech bubble you requested
               icon: Icon(Icons.chat_bubble_outline_rounded), 
             ),
             BottomNavigationBarItem(
