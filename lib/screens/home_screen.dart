@@ -75,27 +75,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Transform.translate(
-            offset: const Offset(0, -30),
+            offset: const Offset(0, -20),
             child: Column(
               children: const [
                 BalanceInfo(
                   label: 'Balance (ETB) ',
-                  balanceFontSize: 30,
-                  labelFontSize: 25,
+                  balanceFontSize: 37,
+                  labelFontSize: 18,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     BalanceInfo(
                       label: 'Endekise (ETB) ',
-                      balanceFontSize: 13,
-                      labelFontSize: 13,
+                      balanceFontSize: 21,
+                      labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     BalanceInfo(
                       label: 'Reward (ETB) ',
-                      balanceFontSize: 13,
-                      labelFontSize: 13,
+                      balanceFontSize: 21,
+                      labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                   ],
