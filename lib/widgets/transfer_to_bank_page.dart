@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 
 class TransferToBankPage extends StatefulWidget {
   const TransferToBankPage({super.key});
@@ -9,12 +11,41 @@ class TransferToBankPage extends StatefulWidget {
 }
 
 class _TransferToBankPageState extends State<TransferToBankPage> {
+  // 1. Controllers and State Variables
   final TextEditingController _accountController = TextEditingController();
-  
-  // Variables to hold the selected bank state
+  int _currentIndex = 0;
+  bool _isButtonEnabled = false;
   String selectedBankName = 'Please Choose';
-  String? selectedBankIcon;
 
+  final List<String> sliderImages = [
+    'images/Banner1.jpg',
+    'images/Banner2.jpg',
+    'images/Banner3.jpg',
+    'images/Banner4.jpg',
+    'images/Banner5.jpg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Listener to enable button and change color when user types
+    _accountController.addListener(_checkInput);
+  }
+
+  void _checkInput() {
+    setState(() {
+      // Button turns blue/active if there is any text in the account field
+      _isButtonEnabled = _accountController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _accountController.dispose();
+    super.dispose();
+  }
+
+  // 2. The Bank Selection Overlay Logic
   void _showBankSelection(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -30,9 +61,19 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
           child: Column(
             children: [
               const SizedBox(height: 12),
-              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
               const SizedBox(height: 15),
-              const Text("Choose Bank", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text(
+                "Choose Bank",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 15),
               
               // Search Bar
@@ -45,11 +86,13 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: EdgeInsets.zero,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
-              
               const SizedBox(height: 15),
 
               // Bank Grid
@@ -86,19 +129,24 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     return InkWell(
       onTap: () {
         setState(() {
-          selectedBankName = name;
-          selectedBankIcon = imagePath;
+          selectedBankName = name; // Update only the text name
         });
-        Navigator.pop(context); // Close the sheet
+        Navigator.pop(context);
       },
       child: Container(
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, width: 45, height: 45, errorBuilder: (c, e, s) {
-              return const Icon(Icons.account_balance, color: Colors.blueGrey, size: 30);
-            }),
+            Image.asset(
+              imagePath, 
+              width: 45, 
+              height: 45, 
+              errorBuilder: (c, e, s) => const Icon(Icons.account_balance, size: 30),
+            ),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -129,43 +177,70 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
         ),
         title: Text(
           'Transfer to Bank',
-          style: GoogleFonts.roboto(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+          style: GoogleFonts.roboto(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Promotional Banner Area
-            Container(
-              margin: const EdgeInsets.all(16.0),
-              width: double.infinity,
-              height: 140,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: const DecorationImage(
-                  image: AssetImage('images/Banner1.jpg'), 
-                  fit: BoxFit.cover,
+            // 3. Sliding Banners logic
+            const SizedBox(height: 10),
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 39 / 13, // Aspect ratio tailored for banners
+                viewportFraction: 0.9,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+              ),
+              items: sliderImages.map((imagePath) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image_not_supported),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            DotsIndicator(
+              dotsCount: sliderImages.length,
+              position: _currentIndex,
+              decorator: DotsDecorator(
+                activeColor: Colors.green,
+                size: const Size.square(8.0),
+                activeSize: const Size(18.0, 8.0),
+                activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
                 ),
               ),
             ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.circle, size: 8, color: Colors.green),
-                SizedBox(width: 5),
-                Icon(Icons.circle_outlined, size: 8, color: Colors.green),
-                SizedBox(width: 5),
-                Icon(Icons.circle_outlined, size: 8, color: Colors.green),
-              ],
-            ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
-            // 2. Input Form Card
+            // 4. Input Form Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0),
               padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -184,21 +259,14 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              if (selectedBankIcon != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Image.asset(selectedBankIcon!, width: 24, height: 24),
-                                ),
-                              Text(
-                                selectedBankName,
-                                style: TextStyle(
-                                  color: selectedBankName == 'Please Choose' ? Colors.grey.shade600 : Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            selectedBankName,
+                            style: TextStyle(
+                              color: selectedBankName == 'Please Choose' 
+                                  ? Colors.grey.shade600 
+                                  : Colors.black,
+                              fontSize: 16,
+                            ),
                           ),
                           Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
                         ],
@@ -211,27 +279,44 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
                   const SizedBox(height: 8),
                   TextField(
                     controller: _accountController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: 'Enter Account Number',
                       hintStyle: TextStyle(color: Colors.grey.shade400),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(8)),
-                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.green), borderRadius: BorderRadius.circular(8)),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey.shade300), 
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.green), 
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 25),
+
+                  // 5. NEXT BUTTON logic
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _isButtonEnabled ? () {} : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade300,
+                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1), // Blue color
+                        disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25), // Faded blue when disabled
                         foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        disabledForegroundColor: Colors.white,
+                        elevation: _isButtonEnabled ? 2 : 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                      child: const Text('Next', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: const Text(
+                        'Next',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ],
@@ -239,12 +324,17 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             ),
 
             const SizedBox(height: 25),
+
+            // Recent Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Recent', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Recent',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   Icon(Icons.delete_outline, color: Colors.grey.shade500, size: 20),
                 ],
               ),
@@ -252,7 +342,10 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             const SizedBox(height: 10),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 children: [
                   _buildRecentItem('Mrs Wagaye Kasa Alemu', 'Commercial Bank of Ethiopia (100072931166)', 'images/cbe.png', isLast: false),
@@ -269,7 +362,11 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     );
   }
 
-  TextStyle _labelStyle() => TextStyle(color: Colors.grey.shade600, fontSize: 14, fontWeight: FontWeight.w500);
+  TextStyle _labelStyle() => TextStyle(
+    color: Colors.grey.shade600, 
+    fontSize: 14, 
+    fontWeight: FontWeight.w500,
+  );
 
   Widget _buildRecentItem(String name, String details, String imagePath, {required bool isLast}) {
     return Column(
