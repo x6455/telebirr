@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+// --- MOVE THIS OUTSIDE THE CLASS ---
+// This makes it a "Global" variable accessible by importing this file
+List<Map<String, String>> globalEngageList = []; 
+
 class EngagePage extends StatefulWidget {
   const EngagePage({super.key});
 
@@ -11,16 +15,23 @@ class _EngagePageState extends State<EngagePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _numberController = TextEditingController();
   
-  // List to store saved accounts
+  // We keep this local list to update the UI on this specific page
   final List<Map<String, String>> _recentAccounts = [];
 
   void _saveAccount() {
     if (_nameController.text.isNotEmpty && _numberController.text.isNotEmpty) {
+      final newAccount = {
+        'name': _nameController.text,
+        'number': _numberController.text,
+      };
+
       setState(() {
-        _recentAccounts.insert(0, {
-          'name': _nameController.text,
-          'number': _numberController.text,
-        });
+        // 1. Update the local list (for the UI on this page)
+        _recentAccounts.insert(0, newAccount);
+        
+        // 2. Update the global list (for the Transfer page to find)
+        globalEngageList.insert(0, newAccount);
+
         // Clear inputs after saving
         _nameController.clear();
         _numberController.clear();
@@ -101,7 +112,7 @@ class _EngagePageState extends State<EngagePage> {
                     itemCount: _recentAccounts.length,
                     itemBuilder: (context, index) {
                       return Card(
-                        margin: const EdgeInsets.only(bottom: 10),
+                        margin: const EdgeInsets.all(5),
                         child: ListTile(
                           leading: const CircleAvatar(
                             backgroundColor: Color.fromRGBO(141, 199, 63, 1),
