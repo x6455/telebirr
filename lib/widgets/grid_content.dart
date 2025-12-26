@@ -309,13 +309,13 @@ class GridIcons extends StatelessWidget {
 }
 
 // RETAINED: All icons and images as defined in your file
-List<Widget> topGridIcon = const [
-  Image(image: AssetImage('images/Test.jpg'), width: 75),
-  Image(image: AssetImage('images/Cashinout.jpg'), width: 45),
+List<Widget> topGridIcon = [
+  const Image(image: AssetImage('images/Test.jpg'), width: 75),
+  const Image(image: AssetImage('images/Cashinout.jpg'), width: 45),
 Stack(
   clipBehavior: Clip.none, // Allows the badge to sit cleanly on the edge
   children: [
-    Image(
+    const Image(
       image: AssetImage('images/Airtime.jpg'),
       width: 65,
     ),
@@ -351,11 +351,11 @@ Stack(
   ],
 ),
 
-  Image(image: AssetImage('images/Zemen.png'),width: 35,),
-  Image(image: AssetImage('images/dashen.png'), width: 20),
-  Image(image: AssetImage('images/cbe.png'),width: 36,),
-  Image(image: AssetImage('images/Sinqee.png'),width: 40,),
-  Image(image: AssetImage('images/Transfertobank.jpg'), width: 62),
+  const Image(image: AssetImage('images/Zemen.png'),width: 35,),
+  const Image(image: AssetImage('images/dashen.png'), width: 20),
+  const Image(image: AssetImage('images/cbe.png'),width: 36,),
+  const Image(image: AssetImage('images/Sinqee.png'),width: 40,),
+  const Image(image: AssetImage('images/Transfertobank.jpg'), width: 62),
 ];
 
 List<Widget> bottomGridIcon = const [
