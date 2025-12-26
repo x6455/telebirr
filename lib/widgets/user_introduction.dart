@@ -13,12 +13,14 @@ class UserIntroduction extends StatelessWidget {
           Icons.person,
           color: Colors.white,
           size: 37,
+           
         ),
         Text(
-          'Selam, DANIEL',
+          'Selam, MILLION',
           style: TextStyle(
             color: Colors.white70,
-            fontSize: 15,
+            fontSize: 19,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
