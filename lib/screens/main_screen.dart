@@ -13,10 +13,18 @@ class _MainScreenState extends State<MainScreen> {
 
   final tabs = const [
     HomeScreen(),
-    Center(child: Text('Payment')),
-    Center(child: Text('Apps')),
-    Center(child: Text('Engage')),
-    Center(child: Text('Account')),
+    Center(
+      child: Text('Payment'),
+    ),
+    Center(
+      child: Text('Apps'),
+    ),
+    Center(
+      child: Text('Engage'),
+    ),
+    Center(
+      child: Text('Account'),
+    ),
   ];
 
   @override
@@ -40,27 +48,27 @@ class _MainScreenState extends State<MainScreen> {
           onTap: (value) {
             setState(() => _currentIndex = value);
           },
-          // Removed 'const' from the list because AssetImages are dynamic
-          items: [
+          items: const [
             BottomNavigationBarItem(
               label: 'Home',
-              icon: ImageIcon(AssetImage('images/home_icon.png'), size: 24),
+              icon: Icon(Icons.home_outlined),
             ),
             BottomNavigationBarItem(
               label: 'Payment',
-              icon: ImageIcon(AssetImage('images/payment_icon.png'), size: 24),
+              icon: Icon(Icons.payment),
             ),
             BottomNavigationBarItem(
               label: 'Apps',
-              icon: ImageIcon(AssetImage('images/apps_icon.png'), size: 24),
+              icon: Icon(Icons.apps),
             ),
             BottomNavigationBarItem(
               label: 'Engage',
-              icon: ImageIcon(AssetImage('images/engage_icon.png'), size: 24),
+              // This provides the rounded, non-filled speech bubble look
+              icon: Icon(Icons.chat_bubble_outline_rounded), 
             ),
             BottomNavigationBarItem(
               label: 'Account',
-              icon: ImageIcon(AssetImage('images/account_icon.png'), size: 24),
+              icon: Icon(Icons.person_2_outlined),
             ),
           ],
         ),
