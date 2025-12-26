@@ -50,25 +50,40 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
   // 2. NEW LOGIC: HANDLE NEXT BUTTON PRESS
   void _handleNextProcess() async {
     // A. Show Loading Dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(
-        child: Container(
-          width: 80,
-          height: 80,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+    // A. Show Loading Dialog with GIF
+showDialog(
+  context: context,
+  barrierDismissible: false,
+  barrierColor: Colors.black.withOpacity(0.5), // Optional: dim background
+  builder: (context) => Center(
+    child: Container(
+      width: 100, // Adjust size as needed
+      height: 100,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 2,
           ),
-          child: const CircularProgressIndicator(
-            color: Color.fromRGBO(141, 199, 63, 1), // Telebirr Green
-            strokeWidth: 3,
+        ],
+      ),
+      child: Center(
+        child: Image.asset(
+          'images/loading.gif',
+          width: 60, // Adjust GIF size
+          height: 60,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) => const CircularProgressIndicator(
+            color: Color.fromRGBO(141, 199, 63, 1),
           ),
         ),
       ),
-    );
+    ),
+  ),
+);
 
     // B. Wait for 3 seconds
     await Future.delayed(const Duration(seconds: 3));
@@ -100,7 +115,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
         SnackBar(
           content: const Text('query not found'),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Colors.black54,
           margin: EdgeInsets.only(
             bottom: MediaQuery.of(context).size.height * 0.4, // Floating in middle
             left: 50,
@@ -255,7 +270,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
-                aspectRatio: 39 / 13,
+                aspectRatio: 39 / 9,
                 viewportFraction: 0.9,
                 onPageChanged: (index, reason) {
                   setState(() {
