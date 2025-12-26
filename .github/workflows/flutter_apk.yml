@@ -10,50 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.19.0'  # Specify version
+          flutter-version: '3.19.0'
 
-      - name: Prepare Project
-        run: |
-          # Read original package name from pubspec.yaml
-          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          echo "Package name: $PACKAGE_NAME"
-          
-          # Create fresh project with correct name
-          flutter create --org com.example --project-name $PACKAGE_NAME .
-          
-          # Copy your actual source files
-          cp -rf lib/* lib/ 2>/dev/null || echo "lib/ already has files"
-          cp -rf images/* images/ 2>/dev/null || echo "No images to copy"
-          cp -f pubspec.yaml pubspec.yaml.backup 2>/dev/null || true
+      - name: Flutter Doctor
+        run: flutter doctor -v
 
-      - name: Fix Imports in main.dart
-        run: |
-          # Read package name from pubspec.yaml
-          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          
-          # Update imports in main.dart to use correct package name
-          sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" lib/main.dart
-          
-          # Also check other files
-          find lib -name "*.dart" -type f | while read file; do
-            sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
-          done
+      - name: Clean project
+        run: flutter clean
 
-      - name: Get Dependencies
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build release APK
         run: flutter build apk --release
 
-      - name: Upload APK Artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-release-apk
+          name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
