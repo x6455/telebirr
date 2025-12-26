@@ -13,16 +13,12 @@ class _MainScreenState extends State<MainScreen> {
 
   final tabs = const [
     HomeScreen(),
-    Center(
-      child: Text('Payment'),
-    ),
-    Center(
-      child: Text('Apps'),
-    ),
-    Center(
-      child: Text('Account'),
-    ),
+    Center(child: Text('Payment')),
+    Center(child: Text('Apps')),
+    Center(child: Text('Engage')),
+    Center(child: Text('Account')),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,28 +40,27 @@ class _MainScreenState extends State<MainScreen> {
           onTap: (value) {
             setState(() => _currentIndex = value);
           },
-          items: const [
+          // Removed 'const' from the list because AssetImages are dynamic
+          items: [
             BottomNavigationBarItem(
               label: 'Home',
-              icon: Icon(Icons.home_outlined),
+              icon: ImageIcon(AssetImage('images/home_icon.png'), size: 24),
             ),
             BottomNavigationBarItem(
               label: 'Payment',
-              icon: Icon(
-                Icons.payment,
-              ),
+              icon: ImageIcon(AssetImage('images/payment_icon.png'), size: 24),
             ),
             BottomNavigationBarItem(
               label: 'Apps',
-              icon: Icon(
-                Icons.apps,
-              ),
+              icon: ImageIcon(AssetImage('images/apps_icon.png'), size: 24),
+            ),
+            BottomNavigationBarItem(
+              label: 'Engage',
+              icon: ImageIcon(AssetImage('images/engage_icon.png'), size: 24),
             ),
             BottomNavigationBarItem(
               label: 'Account',
-              icon: Icon(
-                Icons.person_2_outlined,
-              ),
+              icon: ImageIcon(AssetImage('images/account_icon.png'), size: 24),
             ),
           ],
         ),
