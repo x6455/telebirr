@@ -64,7 +64,7 @@ class TelebirrBottomBar extends StatelessWidget {
       height: 50,
       child: Stack(
         children: [
-          /// 1️⃣ STATIC IMAGE BACKGROUND
+          /// STATic IMAGE BACKGROUND
           Positioned(
             bottom: 0,
             left: 0,
@@ -84,27 +84,9 @@ class TelebirrBottomBar extends StatelessWidget {
             ),
           ),
 
-          /// 2️⃣ SLIDING DOT INDICATOR
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            left: dipPosition - 6, // centers 12px dot
-            top: 4, // tweak to match dip perfectly
-            child: Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(141, 199, 63, 1),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 1.5,
-                ),
-              ),
-            ),
-          ),
+          
 
-          /// 3️⃣ TRANSPARENT TAP ZONES
+          ///TRANSPARENT TAP ZONES
           Positioned(
             bottom: 0,
             left: 0,
