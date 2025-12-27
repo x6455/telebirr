@@ -246,7 +246,7 @@ class GridContent extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.black,
                       overflow: TextOverflow.ellipsis,
-                      fontSize: 12,
+                      fontSize: 14,
                       letterSpacing: 0.5,
                       fontWeight: FontWeight.w500,
                     ),
