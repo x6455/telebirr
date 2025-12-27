@@ -307,28 +307,32 @@ Padding(
   dotsCount: sliderImages.length,
   position: _currentIndex,
   decorator: DotsDecorator(
-    // 1. Active dot: Solid green
-    activeColor: const Color.fromRGBO(141, 199, 63, 1),
-    activeSize: const Size(7.0, 7.0), // Smaller size
+    // --- ACTIVE DOT (The "Dot inside a hole") ---
+    activeColor: const Color.fromRGBO(141, 199, 63, 1), 
+    activeSize: const Size(12.0, 12.0), // Make this slightly larger than the inactive size
     activeShape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5.0),
+      borderRadius: BorderRadius.circular(6.0),
+      // This border matches the background color to create the "gap"
+      side: const BorderSide(
+        color: Color(0xFFF5F5F5), // Your background color
+        width: 2.5, // The thickness of the "hole" gap
+      ),
     ),
-    
-    // 2. Inactive dots: Hollow with green border
-    size: const Size(7.0, 7.0), // Smaller size
-    color: Colors.transparent, // Makes the center hollow/transparent
+
+    // --- INACTIVE DOTS (The "Hole") ---
+    size: const Size(9.0, 9.0),
+    color: Colors.transparent, // Hollow center
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5.0),
       side: const BorderSide(
-        color: Color.fromRGBO(141, 199, 63, 0.6), // Green outline
+        color: Color.fromRGBO(141, 199, 63, 0.4), // Light green ring
         width: 1.0,
       ),
     ),
-    
-    // 3. Spacing: Closer together
-    spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+    spacing: const EdgeInsets.symmetric(horizontal: 4.0),
   ),
 ),
+
 
 ),
 
