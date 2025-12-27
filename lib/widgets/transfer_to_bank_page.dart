@@ -6,6 +6,70 @@ import 'package:dots_indicator/dots_indicator.dart';
 // 1. IMPORTS ADDED HERE
 import 'package:telebirrbybr7/screens/engage_page.dart'; // To access globalEngageList
 import 'package:telebirrbybr7/screens/bank_amount_page.dart'; // To navigate to next screen
+import 'dart:math' as math;
+
+class TelebirrLoader extends StatefulWidget {
+  const TelebirrLoader({super.key});
+
+  @override
+  State<TelebirrLoader> createState() => _TelebirrLoaderState();
+}
+
+class _TelebirrLoaderState extends State<TelebirrLoader>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000), // Speed of rotation
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: SizedBox(
+        width: 60,
+        height: 60,
+        child: Stack(
+          alignment: Alignment.center,
+          children: List.generate(8, (index) {
+            // Calculate position of each dot in a 360-degree circle
+            double angle = (index * 45) * (math.pi / 180);
+            double radius = 22.0; // Distance from center
+
+            // This creates the "trailing size" effect:
+            // Dots get progressively larger from index 0 to 7
+            double dotSize = 3.0 + (index * 1.5); 
+
+            return Positioned(
+              left: 30 + radius * math.cos(angle) - (dotSize / 2),
+              top: 30 + radius * math.sin(angle) - (dotSize / 2),
+              child: Container(
+                width: dotSize,
+                height: dotSize,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(141, 199, 63, 1), // Telebirr Green
+                  shape: BoxShape.circle,
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
 
 class TransferToBankPage extends StatefulWidget {
   const TransferToBankPage({super.key});
@@ -54,36 +118,21 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
 showDialog(
   context: context,
   barrierDismissible: false,
-  barrierColor: Colors.black.withOpacity(0.5), // Optional: dim background
   builder: (context) => Center(
     child: Container(
-      width: 100, // Adjust size as needed
-      height: 100,
+      width: 110,
+      height: 110,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
+        borderRadius: BorderRadius.circular(15),
       ),
-      child: Center(
-        child: Image.asset(
-          'images/loading.gif',
-          width: 60, // Adjust GIF size
-          height: 60,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => const CircularProgressIndicator(
-            color: Color.fromRGBO(141, 199, 63, 1),
-          ),
-        ),
+      child: const Center(
+        child: TelebirrLoader(), // The new code-based animation
       ),
     ),
   ),
 );
+
 
     // B. Wait for 3 seconds
     await Future.delayed(const Duration(seconds: 3));
@@ -316,7 +365,7 @@ Padding(
       // This border matches the background color to create the "gap"
       side: const BorderSide(
         color: Color(0xFFF5F5F5), // Your background color
-        width: 2.5, // The thickness of the "hole" gap
+        width: 1.7, // The thickness of the "hole" gap
       ),
     ),
 
