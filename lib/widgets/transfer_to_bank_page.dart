@@ -194,6 +194,7 @@ showDialog(
                     _buildBankItem("Cooperative Bank of Oromia", "images/coop.png"),
                     _buildBankItem("Dashen Bank", "images/dashen.png"),
                     _buildBankItem("Global Bank Ethiopia", "images/global.png"),
+                    _buildBankItem("Temo Bank", "images/loading.gif"),
                   ],
                 ),
               ),
@@ -315,7 +316,7 @@ Padding(
       // This border matches the background color to create the "gap"
       side: const BorderSide(
         color: Color(0xFFF5F5F5), // Your background color
-        width: 0.5, // The thickness of the "hole" gap
+        width: 2.5, // The thickness of the "hole" gap
       ),
     ),
 
@@ -326,7 +327,7 @@ Padding(
       borderRadius: BorderRadius.circular(5.0),
       side: const BorderSide(
         color: Color.fromRGBO(141, 199, 63, 0.4), // Light green ring
-        width: 1.5,
+        width: 2.0,
       ),
     ),
     spacing: const EdgeInsets.symmetric(horizontal: 4.0),
