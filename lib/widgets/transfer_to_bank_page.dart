@@ -309,13 +309,13 @@ Padding(
   decorator: DotsDecorator(
     // --- ACTIVE DOT (The "Dot inside a hole") ---
     activeColor: const Color.fromRGBO(141, 199, 63, 1), 
-    activeSize: const Size(12.0, 12.0), // Make this slightly larger than the inactive size
+    activeSize: const Size(9.0, 9.0), // Make this slightly larger than the inactive size
     activeShape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(6.0),
       // This border matches the background color to create the "gap"
       side: const BorderSide(
         color: Color(0xFFF5F5F5), // Your background color
-        width: 1.7, // The thickness of the "hole" gap
+        width: 0.5, // The thickness of the "hole" gap
       ),
     ),
 
