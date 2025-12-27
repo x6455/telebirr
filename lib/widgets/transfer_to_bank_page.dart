@@ -25,11 +25,9 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800), // Total cycle time
+      duration: const Duration(milliseconds: 1800), 
     )..repeat();
 
-    // The animation runs for the first 70% of the duration, 
-    // then "pauses" for the remaining 30%.
     _rotationAnimation = CurvedAnimation(
       parent: _controller,
       curve: const Interval(0.0, 0.7, curve: Curves.easeInOutCubic),
@@ -47,30 +45,28 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     return RotationTransition(
       turns: _rotationAnimation,
       child: SizedBox(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         child: Stack(
           alignment: Alignment.center,
           children: List.generate(8, (index) {
-            // Adjusting the starting angle so the largest dot (index 7) 
-            // ends up at the bottom (math.pi / 2) when rotation is at 0.
             double angle = (index * 45 - 90) * (math.pi / 180);
             double radius = 22.0;
-
-            // Graduated sizes matching your GIF
             double dotSize = 2.5 + (index * 1.6); 
 
             return Positioned(
               left: 30 + radius * math.cos(angle) - (dotSize / 2),
               top: 30 + radius * math.sin(angle) - (dotSize / 2),
-              child: Container(
-                width: dotSize,
-                height: dotSize,
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(141, 199, 63, 1),
-                  // Added slight opacity trail for realism
-                  opacity: 0.3 + (index * 0.1), 
-                  shape: BoxShape.circle,
+              // Use Opacity widget instead of a parameter in BoxDecoration
+              child: Opacity(
+                opacity: (0.3 + (index * 0.1)).clamp(0.0, 1.0),
+                child: Container(
+                  width: dotSize,
+                  height: dotSize,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(141, 199, 63, 1),
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             );
@@ -80,6 +76,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     );
   }
 }
+
 
 
 class TransferToBankPage extends StatefulWidget {
