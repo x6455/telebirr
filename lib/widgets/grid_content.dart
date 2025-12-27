@@ -246,7 +246,7 @@ class GridContent extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.black,
                       overflow: TextOverflow.ellipsis,
-                      fontSize: 14,
+                      fontSize: 13,
                       letterSpacing: 0.5,
                       fontWeight: FontWeight.w500,
                     ),
@@ -321,7 +321,7 @@ Stack(
     ),
     Positioned(
       top: -14,
-      left: -9,
+      left: -12,
       // Removed 'right: 0' so the badge only grows as wide as the text
       child: Container(
         decoration: const BoxDecoration(
