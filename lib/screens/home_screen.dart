@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           Transform.translate(
-            offset: const Offset(0, -4),
+            offset: const Offset(0, -1),
             child: Column(
               children: const [
                 BalanceInfo(
@@ -88,13 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     BalanceInfo(
                       label: 'Endekise (ETB) ',
-                      balanceFontSize: 8,
+                      balanceFontSize: 11,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     BalanceInfo(
                       label: 'Reward (ETB) ',
-                      balanceFontSize: 8,
+                      balanceFontSize: 11,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
