@@ -61,7 +61,7 @@ class TelebirrBottomBar extends StatelessWidget {
         (itemWidth * currentIndex) + (itemWidth / 2);
 
     return SizedBox(
-      height: 50,
+      height: 150,
       child: Stack(
         children: [
           /// STATic IMAGE BACKGROUND
