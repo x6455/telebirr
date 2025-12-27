@@ -32,7 +32,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final String balance = showBalance ? '163,874.78' : '******';
+    final String balance = showBalance ? '163,874.78' : '✱✱✱✱✱✱';
 
     return Column(
   mainAxisSize: MainAxisSize.min,
