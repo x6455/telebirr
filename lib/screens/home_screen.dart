@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: const [
                 BalanceInfo(
                   label: 'Balance (ETB) ',
-                  balanceFontSize: 24,
+                  balanceFontSize: 22,
                   labelFontSize: 18,
                 ),
                 Row(
@@ -88,13 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     BalanceInfo(
                       label: 'Endekise (ETB) ',
-                      balanceFontSize: 18,
+                      balanceFontSize: 8,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                     BalanceInfo(
                       label: 'Reward (ETB) ',
-                      balanceFontSize: 18,
+                      balanceFontSize: 8,
                       labelFontSize: 18,
                       crossAxisAlignment: CrossAxisAlignment.start,
                     ),
@@ -203,42 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(
-          bottom: 10.0,
-          right: 30.0,
-        ),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.75,
-          child: MaterialButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            onPressed: () {},
-            color: const Color.fromRGBO(2, 135, 208, 1),
-            textColor: Colors.white,
-            child: const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.qr_code_scanner_rounded,
-                    size: 24,
-                  ),
-                  Text(
-                    '  Scan QR',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+      
+            
+   
     );
   }
 }
