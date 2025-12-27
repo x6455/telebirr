@@ -266,48 +266,63 @@ showDialog(
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 10),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 39 / 9,
-                viewportFraction: 0.9,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-              items: sliderImages.map((imagePath) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.image_not_supported),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            DotsIndicator(
-              dotsCount: sliderImages.length,
-              position: _currentIndex,
-              decorator: DotsDecorator(
-                activeColor: Colors.green,
-                size: const Size.square(8.0),
-                activeSize: const Size(18.0, 8.0),
-                activeShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-              ),
-            ),
+            // ... inside your build method, replace the existing CarouselSlider and DotsIndicator with this:
+
+const SizedBox(height: 10),
+CarouselSlider(
+  options: CarouselOptions(
+    autoPlay: true,
+    // Adjusting aspect ratio to make it a slim banner like the image
+    aspectRatio: 3.5, 
+    viewportFraction: 0.92,
+    onPageChanged: (index, reason) {
+      setState(() {
+        _currentIndex = index;
+      });
+    },
+  ),
+  items: sliderImages.map((imagePath) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder: (context, error, stackTrace) => Container(
+            color: Colors.grey[300],
+            child: const Icon(Icons.image_not_supported),
+          ),
+        ),
+      ),
+    );
+  }).toList(),
+),
+
+// --- UPDATED DOTS INDICATOR ---
+Padding(
+  padding: const EdgeInsets.only(top: 8.0),
+  child: DotsIndicator(
+    dotsCount: sliderImages.length,
+    position: _currentIndex,
+    decorator: DotsDecorator(
+      // The active dot: Green and slightly larger
+      activeColor: const Color.fromRGBO(141, 199, 63, 1),
+      activeSize: const Size(10.0, 10.0),
+      // The inactive dots: Green outline with transparent center (hollow)
+      size: const Size(10.0, 10.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+        side: const BorderSide(color: Color.fromRGBO(141, 199, 63, 0.5), width: 1.5),
+      ),
+      activeShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      spacing: const EdgeInsets.all(4.0),
+    ),
+  ),
+),
 
             const SizedBox(height: 15),
 
