@@ -259,7 +259,7 @@ class ImageSliderIndicator extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8.0),
       child: DotsIndicator(
         dotsCount: carouselImages.length,
-        position: _currentIndex.toDouble(),
+        position: _currentIndex,
         decorator: DotsDecorator(
           // ACTIVE DOT (solid dot inside a hole)
           activeColor: const Color.fromRGBO(141, 199, 63, 1),
