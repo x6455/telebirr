@@ -72,7 +72,7 @@ class TelebirrBottomBar extends StatelessWidget {
             child: Image.asset(
               'images/bottom_bar.jpg', // <-- your image
               width: width,
-              height: 150,
+              height: 140,
               fit: BoxFit.fill,
               errorBuilder: (context, error, stackTrace) {
                 // Fallback if image doesn't exist - keep the original green color
