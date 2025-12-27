@@ -35,46 +35,54 @@ class _BalanceInfoState extends State<BalanceInfo> {
     final String balance = showBalance ? '163,874.78' : '******';
 
     return Column(
-      crossAxisAlignment: widget.crossAxisAlignment,
+  mainAxisSize: MainAxisSize.min,
+  mainAxisAlignment: MainAxisAlignment.center, // ⭐ KEY
+  crossAxisAlignment: CrossAxisAlignment.center, // ⭐ KEY
+  children: [
+    Row(
+      mainAxisSize: MainAxisSize.min, // ⭐ IMPORTANT
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              widget.label,
-              style: TextStyle(
-                color: const Color.fromRGBO(247, 255, 234, 1),
-                fontSize: widget.labelFontSize,
-                fontWeight: widget.isLabelBold
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-              ),
-            ),
-            const SizedBox(width: 4),
-            InkWell(
-              onTap: toggleBalanceVisibility,
-              child: Icon(
-                showBalance
-                    ? Icons.visibility_off
-                    : Icons.remove_red_eye_sharp,
-                size: 13,
-                color: const Color.fromRGBO(247, 255, 234, 1),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 0),
         Text(
-          balance,
-          style: GoogleFonts.roboto(
-            textStyle: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: widget.balanceFontSize,
-            ),
+          widget.label,
+          style: TextStyle(
+            color: const Color.fromRGBO(247, 255, 234, 1),
+            fontSize: widget.labelFontSize,
+            fontWeight: widget.isLabelBold
+                ? FontWeight.bold
+                : FontWeight.normal,
+          ),
+        ),
+        const SizedBox(width: 4),
+        InkWell(
+          onTap: toggleBalanceVisibility,
+          child: Icon(
+            showBalance
+                ? Icons.visibility_off
+                : Icons.remove_red_eye_sharp,
+            size: 13,
+            color: const Color.fromRGBO(247, 255, 234, 1),
           ),
         ),
       ],
-    );
+    ),
+
+    const SizedBox(height: 2), // small optical spacing
+
+    Center( // ⭐ ensures true horizontal centering
+      child: Text(
+        balance,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.roboto(
+          textStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: widget.balanceFontSize,
+          ),
+        ),
+      ),
+    ),
+  ],
+);
   }
 }
