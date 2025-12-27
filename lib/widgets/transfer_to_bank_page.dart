@@ -8,8 +8,7 @@ import 'package:telebirrbybr7/screens/engage_page.dart'; // To access globalEnga
 import 'package:telebirrbybr7/screens/bank_amount_page.dart'; // To navigate to next screen
 import 'dart:math' as math;
 
-class TelebirrLoader extends StatefulWidget {
-  const TelebirrLoader({super.key});
+const TelebirrLoader({super.key});
 
   @override
   State<TelebirrLoader> createState() => _TelebirrLoaderState();
@@ -25,7 +24,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800), 
+      duration: const Duration(milliseconds: 1500), 
     )..repeat();
 
     _rotationAnimation = CurvedAnimation(
@@ -57,16 +56,12 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
             return Positioned(
               left: 30 + radius * math.cos(angle) - (dotSize / 2),
               top: 30 + radius * math.sin(angle) - (dotSize / 2),
-              // Use Opacity widget instead of a parameter in BoxDecoration
-              child: Opacity(
-                opacity: (0.3 + (index * 0.1)).clamp(0.0, 1.0),
-                child: Container(
-                  width: dotSize,
-                  height: dotSize,
-                  decoration: const BoxDecoration(
-                    color: Color.fromRGBO(141, 199, 63, 1),
-                    shape: BoxShape.circle,
-                  ),
+              child: Container(
+                width: dotSize,
+                height: dotSize,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(141, 199, 63, 1),
+                  shape: BoxShape.circle,
                 ),
               ),
             );
@@ -76,7 +71,6 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     );
   }
 }
-
 
 
 class TransferToBankPage extends StatefulWidget {
