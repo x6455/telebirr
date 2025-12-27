@@ -315,7 +315,7 @@ Padding(
       // This border matches the background color to create the "gap"
       side: const BorderSide(
         color: Color(0xFFF5F5F5), // Your background color
-        width: 2.5, // The thickness of the "hole" gap
+        width: 1.7, // The thickness of the "hole" gap
       ),
     ),
 
@@ -326,7 +326,7 @@ Padding(
       borderRadius: BorderRadius.circular(5.0),
       side: const BorderSide(
         color: Color.fromRGBO(141, 199, 63, 0.4), // Light green ring
-        width: 1.0,
+        width: 1.5,
       ),
     ),
     spacing: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -356,7 +356,7 @@ Padding(
                   GestureDetector(
                     onTap: () => _showBankSelection(context),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
@@ -388,7 +388,7 @@ Padding(
                     decoration: InputDecoration(
                       hintText: 'Enter Account Number',
                       hintStyle: TextStyle(color: Colors.grey.shade400),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.grey.shade300), 
                         borderRadius: BorderRadius.circular(8),
@@ -428,7 +428,7 @@ Padding(
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
 
             // Recent Section
             Padding(
