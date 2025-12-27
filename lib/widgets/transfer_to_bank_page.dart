@@ -25,7 +25,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800), 
+      duration: const Duration(milliseconds: 1500), 
     )..repeat();
 
     _rotationAnimation = CurvedAnimation(
@@ -59,7 +59,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
               top: 30 + radius * math.sin(angle) - (dotSize / 2),
               // Use Opacity widget instead of a parameter in BoxDecoration
               child: Opacity(
-                opacity: (0.3 + (index * 0.1)).clamp(0.0, 1.0),
+                opacity: 1.0
                 child: Container(
                   width: dotSize,
                   height: dotSize,
