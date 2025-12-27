@@ -61,7 +61,7 @@ class TelebirrBottomBar extends StatelessWidget {
         (itemWidth * currentIndex) + (itemWidth / 2);
 
     return SizedBox(
-      height: 70,
+      height: 50,
       child: Stack(
         children: [
           /// 1️⃣ STATIC IMAGE BACKGROUND
@@ -72,7 +72,7 @@ class TelebirrBottomBar extends StatelessWidget {
             child: Image.asset(
               'images/bottom_bar.jpg', // <-- your image
               width: width,
-              height: 70,
+              height: 50,
               fit: BoxFit.fill,
               errorBuilder: (context, error, stackTrace) {
                 // Fallback if image doesn't exist - keep the original green color
