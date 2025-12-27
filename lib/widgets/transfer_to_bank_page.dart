@@ -304,24 +304,32 @@ CarouselSlider(
 Padding(
   padding: const EdgeInsets.only(top: 8.0),
   child: DotsIndicator(
-    dotsCount: sliderImages.length,
-    position: _currentIndex,
-    decorator: DotsDecorator(
-      // The active dot: Green and slightly larger
-      activeColor: const Color.fromRGBO(141, 199, 63, 1),
-      activeSize: const Size(10.0, 10.0),
-      // The inactive dots: Green outline with transparent center (hollow)
-      size: const Size(10.0, 10.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
-        side: const BorderSide(color: Color.fromRGBO(141, 199, 63, 0.5), width: 1.5),
-      ),
-      activeShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      spacing: const EdgeInsets.all(4.0),
+  dotsCount: sliderImages.length,
+  position: _currentIndex,
+  decorator: DotsDecorator(
+    // 1. Active dot: Solid green
+    activeColor: const Color.fromRGBO(141, 199, 63, 1),
+    activeSize: const Size(7.0, 7.0), // Smaller size
+    activeShape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5.0),
     ),
+    
+    // 2. Inactive dots: Hollow with green border
+    size: const Size(7.0, 7.0), // Smaller size
+    color: Colors.transparent, // Makes the center hollow/transparent
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(5.0),
+      side: const BorderSide(
+        color: Color.fromRGBO(141, 199, 63, 0.6), // Green outline
+        width: 1.0,
+      ),
+    ),
+    
+    // 3. Spacing: Closer together
+    spacing: const EdgeInsets.symmetric(horizontal: 3.0),
   ),
+),
+
 ),
 
             const SizedBox(height: 15),
