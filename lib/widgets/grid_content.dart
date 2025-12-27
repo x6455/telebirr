@@ -321,7 +321,7 @@ Stack(
     ),
     Positioned(
       top: -14,
-      left: -6,
+      left: -9,
       // Removed 'right: 0' so the badge only grows as wide as the text
       child: Container(
         decoration: const BoxDecoration(
@@ -363,7 +363,7 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/Paymerchant.jpg'), width: 69),
   Image(image: AssetImage('images/Devicefin.jpg'), width: 64),
   Image(image: AssetImage('images/Teleev.jpg'), width: 64),
-  Image(image: AssetImage('images/Lottery.jpg'), width: 80),
+  Image(image: AssetImage('images/Lottery.jpg'), width: 92),
   Image(image: AssetImage('images/christmas.png'), width: 45),
   Image(image: AssetImage('images/Fyda.png'), width: 40),
   Image(image: AssetImage('images/More.jpg'), width: 60),
