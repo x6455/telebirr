@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Stack(
             children: [
               Container(
-  height: 150,
+  height: 165,
   width: double.infinity,
   decoration: const BoxDecoration(
     image: DecorationImage(
@@ -255,20 +255,35 @@ class ImageSliderIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DotsIndicator(
-      dotsCount: carouselImages.length,
-      position: _currentIndex,
-      decorator: DotsDecorator(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: const BorderSide(
-            color: Colors.green,
-            width: 1.5,
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: DotsIndicator(
+        dotsCount: carouselImages.length,
+        position: _currentIndex.toDouble(),
+        decorator: DotsDecorator(
+          // ACTIVE DOT (solid dot inside a hole)
+          activeColor: const Color.fromRGBO(141, 199, 63, 1),
+          activeSize: const Size(9.0, 9.0),
+          activeShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0),
+            side: const BorderSide(
+              color: Color.fromRGBO(245, 245, 245, 1), // background color
+              width: 1.7,
+            ),
           ),
-        ),
-        activeShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+
+          // INACTIVE DOTS (hollow rings)
+          size: const Size(9.0, 9.0),
+          color: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5.0),
+            side: const BorderSide(
+              color: Color.fromRGBO(141, 199, 63, 1),
+              width: 2.0,
+            ),
+          ),
+
+          spacing: const EdgeInsets.symmetric(horizontal: 4.0),
         ),
       ),
     );
@@ -276,18 +291,25 @@ class ImageSliderIndicator extends StatelessWidget {
 }
 
 class DropDownLang extends StatelessWidget {
-  const DropDownLang({
-    super.key,
-  });
+  const DropDownLang({super.key});
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
-      hint: const Text(
-        'Eng',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 13,
+      underline: const SizedBox(), // removes default underline
+      hint: SizedBox(
+        width: 55, // IMPORTANT: limits width so marquee can scroll
+        height: 18,
+        child: Marquee(
+          text: 'English',
+          blankSpace: 30,
+          velocity: 20,
+          pauseAfterRound: const Duration(seconds: 1),
+          startPadding: 10,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+          ),
         ),
       ),
       icon: const Icon(
