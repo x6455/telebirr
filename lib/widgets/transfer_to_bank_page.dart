@@ -18,14 +18,22 @@ class TelebirrLoader extends StatefulWidget {
 class _TelebirrLoaderState extends State<TelebirrLoader>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _rotationAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000), // Speed of rotation
+      duration: const Duration(milliseconds: 1800), // Total cycle time
     )..repeat();
+
+    // The animation runs for the first 70% of the duration, 
+    // then "pauses" for the remaining 30%.
+    _rotationAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.7, curve: Curves.easeInOutCubic),
+    );
   }
 
   @override
@@ -37,20 +45,20 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
   @override
   Widget build(BuildContext context) {
     return RotationTransition(
-      turns: _controller,
+      turns: _rotationAnimation,
       child: SizedBox(
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         child: Stack(
           alignment: Alignment.center,
           children: List.generate(8, (index) {
-            // Calculate position of each dot in a 360-degree circle
-            double angle = (index * 45) * (math.pi / 180);
-            double radius = 22.0; // Distance from center
+            // Adjusting the starting angle so the largest dot (index 7) 
+            // ends up at the bottom (math.pi / 2) when rotation is at 0.
+            double angle = (index * 45 - 90) * (math.pi / 180);
+            double radius = 22.0;
 
-            // This creates the "trailing size" effect:
-            // Dots get progressively larger from index 0 to 7
-            double dotSize = 3.0 + (index * 1.5); 
+            // Graduated sizes matching your GIF
+            double dotSize = 2.5 + (index * 1.6); 
 
             return Positioned(
               left: 30 + radius * math.cos(angle) - (dotSize / 2),
@@ -58,8 +66,10 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
               child: Container(
                 width: dotSize,
                 height: dotSize,
-                decoration: const BoxDecoration(
-                  color: Color.fromRGBO(141, 199, 63, 1), // Telebirr Green
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(141, 199, 63, 1),
+                  // Added slight opacity trail for realism
+                  opacity: 0.3 + (index * 0.1), 
                   shape: BoxShape.circle,
                 ),
               ),
@@ -70,6 +80,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
     );
   }
 }
+
 
 class TransferToBankPage extends StatefulWidget {
   const TransferToBankPage({super.key});
