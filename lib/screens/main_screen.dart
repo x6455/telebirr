@@ -1,4 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:telebirrbybr7/screens/home_screen.dart';
+import 'package:telebirrbybr7/screens/engage_page.dart'; // Ensure the path is correct
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+
+  // 1. Removed 'const' to allow for dynamic Page injection
+  final List<Widget> tabs = [
+    const HomeScreen(),
+    const Center(
+      child: Text('Payment'),
+    ),
+    const Center(
+      child: Text('Apps'),
+    ),
+    const EngagePage(), // 2. Your actual Engage file integrated here
+    const Center(
+      child: Text('Account'),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: tabs[_currentIndex],
+      bottomNavigationBar: TelebirrBottomBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() => _currentIndex = index);
+        },
+      ),
+    );
+  }
+}
 
 class TelebirrBottomBar extends StatelessWidget {
   final int currentIndex;
@@ -33,6 +74,13 @@ class TelebirrBottomBar extends StatelessWidget {
               width: width,
               height: 70,
               fit: BoxFit.fill,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback if image doesn't exist - keep the original green color
+                return Container(
+                  color: const Color.fromRGBO(141, 199, 63, 0.85),
+                  height: 70,
+                );
+              },
             ),
           ),
 
