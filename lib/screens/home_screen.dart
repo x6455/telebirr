@@ -275,7 +275,7 @@ class DropDownLang extends StatelessWidget {
           startPadding: 10,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 13,
+            fontSize: 15,
           ),
         ),
       ),
