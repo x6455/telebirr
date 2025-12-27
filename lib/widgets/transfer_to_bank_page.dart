@@ -59,7 +59,7 @@ class _TelebirrLoaderState extends State<TelebirrLoader>
               top: 30 + radius * math.sin(angle) - (dotSize / 2),
               // Use Opacity widget instead of a parameter in BoxDecoration
               child: Opacity(
-                opacity: 1.0
+                opacity: 1.0,
                 child: Container(
                   width: dotSize,
                   height: dotSize,
