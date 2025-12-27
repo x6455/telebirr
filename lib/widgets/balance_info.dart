@@ -43,57 +43,60 @@ class _BalanceInfoState extends State<BalanceInfo> {
     }
   }
 
-  @override
-Widget build(BuildContext context) {
-  final String balance = showBalance ? balanceValue : '******';
+    @override
+  Widget build(BuildContext context) {
+    // 1. Define the missing variable here
+    // It is true if the label is 'Balance (ETB) '
+    final bool isMainBalance = widget.label == 'Balance (ETB) ';
+    
+    final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
 
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment:
-        isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment:
-            isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          Text(
-            widget.label,
-            style: TextStyle(
-              color: const Color.fromRGBO(247, 255, 234, 1),
-              fontSize: widget.labelFontSize,
-              fontWeight: widget.isLabelBold
-                  ? FontWeight.bold
-                  : FontWeight.normal,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment:
+          isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment:
+              isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            Text(
+              widget.label,
+              style: TextStyle(
+                color: const Color.fromRGBO(247, 255, 234, 1),
+                fontSize: widget.labelFontSize,
+                fontWeight: widget.isLabelBold
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+              ),
             ),
-          ),
-          const SizedBox(width: 4),
-          InkWell(
-            onTap: toggleBalanceVisibility,
-            child: Icon(
-              showBalance
-                  ? Icons.visibility_off
-                  : Icons.remove_red_eye_sharp,
-              size: 13,
-              color: const Color.fromRGBO(247, 255, 234, 1),
+            const SizedBox(width: 4),
+            InkWell(
+              onTap: toggleBalanceVisibility,
+              child: Icon(
+                showBalance
+                    ? Icons.visibility_off
+                    : Icons.remove_red_eye_sharp,
+                size: 13,
+                color: const Color.fromRGBO(247, 255, 234, 1),
+              ),
             ),
-          ),
-        ],
-      ),
-
-      const SizedBox(height: 2),
-
-      Text(
-        balance,
-        textAlign:
-            isMainBalance ? TextAlign.center : TextAlign.start,
-        style: GoogleFonts.roboto(
-          fontSize: widget.balanceFontSize,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+          ],
         ),
-      ),
-    ],
-  );
-}
+        const SizedBox(height: 2),
+        Text(
+          balance,
+          textAlign:
+              isMainBalance ? TextAlign.center : TextAlign.start,
+          style: GoogleFonts.roboto(
+            fontSize: widget.balanceFontSize,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
 }
