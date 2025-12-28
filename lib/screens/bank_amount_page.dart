@@ -150,109 +150,62 @@ class _BankAmountPageState extends State<BankAmountPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-  void _showConfirmationBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          height: 420, // Adjusted height
-          decoration: const BoxDecoration(
-            color: Color(0xFFF8F9FA),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  icon: const Icon(Icons.close, size: 28),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ),
-              const Text(
-                "Transfer To Bank",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    double.tryParse(_amount)?.toStringAsFixed(2) ?? "0.00",
-                    style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text("ETB", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const SizedBox(height: 30),
-              
-              // --- THE UPDATED WHITE CONTAINER ---
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Payment Method text is now INSIDE the white box
-                      const Text(
-                        "Payment Method",
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
-                      ),
-                      const SizedBox(height: 12), 
-                      Row(
-                        children: [
-                          Icon(Icons.account_balance_wallet, color: _primaryGreen, size: 30),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
+                                Text(
                                   "Balance",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
+                                  ),
                                 ),
+                                SizedBox(height: 4),
                                 Text(
                                   "(Available Balance:ETB)",
-                                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
+                          // Check Icon
                           Icon(Icons.check_circle, color: _primaryGreen, size: 24),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
               const Spacer(),
+
+              // 5. Bottom Transfer Button
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 55,
+                  height: 50,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      // Perform final transfer logic here
+                      print("Final Transfer Clicked");
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryGreen,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       elevation: 0,
                     ),
                     child: const Text(
                       "Transfer",
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -263,7 +216,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
