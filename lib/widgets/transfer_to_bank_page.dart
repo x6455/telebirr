@@ -417,7 +417,7 @@ Container(
         style: TextStyle(
           color: Colors.grey.shade600,
           fontSize: 14,
-          fontWeight: FontWeight.w600, // Bold
+          
         ),
       ),
       const SizedBox(height: 6),
@@ -426,7 +426,7 @@ Container(
       GestureDetector(
         onTap: () => _showBankSelection(context),
         child: Container(
-          height: 40,
+          height: 44,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
@@ -456,14 +456,14 @@ Container(
         style: TextStyle(
           color: Colors.grey.shade600,
           fontSize: 14,
-          fontWeight: FontWeight.w600, // Bold
+          
         ),
       ),
       const SizedBox(height: 6),
       
       // ACCOUNT TEXT FIELD (SMALLER)
       SizedBox(
-        height: 40,
+        height: 44,
         child: TextField(
           controller: _accountController,
           keyboardType: TextInputType.number,
@@ -489,7 +489,7 @@ Container(
       // NEXT BUTTON (SMALLER) - UPDATED COLOR LOGIC
       SizedBox(
         width: double.infinity,
-        height: 45,
+        height: 48,
         child: ElevatedButton(
           onPressed: _isButtonEnabled ? _handleNextProcess : null,
           style: ElevatedButton.styleFrom(
@@ -497,7 +497,7 @@ Container(
             backgroundColor: _isButtonEnabled 
                 ? const Color.fromRGBO(141, 199, 63, 1) // Green - Telebirr green
                 : Colors.grey.shade400, // Gray when disabled
-            disabledBackgroundColor: Colors.grey.shade200, // Gray when disabled
+            disabledBackgroundColor: Colors.grey.shade300, // Gray when disabled
             foregroundColor: Colors.white,
             disabledForegroundColor: Colors.white,
             elevation: _isButtonEnabled ? 2 : 0,
@@ -526,7 +526,7 @@ Container(
                 children: [
                   const Text(
                     'Recent',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
                   ),
                   Icon(Icons.delete_outline, color: Colors.grey.shade500, size: 20),
                 ],
@@ -569,9 +569,9 @@ Container(
           leading: Image.asset(imagePath, width: 40, height: 40),
           title: Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
           subtitle: Text(details, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
-          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade300, size: 20),
+          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
         ),
-        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade400, indent: 70),
+        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade200, indent: 70),
       ],
     );
   }
