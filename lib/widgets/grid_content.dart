@@ -329,8 +329,8 @@ Stack(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(12),     // High roundness top-left
             bottomRight: Radius.circular(12), // High roundness bottom-right
-            topRight: Radius.circular(12),     // Subtle roundness top-right
-            bottomLeft: Radius.circular(2),   // Subtle roundness bottom-left
+            topRight: Radius.circular(12),    
+            bottomLeft: Radius.circular(0),   // Subtle roundness bottom-left
           ),
         ),
         child: const Padding(
