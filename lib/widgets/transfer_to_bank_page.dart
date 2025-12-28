@@ -394,7 +394,7 @@ Padding(
 
 ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 5),
 
             // Input Form Card
             // Replace the Input Form Card section in your build method with this:
@@ -508,7 +508,7 @@ Container(
           ),
           child: const Text(
             'Next',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.normal),
           ),
         ),
       ),
@@ -567,8 +567,8 @@ Container(
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
           leading: Image.asset(imagePath, width: 40, height: 40),
-          title: Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
-          subtitle: Text(details, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
+          title: Text(name, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
+          subtitle: Text(details, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
           trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
         ),
         if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade200, indent: 70),
