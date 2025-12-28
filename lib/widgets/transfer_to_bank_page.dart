@@ -397,94 +397,124 @@ Padding(
             const SizedBox(height: 15),
 
             // Input Form Card
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16.0),
-              padding: const EdgeInsets.all(20.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+            // Replace the Input Form Card section in your build method with this:
+
+const SizedBox(height: 15),
+
+// Input Form Card
+Container(
+  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+  padding: const EdgeInsets.all(20.0),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Select Bank',
+        style: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 14,
+          fontWeight: FontWeight.w600, // Bold
+        ),
+      ),
+      const SizedBox(height: 6),
+
+      // CLICKABLE DROPDOWN (SMALLER)
+      GestureDetector(
+        onTap: () => _showBankSelection(context),
+        child: Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                selectedBankName,
+                style: TextStyle(
+                  color: selectedBankName == 'Please Choose' 
+                      ? Colors.grey.shade700 
+                      : Colors.black,
+                  fontSize: 15,
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Select Bank', style: _labelStyle()),
-                  const SizedBox(height: 6),
-                  
-                  // CLICKABLE DROPDOWN
-                  GestureDetector(
-                    onTap: () => _showBankSelection(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            selectedBankName,
-                            style: TextStyle(
-                              color: selectedBankName == 'Please Choose' 
-                                  ? Colors.grey.shade600 
-                                  : Colors.black,
-                              fontSize: 15,
-                            ),
-                          ),
-                          Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
-                        ],
-                      ),
-                    ),
-                  ),
+              Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade600, size: 22),
+            ],
+          ),
+        ),
+      ),
 
-                  const SizedBox(height: 16),
-                  Text('Account No', style: _labelStyle()),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: _accountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Account Number',
-                      hintStyle: TextStyle(color: Colors.grey.shade400),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade300), 
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.green), 
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // 3. UPDATED BUTTON with _handleNextProcess
-                  SizedBox(
-                    width: double.infinity,
-                    height: 45,
-                    child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? _handleNextProcess : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
-                        disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25),
-                        foregroundColor: Colors.white,
-                        disabledForegroundColor: Colors.white,
-                        elevation: _isButtonEnabled ? 2 : 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Next',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+      const SizedBox(height: 16),
+      Text(
+        'Account No',
+        style: TextStyle(
+          color: Colors.grey.shade600,
+          fontSize: 14,
+          fontWeight: FontWeight.w600, // Bold
+        ),
+      ),
+      const SizedBox(height: 6),
+      
+      // ACCOUNT TEXT FIELD (SMALLER)
+      SizedBox(
+        height: 48,
+        child: TextField(
+          controller: _accountController,
+          keyboardType: TextInputType.number,
+          style: const TextStyle(fontSize: 15),
+          decoration: InputDecoration(
+            hintText: 'Enter Account Number',
+            hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey.shade500), 
+              borderRadius: BorderRadius.circular(8),
             ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.green), 
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 20),
+
+      // NEXT BUTTON (SMALLER) - UPDATED COLOR LOGIC
+      SizedBox(
+        width: double.infinity,
+        height: 45,
+        child: ElevatedButton(
+          onPressed: _isButtonEnabled ? _handleNextProcess : null,
+          style: ElevatedButton.styleFrom(
+            // Green when enabled (text entered), Gray when disabled (empty)
+            backgroundColor: _isButtonEnabled 
+                ? const Color.fromRGBO(141, 199, 63, 1) // Green - Telebirr green
+                : Colors.grey.shade400, // Gray when disabled
+            disabledBackgroundColor: Colors.grey.shade400, // Gray when disabled
+            foregroundColor: Colors.white,
+            disabledForegroundColor: Colors.white,
+            elevation: _isButtonEnabled ? 2 : 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+          ),
+          child: const Text(
+            'Next',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    ],
+  ),
+),
 
             const SizedBox(height: 20),
 
@@ -528,7 +558,7 @@ Padding(
   TextStyle _labelStyle() => TextStyle(
     color: Colors.grey.shade600, 
     fontSize: 14, 
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w200,
   );
 
   Widget _buildRecentItem(String name, String details, String imagePath, {required bool isLast}) {
@@ -537,11 +567,11 @@ Padding(
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           leading: Image.asset(imagePath, width: 40, height: 40),
-          title: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
-          subtitle: Text(details, style: TextStyle(fontSize: 12, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis),
-          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400),
+          title: Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
+          subtitle: Text(details, style: TextStyle(fontSize: 16, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis),
+          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade500),
         ),
-        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade100, indent: 70),
+        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade700, indent: 70),
       ],
     );
   }
