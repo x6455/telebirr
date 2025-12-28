@@ -408,13 +408,13 @@ Padding(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Select Bank', style: _labelStyle()),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   
                   // CLICKABLE DROPDOWN
                   GestureDetector(
                     onTap: () => _showBankSelection(context),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(8),
@@ -428,7 +428,7 @@ Padding(
                               color: selectedBankName == 'Please Choose' 
                                   ? Colors.grey.shade600 
                                   : Colors.black,
-                              fontSize: 16,
+                              fontSize: 15,
                             ),
                           ),
                           Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
@@ -437,9 +437,9 @@ Padding(
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   Text('Account No', style: _labelStyle()),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   TextField(
                     controller: _accountController,
                     keyboardType: TextInputType.number,
@@ -458,12 +458,12 @@ Padding(
                     ),
                   ),
 
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 20),
 
                   // 3. UPDATED BUTTON with _handleNextProcess
                   SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    height: 45,
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled ? _handleNextProcess : null,
                       style: ElevatedButton.styleFrom(
