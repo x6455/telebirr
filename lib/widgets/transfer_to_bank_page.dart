@@ -426,7 +426,7 @@ Container(
       GestureDetector(
         onTap: () => _showBankSelection(context),
         child: Container(
-          height: 48,
+          height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
@@ -463,14 +463,14 @@ Container(
       
       // ACCOUNT TEXT FIELD (SMALLER)
       SizedBox(
-        height: 48,
+        height: 40,
         child: TextField(
           controller: _accountController,
           keyboardType: TextInputType.number,
           style: const TextStyle(fontSize: 15),
           decoration: InputDecoration(
             hintText: 'Enter Account Number',
-            hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+            hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 15),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey.shade500), 
@@ -497,7 +497,7 @@ Container(
             backgroundColor: _isButtonEnabled 
                 ? const Color.fromRGBO(141, 199, 63, 1) // Green - Telebirr green
                 : Colors.grey.shade400, // Gray when disabled
-            disabledBackgroundColor: Colors.grey.shade100, // Gray when disabled
+            disabledBackgroundColor: Colors.grey.shade200, // Gray when disabled
             foregroundColor: Colors.white,
             disabledForegroundColor: Colors.white,
             elevation: _isButtonEnabled ? 2 : 0,
@@ -569,7 +569,7 @@ Container(
           leading: Image.asset(imagePath, width: 40, height: 40),
           title: Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
           subtitle: Text(details, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
-          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade500),
+          trailing: Icon(Icons.chevron_right, color: Colors.grey.shade300, size: 20),
         ),
         if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade400, indent: 70),
       ],
