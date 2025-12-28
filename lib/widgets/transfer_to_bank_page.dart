@@ -497,7 +497,7 @@ Container(
             backgroundColor: _isButtonEnabled 
                 ? const Color.fromRGBO(141, 199, 63, 1) // Green - Telebirr green
                 : Colors.grey.shade400, // Gray when disabled
-            disabledBackgroundColor: Colors.grey.shade400, // Gray when disabled
+            disabledBackgroundColor: Colors.grey.shade100, // Gray when disabled
             foregroundColor: Colors.white,
             disabledForegroundColor: Colors.white,
             elevation: _isButtonEnabled ? 2 : 0,
@@ -508,7 +508,7 @@ Container(
           ),
           child: const Text(
             'Next',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
           ),
         ),
       ),
@@ -565,13 +565,13 @@ Container(
     return Column(
       children: [
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
           leading: Image.asset(imagePath, width: 40, height: 40),
-          title: Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
-          subtitle: Text(details, style: TextStyle(fontSize: 16, color: Colors.grey.shade600), overflow: TextOverflow.ellipsis),
+          title: Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
+          subtitle: Text(details, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.normal), overflow: TextOverflow.ellipsis),
           trailing: Icon(Icons.chevron_right, color: Colors.grey.shade500),
         ),
-        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade700, indent: 70),
+        if (!isLast) Divider(height: 1, thickness: 1, color: Colors.grey.shade400, indent: 70),
       ],
     );
   }
