@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'pin_dialog.dart';
+
 class BankAmountPage extends StatefulWidget {
   final String accountName;
   final String accountNumber;
