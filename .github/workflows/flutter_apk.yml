@@ -21,18 +21,21 @@ jobs:
 
       - name: Prepare Android Project
         run: |
-          # Recreate Android folder
+          # Recreate Android folder to ensure a clean state
           flutter create . --platforms android
 
-          # Update SDK versions
+          # Use sed to update SDK versions in build.gradle
+          # minSdk must be 23 for the telephony plugin
+          sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
 
-          # Add SMS permission
+          # Add SMS permission to AndroidManifest.xml
           sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
 
       - name: Fix Imports
         run: |
+          # Ensure package names in imports match the pubspec name
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
           find lib -name "*.dart" -type f | while read file; do
             sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
