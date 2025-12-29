@@ -30,7 +30,7 @@ dependencies:
   shared_preferences: ^2.2.3
   permission_handler: ^11.3.1
 
-  # SMS functionality (Fixed version for Samsung S9+ / Android 10)
+  # SMS functionality - FIXED for Samsung S9+ (Android 10)
   another_telephony: ^0.4.1
 
 dev_dependencies:
@@ -46,7 +46,6 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
-
   assets:
     - images/ethio.png
     - images/telebirr.png
