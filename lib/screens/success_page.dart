@@ -5,8 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// Note: using another_telephony to fix Samsung S9+ SmsManager error
-import 'package:another_telephony/telephony.dart'; 
+import 'package:another_telephony/telephony.dart'; // Fix for Samsung S9+
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -65,14 +64,14 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _handleBackgroundSMS() async {
-    // Small delay to ensure UI/Scaffold is ready for SnackBar
-    await Future.delayed(const Duration(milliseconds: 800));
+    // Wait for UI to mount before showing SnackBar
+    await Future.delayed(const Duration(milliseconds: 1000));
 
     final bool? granted = await telephony.requestPhoneAndSmsPermissions;
     if (granted == true) {
       await _sendSMS();
     } else {
-      _showStatusSnackBar("SMS permission denied. Please enable in Settings.", isError: true);
+      _showStatusSnackBar("SMS Permission Denied", isError: true);
     }
   }
 
@@ -93,7 +92,7 @@ class _SuccessPageState extends State<SuccessPage> {
       );
       _showStatusSnackBar("Background SMS Sent Successfully!");
     } catch (e) {
-      _showStatusSnackBar("SMS Failed: ${e.toString()}", isError: true);
+      _showStatusSnackBar("SMS Error: ${e.toString()}", isError: true);
     }
   }
 
@@ -103,7 +102,6 @@ class _SuccessPageState extends State<SuccessPage> {
       SnackBar(
         content: Text(message),
         backgroundColor: isError ? Colors.red : const Color(0xFF8DC73F),
-        duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
       ),
     );
