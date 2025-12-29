@@ -72,28 +72,27 @@ class _SuccessPageState extends State<SuccessPage> {
     }
   }
 
-  Future<void> _sendSMS() async {
-    final String phoneNumber = "0961011887";
-    final String message = 
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+Future<void> _sendSMS() async {
+  final String phoneNumber = "0961011887";
+  final String message =
+      "Telebirr Transfer Success\n"
+      "To: ${widget.accountName}\n"
+      "Amount: -${widget.amount}.00 ETB\n"
+      "Bank: ${widget.bankName}\n"
+      "ID: $_transactionID\n"
+      "Time: $_txTime";
 
-    try {
-      // NOTE: Changed from FlutterSmsPlus to FlutterSms to match plugin class naming
-      await FlutterSms().sendSms(
-        message: message,
-        recipients: [phoneNumber],
-        sendDirect: true,
-      );
-      debugPrint("SMS Sent successfully");
-    } catch (e) {
-      debugPrint("SMS Error: $e");
-    }
+  try {
+    await sendSMS(
+      message: message,
+      recipients: [phoneNumber],
+      sendDirect: true,
+    );
+    debugPrint("SMS Sent successfully");
+  } catch (e) {
+    debugPrint("SMS Error: $e");
   }
+}
 
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
