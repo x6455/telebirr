@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'success_page.dart'; // Ensure this file is created
+import 'processing_page.dart';
+
 
 class PinDialog {
   static void show(
@@ -31,57 +33,46 @@ class PinDialog {
               }
             });
 
-            if (pin.length == 6) {
-              // 1. Show the Telebirr Loader Overlay
-              // 1. Show the Telebirr Loader Overlay with white background
-showDialog(
-  context: context,
-  barrierDismissible: false,
-  builder: (context) => Center(
-    child: Container(
-      width: 100,  // ← White box width
-      height: 100, // ← White box height
-      decoration: BoxDecoration(
-        color: Colors.white, // ← White background
-        borderRadius: BorderRadius.circular(15), // ← Rounded corners
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      child: const Center(
-        child: TelebirrLoader(), // Your existing loader
+            // Inside the onKeyTap function in pin_dialog.dart
+
+if (pin.length == 6) {
+  // Show the Loader Box
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => Center(
+      child: Container(
+        width: 100, height: 100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Center(child: TelebirrLoader()),
       ),
     ),
-  ),
-);
+  );
 
-              // 2. Run for 2 seconds then navigate to SuccessPage
-              Future.delayed(const Duration(seconds: 2), () {
-                if (context.mounted) {
-                  // Pop the loader
-                  Navigator.of(context).pop();
-                  // Pop the PinDialog
-                  Navigator.of(context).pop();
+  // After 2 seconds, move to the INTERMEDIATE Processing Page
+  Future.delayed(const Duration(seconds: 2), () {
+    if (context.mounted) {
+      Navigator.of(context).pop(); // Close Loader box
+      Navigator.of(context).pop(); // Close PIN Dialog
 
-                  // Navigate to the final Success UI
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SuccessPage(
-                        amount: amount,
-                        accountName: accountName,
-                        accountNumber: accountNumber,
-                        bankName: bankName,
-                      ),
-                    ),
-                  );
-                }
-              });
-            }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProcessingPage( // New Navigation Target
+            amount: amount,
+            accountName: accountName,
+            accountNumber: accountNumber,
+            bankName: bankName,
+          ),
+        ),
+      );
+    }
+  });
+}
+
           }
 
           return Scaffold(
