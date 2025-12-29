@@ -36,22 +36,28 @@ jobs:
       - name: Fix Dependencies and Install
         run: |
           flutter clean
-          # Force the stable version of telephony to resolve the build error
           flutter pub add telephony:^0.2.0
           flutter pub get
 
       - name: Prepare Android Project
         run: |
+          # 1. Create android folder if it somehow disappeared
           if [ ! -d "android" ]; then
             flutter create . --platforms android
           fi
           
-          sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
-          sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
-          sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
+          # 2. Update SDK versions using a more reliable pattern
+          sed -i 's/minSdkVersion [0-9]*/minSdkVersion 23/' android/app/build.gradle
+          sed -i 's/compileSdkVersion [0-9]*/compileSdkVersion 34/' android/app/build.gradle
+          sed -i 's/targetSdkVersion [0-9]*/targetSdkVersion 34/' android/app/build.gradle
 
-          if ! grep -q 'android.permission.SEND_SMS' android/app/src/main/AndroidManifest.xml; then
-            sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
+          # 3. Safely Add SMS Permission
+          # We add it right after the opening <manifest> tag to avoid breaking the <application> block
+          MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
+          PERMISSION='<uses-permission android:name="android.permission.SEND_SMS" />'
+          
+          if ! grep -q "android.permission.SEND_SMS" "$MANIFEST_PATH"; then
+            sed -i "/<manifest/a \    $PERMISSION" "$MANIFEST_PATH"
           fi
 
       - name: Build Release APK
