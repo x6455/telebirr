@@ -10,33 +10,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout the repo
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.19.0'
 
+      # 3. Flutter doctor (optional debug step)
+      - name: Flutter Doctor
+        run: flutter doctor -v
+
+      # 4. Prepare Android project safely
       - name: Prepare Android Project
         run: |
-          rm -rf android
-          flutter create . --platforms android --force
-          
-          # Fix SDK versions
+          # Only create Android folder if it doesn't exist
+          if [ ! -d "android" ]; then
+            flutter create . --platforms android
+          fi
+
+          # Force update SDK versions for SMS plugin compatibility
           sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
 
-          # Add Permissions
-          sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
+          # Inject SMS permission into the manifest if not already present
+          if ! grep -q 'android.permission.SEND_SMS' android/app/src/main/AndroidManifest.xml; then
+            sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
+          fi
 
-      - name: Build APK
-        run: |
-          flutter pub get
-          flutter build apk --release
+      # 5. Get dependencies
+      - name: Flutter Pub Get
+        run: flutter pub get
 
+      # 6. Build APK
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      # 7. Upload APK artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
