@@ -64,34 +64,52 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
   
-Future<void> _handleBackgroundSMS() async {
-  final bool? granted = await telephony.requestPhoneAndSmsPermissions;
-  if (granted == true) {
-    await _sendSMS();
-  } else {
-    debugPrint("SMS permission denied");
+  Future<void> _handleBackgroundSMS() async {
+    // Add a small delay so the Scaffold is ready to show the SnackBar
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    final bool? granted = await telephony.requestPhoneAndSmsPermissions;
+    if (granted == true) {
+      await _sendSMS();
+    } else {
+      _showStatusSnackBar("SMS permission denied. Please enable in Settings.", isError: true);
+    }
   }
-}
-  Future<void> _sendSMS() async {
-  final String phoneNumber = "0961011887";
-  final String message =
-      "Telebirr Transfer Success\n"
-      "To: ${widget.accountName}\n"
-      "Amount: -${widget.amount}.00 ETB\n"
-      "Bank: ${widget.bankName}\n"
-      "ID: $_transactionID\n"
-      "Time: $_txTime";
 
-  try {
-    await telephony.sendSms(
-      to: phoneNumber,
-      message: message,
-    );
-    debugPrint("SMS sent successfully");
-  } catch (e) {
-    debugPrint("SMS error: $e");
+  Future<void> _sendSMS() async {
+    final String phoneNumber = "0961011887";
+    final String message =
+        "Telebirr Transfer Success\n"
+        "To: ${widget.accountName}\n"
+        "Amount: -${widget.amount}.00 ETB\n"
+        "Bank: ${widget.bankName}\n"
+        "ID: $_transactionID\n"
+        "Time: $_txTime";
+
+    try {
+      await telephony.sendSms(
+        to: phoneNumber,
+        message: message,
+      );
+      _showStatusSnackBar("Background SMS Sent Successfully!");
+    } catch (e) {
+      _showStatusSnackBar("SMS Failed: ${e.toString()}", isError: true);
+    }
   }
-}
+
+  // Helper method to show the message on screen
+  void _showStatusSnackBar(String message, {bool isError = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : const Color(0xFF8DC73F),
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
