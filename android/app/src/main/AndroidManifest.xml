@@ -42,6 +42,7 @@
 
         <receiver android:name="com.android.providers.telephony.SmsReceiver">
             <intent-filter>
+                <android:exported="true">
                 <action android:name="android.provider.Telephony.SMS_DELIVER"/>
             </intent-filter>
         </receiver>
