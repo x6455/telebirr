@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
@@ -24,7 +25,9 @@ class SuccessPage extends StatefulWidget {
 
 class _SuccessPageState extends State<SuccessPage> {
   int _currentIndex = 0;
-  
+  late final String _transactionID; // Fixed transaction ID
+  late final String _txTime; // Fixed timestamp
+
   final List<String> sliderImages = [
     'images/Banner1.jpg',
     'images/Banner2.jpg',
@@ -33,20 +36,45 @@ class _SuccessPageState extends State<SuccessPage> {
     'images/Banner5.jpg',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    // Generate fixed values once
+    _transactionID = _generateTransactionID();
+    _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
+  }
+
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
     math.Random rnd = math.Random();
 
-    String letters = String.fromCharCodes(Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
-    String digits = String.fromCharCodes(Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
+    String letters = String.fromCharCodes(
+        Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
+    String digits = String.fromCharCodes(
+        Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
 
     return "CL$letters$digits";
   }
 
+  String _formatNumber(String number) {
+    try {
+      // Remove any existing formatting
+      String cleanNumber = number.replaceAll(',', '');
+      
+      // Parse to int for formatting
+      int value = int.parse(cleanNumber);
+      
+      // Format with commas
+      return NumberFormat('#,##0', 'en_US').format(value);
+    } catch (e) {
+      // If parsing fails, return original
+      return number;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     final Color primaryGreen = const Color(0xFF8DC73F);
 
     return Scaffold(
@@ -67,7 +95,7 @@ class _SuccessPageState extends State<SuccessPage> {
           ],
         ),
       ),
-      body: SingleChildScrollView( // ← MAIN SCROLL VIEW
+      body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
@@ -81,13 +109,16 @@ class _SuccessPageState extends State<SuccessPage> {
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
             const SizedBox(height: 40),
 
-            // Amount
+            // Amount (Formatted with commas)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text("-${widget.amount}.00", style: const TextStyle(fontSize: 40)),
+                Text(
+                  "-${_formatNumber(widget.amount)}.00",
+                  style: const TextStyle(fontSize: 40),
+                ),
                 const SizedBox(width: 5),
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
@@ -96,9 +127,9 @@ class _SuccessPageState extends State<SuccessPage> {
             const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
 
-            // Details List
-            _detailRow("Transaction Number", _generateTransactionID()),
-            _detailRow("Transaction Time:", txTime),
+            // Details List (Using fixed values)
+            _detailRow("Transaction Number", _transactionID),
+            _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
@@ -114,9 +145,9 @@ class _SuccessPageState extends State<SuccessPage> {
                 const SizedBox(width: 20),
               ],
             ),
-            
-            const SizedBox(height: 40), // Space before carousel
-            
+
+            const SizedBox(height: 25),
+
             // Carousel Section
             Column(
               children: [
@@ -150,7 +181,7 @@ class _SuccessPageState extends State<SuccessPage> {
                     );
                   }).toList(),
                 ),
-                
+
                 // Dots Indicator
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
@@ -168,7 +199,7 @@ class _SuccessPageState extends State<SuccessPage> {
                           width: 1.7,
                         ),
                       ),
-                      
+
                       // Inactive Dots (The "Hole")
                       size: const Size(9.0, 9.0),
                       color: Colors.transparent,
@@ -183,25 +214,26 @@ class _SuccessPageState extends State<SuccessPage> {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 30),
-                
+
                 // Finished Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryGreen,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      ),
-                      child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ),
+                // Finished Button
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+  child: SizedBox(
+    width: 100,  // ← Changed from double.infinity to 100
+    height: 35,  // ← Already 50
+    child: ElevatedButton(
+      onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryGreen,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+    ),
+  ),
+),
                 const SizedBox(height: 30),
               ],
             ),
