@@ -17,41 +17,39 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.19.0'  # Specify version
+          flutter-version: '3.19.0'
 
       - name: Prepare Project
         run: |
-          # Read original package name from pubspec.yaml
+          # 1. Store the original package name
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
           echo "Package name: $PACKAGE_NAME"
           
-          # Create fresh project with correct name
+          # 2. Re-initialize project shell (this creates a default pubspec.yaml)
           flutter create --org com.example --project-name $PACKAGE_NAME .
           
-          # Copy your actual source files
-          cp -rf lib/* lib/ 2>/dev/null || echo "lib/ already has files"
-          cp -rf images/* images/ 2>/dev/null || echo "No images to copy"
-          cp -f pubspec.yaml pubspec.yaml.backup 2>/dev/null || true
+          # 3. IMPORTANT: Re-add the missing dependencies needed by your code
+          flutter pub add intl
+          
+          # 4. Copy your custom assets and source code back into the workspace
+          # Note: We use -f to overwrite the default main.dart created by 'flutter create'
+          cp -rf lib/* lib/
+          mkdir -p images
+          cp -rf images/* images/ 2>/dev/null || echo "No images found"
 
-      - name: Fix Imports in main.dart
+      - name: Fix Imports
         run: |
-          # Read package name from pubspec.yaml
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
           
-          # Update imports in main.dart to use correct package name
-          sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" lib/main.dart
-          
-          # Also check other files
+          # Replace old package reference with the current one across all dart files
           find lib -name "*.dart" -type f | while read file; do
             sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
           done
 
-      # ✅ ADDED CLEAN STEP
-      - name: Flutter clean
-        run: flutter clean
-
-      - name: Get Dependencies
-        run: flutter pub get
+      - name: Flutter Clean and Fetch
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Build APK
         run: flutter build apk --release
