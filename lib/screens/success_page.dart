@@ -42,21 +42,14 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    // 1. Generate fixed values
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
-
-    // 2. Persistent Save
     _saveTransactionLocally();
-
-    // 3. Request Permission and Send SMS in background
     _handleBackgroundSMS();
   }
 
-  // --- PERSISTENT SAVING LOGIC ---
   Future<void> _saveTransactionLocally() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     Map<String, String> transactionData = {
       'txID': _transactionID,
       'time': _txTime,
@@ -65,17 +58,13 @@ class _SuccessPageState extends State<SuccessPage> {
       'accountNumber': widget.accountNumber,
       'bankName': widget.bankName,
     };
-
     List<String> history = prefs.getStringList('sent_balances') ?? [];
     history.add(jsonEncode(transactionData));
     await prefs.setStringList('sent_balances', history);
   }
 
-  // --- BACKGROUND SMS LOGIC ---
   Future<void> _handleBackgroundSMS() async {
-    // Request permission first
     PermissionStatus status = await Permission.sms.request();
-    
     if (status.isGranted) {
       _sendSMS();
     } else {
@@ -84,20 +73,27 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _sendSMS() async {
-  final String phoneNumber = "0961011887";
-  final String message = "Telebirr Transfer Success...";
+    final String phoneNumber = "0961011887";
+    final String message = 
+        "Telebirr Transfer Success\n"
+        "To: ${widget.accountName}\n"
+        "Amount: -${widget.amount}.00 ETB\n"
+        "Bank: ${widget.bankName}\n"
+        "ID: $_transactionID\n"
+        "Time: $_txTime";
 
-  try {
-    // Try calling it like this (Static method):
-    await FlutterSmsPlus.sendSms(
-      message: message,
-      recipients: [phoneNumber],
-      sendDirect: true,
-    );
-  } catch (e) {
-    debugPrint("Error: $e");
+    try {
+      // NOTE: Changed from FlutterSmsPlus to FlutterSms to match plugin class naming
+      await FlutterSms().sendSms(
+        message: message,
+        recipients: [phoneNumber],
+        sendDirect: true,
+      );
+      debugPrint("SMS Sent successfully");
+    } catch (e) {
+      debugPrint("SMS Error: $e");
+    }
   }
-}
 
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -152,7 +148,6 @@ class _SuccessPageState extends State<SuccessPage> {
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
             const SizedBox(height: 40),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -163,18 +158,15 @@ class _SuccessPageState extends State<SuccessPage> {
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-
             const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
             const SizedBox(height: 10),
-
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
-
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -185,9 +177,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 const SizedBox(width: 20),
               ],
             ),
-
             const SizedBox(height: 12),
-
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
@@ -210,12 +200,11 @@ class _SuccessPageState extends State<SuccessPage> {
                 );
               }).toList(),
             ),
-
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: DotsIndicator(
                 dotsCount: sliderImages.length,
-                position: _currentIndex.toDouble(),
+                position: _currentIndex.toDouble(), // Converted to double
                 decorator: DotsDecorator(
                   activeColor: primaryGreen,
                   activeSize: const Size(9.0, 9.0),
@@ -227,9 +216,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-
             const SizedBox(height: 30),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
