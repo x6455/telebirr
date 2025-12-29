@@ -68,7 +68,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          height: 300, // Fixed height for the sheet
+          height: 350, // Fixed height for the sheet
           decoration: const BoxDecoration(
             color: Color(0xFFF8F9FA), // Slightly off-white background
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -129,10 +129,8 @@ class _BankAmountPageState extends State<BankAmountPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Payment Method",
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
+                    
+                    
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -150,6 +148,9 @@ class _BankAmountPageState extends State<BankAmountPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(
+                      "Payment Method",
+                      style: TextStyle(color: Colors.grey, fontSize: 14),),
                                 Text(
                                   "Balance",
                                   style: TextStyle(
