@@ -19,28 +19,16 @@ jobs:
           channel: stable
           flutter-version: '3.19.0'
 
-      - name: Prepare Project and Dependencies
+      - name: Prepare Android Project
         run: |
-          # 1. Get the package name from your existing pubspec
-          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          echo "Building package: $PACKAGE_NAME"
-          
-          # 2. Add all necessary dependencies
-          flutter pub add intl
-          flutter pub add carousel_slider
-          flutter pub add dots_indicator
-          flutter pub add shared_preferences
-          flutter pub add flutter_sms_plus
-          flutter pub add permission_handler
-          
-          # 3. Recreate Android folder to ensure clean structure
+          # Recreate Android folder
           flutter create . --platforms android
 
-          # 4. FIX: Update Android SDK versions to 34 to resolve resource linking errors
+          # Update SDK versions
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
-          
-          # 5. PERMISSION: Inject SEND_SMS permission into AndroidManifest.xml
+
+          # Add SMS permission
           sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
 
       - name: Fix Imports
