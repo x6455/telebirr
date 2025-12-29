@@ -363,7 +363,7 @@ Padding(
   padding: const EdgeInsets.only(top: 8.0),
   child: DotsIndicator(
   dotsCount: sliderImages.length,
-  position: _currentIndex,
+  position: _currentIndex.toDouble(),
   decorator: DotsDecorator(
     // --- ACTIVE DOT (The "Dot inside a hole") ---
     activeColor: const Color.fromRGBO(141, 199, 63, 1), 
