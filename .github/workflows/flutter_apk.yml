@@ -28,7 +28,8 @@ jobs:
           # 2. Add all necessary dependencies used in SuccessPage & ProcessingPage
           flutter pub add intl
           
-          
+          flutter pub add flutter_sms_plus
+
           flutter pub add shared_preferences
           flutter pub add url_launcher
           
