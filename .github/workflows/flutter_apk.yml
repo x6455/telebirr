@@ -10,25 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Get the source code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup Java (Crucial for Android Gradle builds)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 3. Setup Flutter Environment
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.19.0'
 
-      # 4. Cache dependencies to speed up future runs
       - name: Cache Flutter Pub
         uses: actions/cache@v3
         with:
@@ -37,26 +33,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-pub-
 
-      # 5. Solve the telephony dependency issue and fetch packages
       - name: Install Dependencies
         run: |
           flutter clean
           flutter pub add telephony:^0.2.0
           flutter pub get
 
-      # 6. Ensure SDK Versions are correct in build.gradle
-      # We keep this part as it doesn't touch the XML, but ensures the build API level is 34
       - name: Configure Android SDK Versions
         run: |
-          sed -i 's/minSdkVersion [0-9]*/minSdkVersion 23/' android/app/build.gradle
+          # Use a more specific regex to ensure we only replace the number and don't add decimals
+          # This targets the lines specifically and replaces them with clean integers
           sed -i 's/compileSdkVersion [0-9]*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion [0-9]*/targetSdkVersion 34/' android/app/build.gradle
+          sed -i 's/minSdkVersion [0-9]*/minSdkVersion 23/' android/app/build.gradle
 
-      # 7. Run the APK build
       - name: Build Release APK
         run: flutter build apk --release
 
-      # 8. Save the resulting APK as a GitHub Artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
