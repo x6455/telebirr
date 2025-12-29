@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:another_telephony/telephony.dart';
+import 'package:telephony/telephony.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -49,7 +49,7 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _saveTransactionLocally() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     Map<String, String> transactionData = {
       'txID': _transactionID,
       'time': _txTime,
@@ -66,19 +66,21 @@ class _SuccessPageState extends State<SuccessPage> {
   Future<void> _handleBackgroundSMS() async {
     await Future.delayed(const Duration(milliseconds: 1000));
 
-    // Request SMS and phone permissions
-    final bool? granted = await telephony.requestPhoneAndSmsPermissions;
+    // Request SMS & phone permissions
+    bool? granted = await telephony.requestPhoneAndSmsPermissions;
     if (granted != true) {
       _showStatusSnackBar("SMS Permission Denied", isError: true);
       return;
     }
 
-    // Check if app is default SMS app
+    // Check if the app is default SMS app
     bool isDefault = await telephony.isDefaultSmsApp;
     if (!isDefault) {
-      // Prompt user to set your app as default
       await telephony.openDefaultSmsAppSettings();
-      _showStatusSnackBar("Please set this app as default SMS app to send SMS in background", isError: true);
+      _showStatusSnackBar(
+        "Please set this app as default SMS app to send SMS in background",
+        isError: true,
+      );
     } else {
       await _sendSMS(); // Send SMS in background
     }
