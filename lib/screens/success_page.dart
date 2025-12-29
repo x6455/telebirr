@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -24,8 +27,8 @@ class SuccessPage extends StatefulWidget {
 
 class _SuccessPageState extends State<SuccessPage> {
   int _currentIndex = 0;
-  late final String _transactionID; // Fixed transaction ID
-  late final String _txTime; // Fixed timestamp
+  late final String _transactionID;
+  late final String _txTime;
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -38,36 +41,74 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    // Generate fixed values once
+    // 1. Generate fixed values
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
+
+    // 2. Persistent Save
+    _saveTransactionLocally();
+
+    // 3. Trigger SMS after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _sendSMS();
+    });
+  }
+
+  // --- PERSISTENT SAVING LOGIC ---
+  Future<void> _saveTransactionLocally() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    Map<String, String> transactionData = {
+      'txID': _transactionID,
+      'time': _txTime,
+      'amount_sent': widget.amount,
+      'accountName': widget.accountName,
+      'accountNumber': widget.accountNumber,
+      'bankName': widget.bankName,
+    };
+
+    List<String> history = prefs.getStringList('sent_balances') ?? [];
+    history.add(jsonEncode(transactionData));
+    await prefs.setStringList('sent_balances', history);
+  }
+
+  // --- SMS LOGIC ---
+  Future<void> _sendSMS() async {
+    final String phoneNumber = "0961011887";
+    final String message = 
+        "Telebirr Transfer Success\n"
+        "To: ${widget.accountName}\n"
+        "Amount: -${widget.amount}.00 ETB\n"
+        "Bank: ${widget.bankName}\n"
+        "ID: $_transactionID\n"
+        "Time: $_txTime";
+
+    final Uri smsLaunchUri = Uri(
+      scheme: 'sms',
+      path: phoneNumber,
+      queryParameters: <String, String>{'body': message},
+    );
+
+    if (await canLaunchUrl(smsLaunchUri)) {
+      await launchUrl(smsLaunchUri);
+    }
   }
 
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
     math.Random rnd = math.Random();
-
-    String letters = String.fromCharCodes(
-        Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
-    String digits = String.fromCharCodes(
-        Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
-
+    String letters = String.fromCharCodes(Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
+    String digits = String.fromCharCodes(Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
     return "CL$letters$digits";
   }
 
   String _formatNumber(String number) {
     try {
-      // Remove any existing formatting
       String cleanNumber = number.replaceAll(',', '');
-      
-      // Parse to int for formatting
       int value = int.parse(cleanNumber);
-      
-      // Format with commas
       return NumberFormat('#,##0', 'en_US').format(value);
     } catch (e) {
-      // If parsing fails, return original
       return number;
     }
   }
@@ -98,7 +139,6 @@ class _SuccessPageState extends State<SuccessPage> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // Success Icon
             CircleAvatar(
               radius: 30,
               backgroundColor: primaryGreen,
@@ -108,16 +148,12 @@ class _SuccessPageState extends State<SuccessPage> {
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
             const SizedBox(height: 40),
 
-            // Amount (Formatted with commas)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(
-                  "-${_formatNumber(widget.amount)}.00",
-                  style: const TextStyle(fontSize: 40),
-                ),
+                Text("-${_formatNumber(widget.amount)}.00", style: const TextStyle(fontSize: 40)),
                 const SizedBox(width: 5),
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
@@ -125,9 +161,8 @@ class _SuccessPageState extends State<SuccessPage> {
 
             const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
-const SizedBox(height: 10), // ← Add this for more space
+            const SizedBox(height: 10),
 
-// Details List
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
@@ -148,95 +183,64 @@ const SizedBox(height: 10), // ← Add this for more space
 
             const SizedBox(height: 12),
 
-            // Carousel Section
-            Column(
-              children: [
-                const SizedBox(height: 10),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    autoPlay: true,
-                    aspectRatio: 3.5,
-                    viewportFraction: 0.92,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                  ),
-                  items: sliderImages.map((imagePath) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.asset(
-                          imagePath,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            color: Colors.grey[300],
-                            child: const Icon(Icons.image_not_supported),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-
-                // Dots Indicator
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                  child: DotsIndicator(
-                    dotsCount: sliderImages.length,
-                    position: _currentIndex,
-                    decorator: DotsDecorator(
-                      // Active Dot (The "Dot inside a hole")
-                      activeColor: const Color.fromRGBO(141, 199, 63, 1),
-                      activeSize: const Size(9.0, 9.0),
-                      activeShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.0),
-                        side: const BorderSide(
-                          color: Colors.white,
-                          width: 1.7,
-                        ),
-                      ),
-
-                      // Inactive Dots (The "Hole")
-                      size: const Size(9.0, 9.0),
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: const BorderSide(
-                          color: Color.fromRGBO(141, 199, 63, 0.4),
-                          width: 2.0,
-                        ),
-                      ),
-                      spacing: const EdgeInsets.symmetric(horizontal: 4.0),
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 3.5,
+                viewportFraction: 0.92,
+                onPageChanged: (index, reason) => setState(() => _currentIndex = index),
+              ),
+              items: sliderImages.map((imagePath) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[300], child: const Icon(Icons.image_not_supported)),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Finished Button
-                // Finished Button
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-  child: SizedBox(
-    width: 200,  // ← Changed from double.infinity to 100
-    height: 40,  // ← Already 50
-    child: ElevatedButton(
-      onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: primaryGreen,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal)),
-    ),
-  ),
-),
-                const SizedBox(height: 30),
-              ],
+                );
+              }).toList(),
             ),
+
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: DotsIndicator(
+                dotsCount: sliderImages.length,
+                position: _currentIndex,
+                decorator: DotsDecorator(
+                  activeColor: primaryGreen,
+                  activeSize: const Size(9.0, 9.0),
+                  activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0), side: const BorderSide(color: Colors.white, width: 1.7)),
+                  size: const Size(9.0, 9.0),
+                  color: Colors.transparent,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0), side: BorderSide(color: primaryGreen.withOpacity(0.4), width: 2.0)),
+                  spacing: const EdgeInsets.symmetric(horizontal: 4.0),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+              child: SizedBox(
+                width: 200,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryGreen,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
           ],
         ),
       ),
