@@ -25,18 +25,9 @@ jobs:
           channel: stable
           flutter-version: '3.19.0'
 
-      - name: Cache Flutter Pub
-        uses: actions/cache@v3
-        with:
-          path: ~/.pub-cache
-          key: ${{ runner.os }}-flutter-pub-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-pub-
-
-      - name: Fix Dependencies and Install
+      - name: Install Dependencies
         run: |
           flutter clean
-          # Fix the telephony version conflict
           flutter pub add telephony:^0.2.0
           flutter pub get
 
