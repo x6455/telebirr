@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout the repo
+      # 1. Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -21,37 +21,56 @@ jobs:
           channel: stable
           flutter-version: '3.19.0'
 
-      # 3. Flutter doctor (optional debug step)
+      # 3. Cache Flutter SDK and pub packages
+      - name: Cache Flutter Pub
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            ~/.flutter
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      # 4. Cache Gradle build
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 5. Flutter doctor for debugging
       - name: Flutter Doctor
         run: flutter doctor -v
 
-      # 4. Prepare Android project safely
+      # 6. Prepare Android project safely
       - name: Prepare Android Project
         run: |
-          # Only create Android folder if it doesn't exist
           if [ ! -d "android" ]; then
             flutter create . --platforms android
           fi
 
-          # Force update SDK versions for SMS plugin compatibility
           sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
 
-          # Inject SMS permission into the manifest if not already present
           if ! grep -q 'android.permission.SEND_SMS' android/app/src/main/AndroidManifest.xml; then
             sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
           fi
 
-      # 5. Get dependencies
+      # 7. Get dependencies
       - name: Flutter Pub Get
         run: flutter pub get
 
-      # 6. Build APK
+      # 8. Build Release APK
       - name: Build Release APK
         run: flutter build apk --release
 
-      # 7. Upload APK artifact
+      # 9. Upload APK artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
