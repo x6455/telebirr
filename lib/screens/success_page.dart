@@ -126,7 +126,10 @@ class _SuccessPageState extends State<SuccessPage> {
 
             const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
+const SizedBox(height: 17), // ← Add this for more space
 
+// Details List
+_detailRow("Transaction Number", _transactionID),
             // Details List (Using fixed values)
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
@@ -135,7 +138,7 @@ class _SuccessPageState extends State<SuccessPage> {
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -146,7 +149,7 @@ class _SuccessPageState extends State<SuccessPage> {
               ],
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
 
             // Carousel Section
             Column(
@@ -245,7 +248,7 @@ Padding(
 
   Widget _detailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 9),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
