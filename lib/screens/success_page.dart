@@ -126,7 +126,7 @@ class _SuccessPageState extends State<SuccessPage> {
 
             const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
-const SizedBox(height: 17), // ← Add this for more space
+const SizedBox(height: 10), // ← Add this for more space
 
 // Details List
 _detailRow("Transaction Number", _transactionID),
@@ -138,7 +138,7 @@ _detailRow("Transaction Number", _transactionID),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -149,7 +149,7 @@ _detailRow("Transaction Number", _transactionID),
               ],
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 12),
 
             // Carousel Section
             Column(
@@ -225,15 +225,15 @@ _detailRow("Transaction Number", _transactionID),
 Padding(
   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
   child: SizedBox(
-    width: 100,  // ← Changed from double.infinity to 100
-    height: 35,  // ← Already 50
+    width: 200,  // ← Changed from double.infinity to 100
+    height: 40,  // ← Already 50
     child: ElevatedButton(
       onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryGreen,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+      child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal)),
     ),
   ),
 ),
