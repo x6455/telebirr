@@ -25,9 +25,12 @@ jobs:
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
           echo "Building package: $PACKAGE_NAME"
           
-          # 2. Add the missing intl package to your current pubspec.yaml
-          # This is the "Fix" for the DateFormat error
+          # 2. Add all necessary dependencies used in SuccessPage & ProcessingPage
           flutter pub add intl
+          
+          
+          flutter pub add shared_preferences
+          flutter pub add url_launcher
           
           # 3. Ensure the Android folder exists and is updated
           flutter create . --platforms android
