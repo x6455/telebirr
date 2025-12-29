@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_sms_plus/flutter_sms_plus.dart'; // Background SMS
 import 'package:permission_handler/permission_handler.dart'; // Permission check
+import 'package:telephony/telephony.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -27,6 +27,7 @@ class SuccessPage extends StatefulWidget {
 }
 
 class _SuccessPageState extends State<SuccessPage> {
+  final Telephony telephony = Telephony.instance;
   int _currentIndex = 0;
   late final String _transactionID;
   late final String _txTime;
@@ -63,16 +64,7 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
 
-  Future<void> _handleBackgroundSMS() async {
-    PermissionStatus status = await Permission.sms.request();
-    if (status.isGranted) {
-      _sendSMS();
-    } else {
-      debugPrint("SMS Permission Denied");
-    }
-  }
-
-Future<void> _sendSMS() async {
+  Future<void> _sendSMS() async {
   final String phoneNumber = "0961011887";
   final String message =
       "Telebirr Transfer Success\n"
