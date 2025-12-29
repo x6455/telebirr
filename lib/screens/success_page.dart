@@ -66,25 +66,23 @@ class _SuccessPageState extends State<SuccessPage> {
   Future<void> _handleBackgroundSMS() async {
     await Future.delayed(const Duration(milliseconds: 1000));
 
+    //   Future<void> _handleBackgroundSMS() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+
     // Request SMS & phone permissions
+    // Note: in 0.2.0, this returns a bool?
     bool? granted = await telephony.requestPhoneAndSmsPermissions;
+    
     if (granted != true) {
       _showStatusSnackBar("SMS Permission Denied", isError: true);
       return;
     }
 
-    // Check if the app is default SMS app
-    bool isDefault = await telephony.isDefaultSmsApp;
-    if (!isDefault) {
-      await telephony.openDefaultSmsAppSettings();
-      _showStatusSnackBar(
-        "Please set this app as default SMS app to send SMS in background",
-        isError: true,
-      );
-    } else {
-      await _sendSMS(); // Send SMS in background
-    }
+    // Version 0.2.0 doesn't support isDefaultSmsApp check via the plugin
+    // We proceed to send directly; if not default, system may prompt or fail gracefully
+    await _sendSMS(); 
   }
+
 
   Future<void> _sendSMS() async {
     final String phoneNumber = "0961011887";
