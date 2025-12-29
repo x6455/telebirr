@@ -153,6 +153,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                 Text(
                       "Payment Method",
                       style: TextStyle(color: Colors.grey, fontSize: 14),),
+                                const SizedBox(height: 2),
                                 Text(
                                   "Balance",
                                   style: TextStyle(
@@ -190,11 +191,20 @@ class _BankAmountPageState extends State<BankAmountPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Perform final transfer logic here
-                      print("Final Transfer Clicked");
-                      Navigator.pop(context);
-                    },
+                    // Locate the "Transfer" button inside your BottomSheet function
+// and change the onPressed to this:
+
+onPressed: () {
+  Navigator.pop(context); // 1. Close the Bottom Sheet Slider
+  
+  // 2. Open the Floating PIN Dialog
+  PinDialog.show(
+    context, 
+    amount: _amount.isEmpty ? "0.00" : _amount, 
+    primaryGreen: _primaryGreen
+  );
+},
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryGreen,
                       shape: RoundedRectangleBorder(
