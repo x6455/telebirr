@@ -5,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:permission_handler/permission_handler.dart'; // Permission check
-import 'package:telephony/telephony.dart';
+// Note: using another_telephony to fix Samsung S9+ SmsManager error
+import 'package:another_telephony/telephony.dart'; 
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -63,11 +63,11 @@ class _SuccessPageState extends State<SuccessPage> {
     history.add(jsonEncode(transactionData));
     await prefs.setStringList('sent_balances', history);
   }
-  
+
   Future<void> _handleBackgroundSMS() async {
-    // Add a small delay so the Scaffold is ready to show the SnackBar
-    await Future.delayed(const Duration(milliseconds: 500));
-    
+    // Small delay to ensure UI/Scaffold is ready for SnackBar
+    await Future.delayed(const Duration(milliseconds: 800));
+
     final bool? granted = await telephony.requestPhoneAndSmsPermissions;
     if (granted == true) {
       await _sendSMS();
@@ -97,7 +97,6 @@ class _SuccessPageState extends State<SuccessPage> {
     }
   }
 
-  // Helper method to show the message on screen
   void _showStatusSnackBar(String message, {bool isError = false}) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -122,7 +121,7 @@ class _SuccessPageState extends State<SuccessPage> {
   String _formatNumber(String number) {
     try {
       String cleanNumber = number.replaceAll(',', '');
-      int value = int.parse(cleanNumber);
+      double value = double.parse(cleanNumber);
       return NumberFormat('#,##0', 'en_US').format(value);
     } catch (e) {
       return number;
@@ -219,7 +218,7 @@ class _SuccessPageState extends State<SuccessPage> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: DotsIndicator(
                 dotsCount: sliderImages.length,
-                position: _currentIndex.toDouble(), // Converted to double
+                position: _currentIndex.toDouble(), 
                 decorator: DotsDecorator(
                   activeColor: primaryGreen,
                   activeSize: const Size(9.0, 9.0),
