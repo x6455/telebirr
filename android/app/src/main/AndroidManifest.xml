@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yourcompany.telebirrbybr7">
 
-    <!-- Required Permissions for SMS sending/receiving -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -15,7 +14,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
 
-        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -35,19 +33,19 @@
             </intent-filter>
         </activity>
 
-        <!-- Default SMS app Service & Receiver -->
         <service
             android:name="com.android.providers.telephony.SmsService"
             android:exported="true" />
 
-        <receiver android:name="com.android.providers.telephony.SmsReceiver">
+        <receiver 
+            android:name="com.android.providers.telephony.SmsReceiver"
+            android:exported="true"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
             <intent-filter>
-                <android:exported="true">
                 <action android:name="android.provider.Telephony.SMS_DELIVER"/>
             </intent-filter>
         </receiver>
 
-        <!-- Incoming SMS Receiver -->
         <receiver 
             android:name="com.shounakmulay.telephony.sms.IncomingSmsReceiver" 
             android:permission="android.permission.BROADCAST_SMS" 
