@@ -11,37 +11,38 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # UI & fonts
   cupertino_icons: ^1.0.2
   text_scroll: ^0.2.0
   marquee: ^2.2.3
   google_fonts: ^6.1.0
   font_awesome_flutter: ^10.6.0
+
+  # Carousels & navigation
   carousel_slider: ^4.2.1
   carousel_indicator: ^1.0.6
   dots_indicator: ^3.0.0
   flutter_sticky_widgets: ^0.0.3
   dot_navigation_bar: ^1.0.2
-  flutter_launcher_icons: ^0.13.1
 
-  # ✅ REQUIRED BY YOUR CODE
+  # Utilities
   intl: ^0.19.0
   shared_preferences: ^2.2.3
   permission_handler: ^11.3.1
 
-  # ✅ SMS (pick ONE — this matches our workflow)
-  
-telephony: ^0.2.0
+  # SMS functionality
+  telephony: ^0.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^2.0.0
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true
   ios: true
   image_path: "images/br7logo.png"
-  min_sdk_android: 21
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
@@ -79,4 +80,3 @@ flutter:
     - images/engage_icon.png
     - images/account_icon.png
     - images/bottom_bar.jpg
-    
