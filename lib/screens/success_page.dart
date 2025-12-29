@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
@@ -129,8 +128,6 @@ class _SuccessPageState extends State<SuccessPage> {
 const SizedBox(height: 10), // ← Add this for more space
 
 // Details List
-_detailRow("Transaction Number", _transactionID),
-            // Details List (Using fixed values)
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
