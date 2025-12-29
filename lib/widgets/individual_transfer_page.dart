@@ -99,7 +99,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             // Slider Indicator
             DotsIndicator(
               dotsCount: sliderImages.length,
-              position: _currentIndex,
+              position: _currentIndex.toDouble(),
               decorator: DotsDecorator(
                 activeColor: Colors.green,
                 size: const Size.square(8.0),
