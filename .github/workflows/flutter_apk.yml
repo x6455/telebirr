@@ -19,40 +19,32 @@ jobs:
           channel: stable
           flutter-version: '3.19.0'
 
-      - name: Prepare Project
+      - name: Prepare Project and Dependencies
         run: |
-          # 1. Store the original package name
+          # 1. Get the package name from your existing pubspec
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          echo "Package name: $PACKAGE_NAME"
+          echo "Building package: $PACKAGE_NAME"
           
-          # 2. Re-initialize project shell (this creates a default pubspec.yaml)
-          flutter create --org com.example --project-name $PACKAGE_NAME .
-          
-          # 3. IMPORTANT: Re-add the missing dependencies needed by your code
+          # 2. Add the missing intl package to your current pubspec.yaml
+          # This is the "Fix" for the DateFormat error
           flutter pub add intl
           
-          # 4. Copy your custom assets and source code back into the workspace
-          # Note: We use -f to overwrite the default main.dart created by 'flutter create'
-          cp -rf lib/* lib/
-          mkdir -p images
-          cp -rf images/* images/ 2>/dev/null || echo "No images found"
+          # 3. Ensure the Android folder exists and is updated
+          flutter create . --platforms android
 
       - name: Fix Imports
         run: |
           PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          
-          # Replace old package reference with the current one across all dart files
+          # This ensures all internal imports match the current package name
           find lib -name "*.dart" -type f | while read file; do
             sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
           done
 
-      - name: Flutter Clean and Fetch
+      - name: Build APK
         run: |
           flutter clean
           flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --release
+          flutter build apk --release
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
