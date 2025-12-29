@@ -21,23 +21,16 @@ jobs:
 
       - name: Prepare Android Project
         run: |
-          # Create Android folder without triggering pub get immediately
+          # Create Android folder offline to prevent dependency errors before SDK setup
           flutter create . --platforms android --offline
 
-          # Update SDK versions for compatibility
+          # Force update SDK versions for SMS plugin compatibility
           sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
 
           # Inject SMS permission into the manifest
           sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
-
-      - name: Fix Imports
-        run: |
-          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
-          find lib -name "*.dart" -type f | while read file; do
-            sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
-          done
 
       - name: Build APK
         run: |
@@ -47,5 +40,5 @@ jobs:
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-release-apk
+          name: telebirr-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
