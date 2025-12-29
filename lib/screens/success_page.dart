@@ -84,27 +84,20 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _sendSMS() async {
-    final String phoneNumber = "0961011887";
-    final String message = 
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+  final String phoneNumber = "0961011887";
+  final String message = "Telebirr Transfer Success...";
 
-    try {
-      // sendDirect: true sends it without opening the SMS app
-      await FlutterSmsPlus().sendSms(
-        message: message,
-        recipients: [phoneNumber],
-        sendDirect: true,
-      );
-      debugPrint("SMS Sent in background");
-    } catch (e) {
-      debugPrint("Error sending background SMS: $e");
-    }
+  try {
+    // Try calling it like this (Static method):
+    await FlutterSmsPlus.sendSms(
+      message: message,
+      recipients: [phoneNumber],
+      sendDirect: true,
+    );
+  } catch (e) {
+    debugPrint("Error: $e");
   }
+}
 
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -222,7 +215,7 @@ class _SuccessPageState extends State<SuccessPage> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: DotsIndicator(
                 dotsCount: sliderImages.length,
-                position: _currentIndex,
+                position: _currentIndex.toDouble(),
                 decorator: DotsDecorator(
                   activeColor: primaryGreen,
                   activeSize: const Size(9.0, 9.0),
