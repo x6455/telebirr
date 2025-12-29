@@ -33,11 +33,31 @@ class PinDialog {
 
             if (pin.length == 6) {
               // 1. Show the Telebirr Loader Overlay
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => const Center(child: TelebirrLoader()),
-              );
+              // 1. Show the Telebirr Loader Overlay with white background
+showDialog(
+  context: context,
+  barrierDismissible: false,
+  builder: (context) => Center(
+    child: Container(
+      width: 100,  // ← White box width
+      height: 100, // ← White box height
+      decoration: BoxDecoration(
+        color: Colors.white, // ← White background
+        borderRadius: BorderRadius.circular(15), // ← Rounded corners
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: const Center(
+        child: TelebirrLoader(), // Your existing loader
+      ),
+    ),
+  ),
+);
 
               // 2. Run for 2 seconds then navigate to SuccessPage
               Future.delayed(const Duration(seconds: 2), () {
