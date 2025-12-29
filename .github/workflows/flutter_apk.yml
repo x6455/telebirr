@@ -21,15 +21,15 @@ jobs:
 
       - name: Prepare Android Project
         run: |
-          # Create Android folder offline to prevent dependency errors before SDK setup
-          flutter create . --platforms android --offline
-
-          # Force update SDK versions for SMS plugin compatibility
+          rm -rf android
+          flutter create . --platforms android --force
+          
+          # Fix SDK versions
           sed -i 's/minSdkVersion .*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion .*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion .*/targetSdkVersion 34/' android/app/build.gradle
 
-          # Inject SMS permission into the manifest
+          # Add Permissions
           sed -i '/<application/i \    <uses-permission android:name="android.permission.SEND_SMS" />' android/app/src/main/AndroidManifest.xml
 
       - name: Build APK
