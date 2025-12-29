@@ -1,0 +1,56 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.19.0'
+
+      - name: Prepare Project and Dependencies
+        run: |
+          # 1. Get the package name from your existing pubspec
+          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          echo "Building package: $PACKAGE_NAME"
+          
+          # 2. Add all necessary dependencies used in SuccessPage & ProcessingPage
+          flutter pub add intl
+          
+          
+          flutter pub add shared_preferences
+          flutter pub add url_launcher
+          
+          # 3. Ensure the Android folder exists and is updated
+          flutter create . --platforms android
+
+      - name: Fix Imports
+        run: |
+          PACKAGE_NAME=$(grep '^name:' pubspec.yaml | awk '{print $2}' | tr -d '\r')
+          # This ensures all internal imports match the current package name
+          find lib -name "*.dart" -type f | while read file; do
+            sed -i "s|package:telebirrbybr7/|package:$PACKAGE_NAME/|g" "$file"
+          done
+
+      - name: Build APK
+        run: |
+          flutter clean
+          flutter pub get
+          flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
