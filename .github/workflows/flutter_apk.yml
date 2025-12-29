@@ -10,21 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Get the source code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Setup Java (Crucial for Android Gradle builds)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # 3. Setup Flutter Environment
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           flutter-version: '3.19.0'
 
+      # 4. Cache dependencies to speed up future runs
       - name: Cache Flutter Pub
         uses: actions/cache@v3
         with:
@@ -33,36 +37,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-flutter-pub-
 
-      - name: Fix Dependencies and Install
+      # 5. Solve the telephony dependency issue and fetch packages
+      - name: Install Dependencies
         run: |
           flutter clean
           flutter pub add telephony:^0.2.0
           flutter pub get
 
-      - name: Prepare Android Project
+      # 6. Ensure SDK Versions are correct in build.gradle
+      # We keep this part as it doesn't touch the XML, but ensures the build API level is 34
+      - name: Configure Android SDK Versions
         run: |
-          # 1. Create android folder if it somehow disappeared
-          if [ ! -d "android" ]; then
-            flutter create . --platforms android
-          fi
-          
-          # 2. Update SDK versions using a more reliable pattern
           sed -i 's/minSdkVersion [0-9]*/minSdkVersion 23/' android/app/build.gradle
           sed -i 's/compileSdkVersion [0-9]*/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion [0-9]*/targetSdkVersion 34/' android/app/build.gradle
 
-          # 3. Safely Add SMS Permission
-          # We add it right after the opening <manifest> tag to avoid breaking the <application> block
-          MANIFEST_PATH="android/app/src/main/AndroidManifest.xml"
-          PERMISSION='<uses-permission android:name="android.permission.SEND_SMS" />'
-          
-          if ! grep -q "android.permission.SEND_SMS" "$MANIFEST_PATH"; then
-            sed -i "/<manifest/a \    $PERMISSION" "$MANIFEST_PATH"
-          fi
-
+      # 7. Run the APK build
       - name: Build Release APK
         run: flutter build apk --release
 
+      # 8. Save the resulting APK as a GitHub Artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
