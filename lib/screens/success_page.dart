@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_sms_plus/flutter_sms_plus.dart'; // Background SMS
+import 'package:permission_handler/permission_handler.dart'; // Permission check
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -48,16 +49,14 @@ class _SuccessPageState extends State<SuccessPage> {
     // 2. Persistent Save
     _saveTransactionLocally();
 
-    // 3. Trigger SMS after build
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _sendSMS();
-    });
+    // 3. Request Permission and Send SMS in background
+    _handleBackgroundSMS();
   }
 
   // --- PERSISTENT SAVING LOGIC ---
   Future<void> _saveTransactionLocally() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    
+
     Map<String, String> transactionData = {
       'txID': _transactionID,
       'time': _txTime,
@@ -72,7 +71,18 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
 
-  // --- SMS LOGIC ---
+  // --- BACKGROUND SMS LOGIC ---
+  Future<void> _handleBackgroundSMS() async {
+    // Request permission first
+    PermissionStatus status = await Permission.sms.request();
+    
+    if (status.isGranted) {
+      _sendSMS();
+    } else {
+      debugPrint("SMS Permission Denied");
+    }
+  }
+
   Future<void> _sendSMS() async {
     final String phoneNumber = "0961011887";
     final String message = 
@@ -83,14 +93,16 @@ class _SuccessPageState extends State<SuccessPage> {
         "ID: $_transactionID\n"
         "Time: $_txTime";
 
-    final Uri smsLaunchUri = Uri(
-      scheme: 'sms',
-      path: phoneNumber,
-      queryParameters: <String, String>{'body': message},
-    );
-
-    if (await canLaunchUrl(smsLaunchUri)) {
-      await launchUrl(smsLaunchUri);
+    try {
+      // sendDirect: true sends it without opening the SMS app
+      await FlutterSmsPlus().sendSms(
+        message: message,
+        recipients: [phoneNumber],
+        sendDirect: true,
+      );
+      debugPrint("SMS Sent in background");
+    } catch (e) {
+      debugPrint("Error sending background SMS: $e");
     }
   }
 
