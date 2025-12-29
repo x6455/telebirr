@@ -31,7 +31,7 @@ dependencies:
   permission_handler: ^11.3.1
 
   # SMS functionality - FIXED for Samsung S9+ (Android 10)
-  another_telephony: ^0.4.1
+  telephony: ^0.0.4+8
 
 dev_dependencies:
   flutter_test:
