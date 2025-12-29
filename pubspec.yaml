@@ -30,11 +30,8 @@ dependencies:
   shared_preferences: ^2.2.3
   permission_handler: ^11.3.1
 
-  # SMS functionality (Using Git fix for SmsManager error on Samsung S9+)
-  telephony:
-    git:
-      url: https://github.com/suhardik/Telephony.git
-      ref: fix-sms-controller-error
+  # SMS functionality (Fixed version for Samsung S9+ / Android 10)
+  another_telephony: ^0.4.1
 
 dev_dependencies:
   flutter_test:
