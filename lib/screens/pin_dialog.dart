@@ -105,39 +105,44 @@ class PinDialog {
                     ),
                     itemCount: 12,
                     itemBuilder: (context, index) {
-                      String label = "";
-                      bool isActionKey = false;
+  String label = "";
+  bool isActionKey = false;
+  bool isDisabled = false;
 
-                      if (index < 9) {
-                        label = "${index + 1}";
-                      } else if (index == 10) {
-                        label = "0";
-                      } else {
-                        label = "x";
-                        isActionKey = true;
-                      }
+  if (index < 9) {
+    // Indices 0-8: Numbers 1-9
+    label = "${index + 1}";
+  } else if (index == 9) {
+    // Index 9: Empty cell (bottom left)
+    isDisabled = true;
+  } else if (index == 10) {
+    // Index 10: Number 0 (bottom middle)
+    label = "0";
+  } else if (index == 11) {
+    // Index 11: Backspace (bottom right)
+    label = "x";
+    isActionKey = true;
+  }
 
-                      // Fix 1: Gray background for empty space (index 9) and X (index 11)
-                      bool isGrayBackground = (index == 9 || index == 11);
+  bool isGrayBackground = (index == 9 || index == 11);
 
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: isGrayBackground ? const Color(0xFFEEEEEE) : Colors.white,
-                          border: Border.all(color: Colors.grey.withOpacity(0.2), width: 0.5),
-                        ),
-                        child: TextButton(
-                          // Fix 3: No color/ripple on press
-                          style: TextButton.styleFrom(
-                            splashFactory: NoSplash.splashFactory,
-                            foregroundColor: Colors.black,
-                          ),
-                          onPressed: (index == 9) ? null : () => onKeyTap(label),
-                          child: label == "x"
-                              ? const Icon(Icons.backspace_outlined, color: Colors.black)
-                              : Text(label, style: const TextStyle(fontSize: 24, color: Colors.black)),
-                        ),
-                      );
-                    },
+  return Container(
+    decoration: BoxDecoration(
+      color: isGrayBackground ? const Color(0xFFEEEEEE) : Colors.white,
+      border: Border.all(color: Colors.grey.withOpacity(0.2), width: 0.5),
+    ),
+    child: TextButton(
+      style: TextButton.styleFrom(
+        splashFactory: NoSplash.splashFactory,
+        foregroundColor: Colors.black,
+      ),
+      onPressed: isDisabled ? null : () => onKeyTap(label),
+      child: label == "x"
+          ? const Icon(Icons.backspace_outlined, color: Colors.black)
+          : Text(label, style: const TextStyle(fontSize: 24, color: Colors.black)),
+    ),
+  );
+},
                   ),
                 ),
               ],
