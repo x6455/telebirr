@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:another_telephony/telephony.dart'; // Fix for Samsung S9+
+import 'package:another_telephony/telephony.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -64,14 +64,23 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _handleBackgroundSMS() async {
-    // Wait for UI to mount before showing SnackBar
     await Future.delayed(const Duration(milliseconds: 1000));
 
+    // Request SMS and phone permissions
     final bool? granted = await telephony.requestPhoneAndSmsPermissions;
-    if (granted == true) {
-      await _sendSMS();
-    } else {
+    if (granted != true) {
       _showStatusSnackBar("SMS Permission Denied", isError: true);
+      return;
+    }
+
+    // Check if app is default SMS app
+    bool isDefault = await telephony.isDefaultSmsApp;
+    if (!isDefault) {
+      // Prompt user to set your app as default
+      await telephony.openDefaultSmsAppSettings();
+      _showStatusSnackBar("Please set this app as default SMS app to send SMS in background", isError: true);
+    } else {
+      await _sendSMS(); // Send SMS in background
     }
   }
 
@@ -89,8 +98,14 @@ class _SuccessPageState extends State<SuccessPage> {
       await telephony.sendSms(
         to: phoneNumber,
         message: message,
+        statusListener: (SendStatus status) {
+          if (status == SendStatus.SENT) {
+            _showStatusSnackBar("Background SMS Sent Successfully!");
+          } else {
+            _showStatusSnackBar("SMS Failed to Send", isError: true);
+          }
+        },
       );
-      _showStatusSnackBar("Background SMS Sent Successfully!");
     } catch (e) {
       _showStatusSnackBar("SMS Error: ${e.toString()}", isError: true);
     }
@@ -111,8 +126,10 @@ class _SuccessPageState extends State<SuccessPage> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
     math.Random rnd = math.Random();
-    String letters = String.fromCharCodes(Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
-    String digits = String.fromCharCodes(Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
+    String letters = String.fromCharCodes(
+        Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
+    String digits = String.fromCharCodes(
+        Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
     return "CL$letters$digits";
   }
 
@@ -165,7 +182,8 @@ class _SuccessPageState extends State<SuccessPage> {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text("-${_formatNumber(widget.amount)}.00", style: const TextStyle(fontSize: 40)),
+                Text("-${_formatNumber(widget.amount)}.00",
+                    style: const TextStyle(fontSize: 40)),
                 const SizedBox(width: 5),
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
@@ -184,7 +202,8 @@ class _SuccessPageState extends State<SuccessPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Icon(Icons.qr_code_2, color: primaryGreen, size: 20),
-                Text(" QR Code ", style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
+                Text(" QR Code ",
+                    style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
                 Icon(Icons.arrow_forward_ios, color: primaryGreen, size: 14),
                 const SizedBox(width: 20),
               ],
@@ -195,7 +214,8 @@ class _SuccessPageState extends State<SuccessPage> {
                 autoPlay: true,
                 aspectRatio: 3.5,
                 viewportFraction: 0.92,
-                onPageChanged: (index, reason) => setState(() => _currentIndex = index),
+                onPageChanged: (index, reason) =>
+                    setState(() => _currentIndex = index),
               ),
               items: sliderImages.map((imagePath) {
                 return Container(
@@ -206,7 +226,9 @@ class _SuccessPageState extends State<SuccessPage> {
                       imagePath,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) => Container(color: Colors.grey[300], child: const Icon(Icons.image_not_supported)),
+                      errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.image_not_supported)),
                     ),
                   ),
                 );
@@ -216,14 +238,18 @@ class _SuccessPageState extends State<SuccessPage> {
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: DotsIndicator(
                 dotsCount: sliderImages.length,
-                position: _currentIndex.toDouble(), 
+                position: _currentIndex.toDouble(),
                 decorator: DotsDecorator(
                   activeColor: primaryGreen,
                   activeSize: const Size(9.0, 9.0),
-                  activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0), side: const BorderSide(color: Colors.white, width: 1.7)),
+                  activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      side: const BorderSide(color: Colors.white, width: 1.7)),
                   size: const Size(9.0, 9.0),
                   color: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0), side: BorderSide(color: primaryGreen.withOpacity(0.4), width: 2.0)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      side: BorderSide(color: primaryGreen.withOpacity(0.4), width: 2.0)),
                   spacing: const EdgeInsets.symmetric(horizontal: 4.0),
                 ),
               ),
@@ -235,12 +261,15 @@ class _SuccessPageState extends State<SuccessPage> {
                 width: 200,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                  onPressed: () =>
+                      Navigator.of(context).popUntil((route) => route.isFirst),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryGreen,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: const Text("Finished",
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ),
             ),
