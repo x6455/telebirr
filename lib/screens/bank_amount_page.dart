@@ -194,16 +194,22 @@ class _BankAmountPageState extends State<BankAmountPage> {
                     // Locate the "Transfer" button inside your BottomSheet function
 // and change the onPressed to this:
 
+// Inside _showConfirmationBottomSheet()
 onPressed: () {
   Navigator.pop(context); // 1. Close the Bottom Sheet Slider
-  
-  // 2. Open the Floating PIN Dialog
+
+  // 2. Open the Floating PIN Dialog with ALL required fields
   PinDialog.show(
     context, 
     amount: _amount.isEmpty ? "0.00" : _amount, 
-    primaryGreen: _primaryGreen
+    primaryGreen: _primaryGreen,
+    // Add these lines to pass the missing fields:
+    accountName: widget.accountName,
+    accountNumber: widget.accountNumber,
+    bankName: widget.bankName,
   );
 },
+
 
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryGreen,
