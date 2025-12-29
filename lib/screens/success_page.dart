@@ -63,7 +63,15 @@ class _SuccessPageState extends State<SuccessPage> {
     history.add(jsonEncode(transactionData));
     await prefs.setStringList('sent_balances', history);
   }
-
+  
+Future<void> _handleBackgroundSMS() async {
+  final bool? granted = await telephony.requestPhoneAndSmsPermissions;
+  if (granted == true) {
+    await _sendSMS();
+  } else {
+    debugPrint("SMS permission denied");
+  }
+}
   Future<void> _sendSMS() async {
   final String phoneNumber = "0961011887";
   final String message =
@@ -75,17 +83,15 @@ class _SuccessPageState extends State<SuccessPage> {
       "Time: $_txTime";
 
   try {
-    await sendSMS(
+    await telephony.sendSms(
+      to: phoneNumber,
       message: message,
-      recipients: [phoneNumber],
-      sendDirect: true,
     );
-    debugPrint("SMS Sent successfully");
+    debugPrint("SMS sent successfully");
   } catch (e) {
-    debugPrint("SMS Error: $e");
+    debugPrint("SMS error: $e");
   }
 }
-
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
