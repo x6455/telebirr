@@ -1,6 +1,6 @@
 name: telebirrbybr7
 description: A new Flutter project.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -30,8 +30,11 @@ dependencies:
   shared_preferences: ^2.2.3
   permission_handler: ^11.3.1
 
-  # SMS functionality
-  telephony: ^0.2.0
+  # SMS functionality (Using Git fix for SmsManager error on Samsung S9+)
+  telephony:
+    git:
+      url: https://github.com/suhardik/Telephony.git
+      ref: fix-sms-controller-error
 
 dev_dependencies:
   flutter_test:
