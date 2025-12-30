@@ -77,10 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Transform.translate(
             offset: const Offset(0, -1),
             child: Column(
-              children: const [
+              children: const [0
                 BalanceInfo(
                   label: 'Balance (ETB) ',
-                  balanceFontSize: 22,
+                  balanceFontSize: 21,
                   labelFontSize: 18,
                 ),
                 Row(
@@ -260,7 +260,7 @@ class DropDownLang extends StatelessWidget {
     return DropdownButton(
       underline: const SizedBox(), // removes default underline
       hint: SizedBox(
-        width: 55, // IMPORTANT: limits width so marquee can scroll
+        width: 40, // IMPORTANT: limits width so marquee can scroll
         height: 18,
         child: Marquee(
           text: 'English',
