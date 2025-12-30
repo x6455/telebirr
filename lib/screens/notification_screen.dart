@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:telebirrbybr7/screens/transaction_messages_screen.dart'; // Ensure this path is correct
+import 'package:telebirrbybr7/screens/transaction_messages_screen.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const Color brandGreen = Color(0xFF8DC73F);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -18,7 +20,7 @@ class NotificationScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.white,
-        elevation: 0.5, // Subtle shadow as seen in the screenshot
+        elevation: 0.5,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
@@ -28,17 +30,17 @@ class NotificationScreen extends StatelessWidget {
         children: [
           _NotificationTile(
             icon: Icons.settings_outlined,
-            color: const Color(0xFF2196F3), // System Blue
+            color: const Color(0xFF2196F3),
             title: 'System Information',
-            onTap: () {
-              // Navigation for System Info can be added here
-            },
+            arrowColor: brandGreen,
+            onTap: () {},
           ),
-          const Divider(height: 1, indent: 70),
+          Divider(height: 1, indent: 70, color: Colors.grey.withOpacity(0.2)), // Added Opacity
           _NotificationTile(
             icon: Icons.mail_outline,
-            color: const Color(0xFF4CAF50), // Transaction Green
+            color: const Color(0xFF4CAF50),
             title: 'Transaction Message',
+            arrowColor: brandGreen,
             onTap: () {
               Navigator.push(
                 context,
@@ -48,16 +50,15 @@ class NotificationScreen extends StatelessWidget {
               );
             },
           ),
-          const Divider(height: 1, indent: 70),
+          Divider(height: 1, indent: 70, color: Colors.grey.withOpacity(0.2)), // Added Opacity
           _NotificationTile(
-            icon: Icons.percent_outlined, // Matches the % icon in screenshot
-            color: const Color(0xFFFFA726), // Promotion Orange
+            icon: Icons.percent_outlined,
+            color: const Color(0xFFFFA726),
             title: 'Promotion News',
-            onTap: () {
-              // Navigation for Promotion News can be added here
-            },
+            arrowColor: brandGreen,
+            onTap: () {},
           ),
-          const Divider(height: 1, indent: 70),
+          Divider(height: 1, indent: 70, color: Colors.grey.withOpacity(0.2)), // Added Opacity
         ],
       ),
     );
@@ -68,6 +69,7 @@ class _NotificationTile extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String title;
+  final Color arrowColor;
   final VoidCallback onTap;
 
   const _NotificationTile({
@@ -75,6 +77,7 @@ class _NotificationTile extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.title,
+    required this.arrowColor,
     required this.onTap,
   });
 
@@ -99,9 +102,9 @@ class _NotificationTile extends StatelessWidget {
           fontWeight: FontWeight.w400,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.arrow_forward_ios, 
-        color: Color(0xFFBDBDBD), // Light grey arrow
+        color: arrowColor, // Changed to Green
         size: 14,
       ),
     );
