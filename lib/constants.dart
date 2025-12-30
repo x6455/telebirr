@@ -11,13 +11,13 @@ List<String> topGridLabel = [
   'Transfer to Bank'
 ];
 List<String> bottomGridLabel = [
+  'YeGena Chewata',
   'Financial Service With Awash',
   'Pay for Merchant',
   'Tele Device Financing',
   'TeleEV Charging',
   'Ethio Lottery',
   'Hidase Gebya Christmas Expo 2018',
-  'NID (Fyda) Printing',
   'More'
 ];
 
