@@ -18,13 +18,17 @@ class NotificationService {
     required String amount,
   }) async {
     const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-      'transfer_channel',
-      'Transfers',
-      channelDescription: 'Bank transfer notifications',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
+    AndroidNotificationDetails(
+  'transfer_channel',
+  'Transfers',
+  channelDescription: 'Bank transfer notifications',
+  importance: Importance.high,
+  priority: Priority.high,
+
+  // 🔔 Enable sound & vibration
+  playSound: true,
+  enableVibration: true,
+);
 
     const NotificationDetails details =
         NotificationDetails(android: androidDetails);
