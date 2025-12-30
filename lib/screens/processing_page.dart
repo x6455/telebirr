@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'success_page.dart';
+import 'package:telebirrbybr7/services/notification_service.dart';
+
 
 class ProcessingPage extends StatefulWidget {
   final String amount;
@@ -41,8 +43,7 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
   _animationController.forward();
 
 
-    // 2. Auto-navigate to SuccessPage after 2 seconds
-    Timer(const Duration(seconds: 2), () async {
+  Timer(const Duration(seconds: 2), () async {
   if (!mounted) return;
 
   // 🔔 Show system notification
@@ -50,7 +51,7 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
     amount: widget.amount,
   );
 
-  // ➡ Navigate to success screen
+  // ➡ Navigate to success page
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
@@ -63,7 +64,6 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
     ),
   );
 });
-);
   }
 
   @override
