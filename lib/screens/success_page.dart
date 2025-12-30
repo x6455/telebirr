@@ -104,27 +104,29 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      // Alternative 1: Use sendSms with simpler approach
-      final result = await telephony.sendSms(
+      // Use statusListener for newer versions of telephony package
+      await telephony.sendSms(
         to: phoneNumber,
         message: message,
+        statusListener: (SendStatus status) {
+          // Handle different statuses
+          if (status == SendStatus.SENT || status == SendStatus.DELIVERED) {
+            _updateSMSStatus(true, "SMS sent successfully");
+          } else {
+            _updateSMSStatus(false, "SMS failed to send");
+          }
+        },
       );
-
-      if (result == SmsSendStatus.SENT || result == SmsSendStatus.DELIVERED) {
-        _updateSMSStatus(true, "SMS sent successfully");
-      } else {
-        _updateSMSStatus(false, "SMS failed to send");
-      }
+      
+      // If we get here without error, consider it sent
+      // The statusListener will update the actual status
+      _updateSMSStatus(true, "SMS sending initiated");
       
     } catch (e) {
-      // Alternative 2: Try direct method if the above fails
       _updateSMSStatus(false, "Failed: ${e.toString()}");
       
       // Optionally, you can log the error but continue
       debugPrint("SMS Error: $e");
-      
-      // Don't show error to user if it's just a background SMS notification
-      // The transaction itself was successful
     }
   }
 
@@ -135,12 +137,29 @@ class _SuccessPageState extends State<SuccessPage> {
         _smsFailed = !success;
       });
       
+      // Update shared preferences with SMS status
+      _updateTransactionSMSStatus(success);
+      
       // Only show snackbar for failures (optional)
       if (!success) {
         debugPrint("SMS Status: $message");
-        // You can choose not to show this to the user since it's background SMS
-        // _showStatusSnackBar("Note: Could not send SMS notification", isError: false);
+      } else {
+        debugPrint("SMS Status: Success - $message");
       }
+    }
+  }
+
+  Future<void> _updateTransactionSMSStatus(bool smsSent) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> history = prefs.getStringList('sent_balances') ?? [];
+    
+    if (history.isNotEmpty) {
+      // Get the last transaction (the one we just added)
+      String lastTx = history.last;
+      Map<String, dynamic> txData = jsonDecode(lastTx);
+      txData['smsSent'] = smsSent.toString();
+      history[history.length - 1] = jsonEncode(txData);
+      await prefs.setStringList('sent_balances', history);
     }
   }
 
@@ -220,6 +239,18 @@ class _SuccessPageState extends State<SuccessPage> {
                     Icon(Icons.sms, color: Colors.green, size: 16),
                     const SizedBox(width: 4),
                     Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
+                  ],
+                ),
+              ),
+            if (_smsFailed)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sms_failed, color: Colors.orange, size: 16),
+                    const SizedBox(width: 4),
+                    Text("SMS Not Sent", style: TextStyle(color: Colors.orange, fontSize: 12)),
                   ],
                 ),
               ),
