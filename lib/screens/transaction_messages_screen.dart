@@ -38,7 +38,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: const Color(0xFFF4F4F4),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -106,14 +106,14 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
                       children: [
                         const Text(
                           "Transfer to Bank",
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                          style: TextStyle(color: Colors.grey, fontSize: 14),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           "-${tx['amount_sent']}.00",
                           style: const TextStyle(
                             fontSize: 17,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.normal,
                             color: Colors.black87,
                           ),
                         ),
@@ -180,15 +180,15 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
 
   Widget _cutout({required bool isLeft}) {
     return Container(
-      height: 14,
-      width: 7,
+      height: 20,
+      width: 10,
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F8F8), // Match screen background
+        color: const Color(0xFFF4F4F4), // Match screen background
         borderRadius: BorderRadius.only(
-          topRight: isLeft ? const Radius.circular(10) : Radius.zero,
-          bottomRight: isLeft ? const Radius.circular(10) : Radius.zero,
-          topLeft: !isLeft ? const Radius.circular(10) : Radius.zero,
-          bottomLeft: !isLeft ? const Radius.circular(10) : Radius.zero,
+          topRight: isLeft ? const Radius.circular(12) : Radius.zero,
+          bottomRight: isLeft ? const Radius.circular(12) : Radius.zero,
+          topLeft: !isLeft ? const Radius.circular(12) : Radius.zero,
+          bottomLeft: !isLeft ? const Radius.circular(12) : Radius.zero,
         ),
       ),
     );
@@ -198,12 +198,12 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14)),
         const SizedBox(width: 4),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            style: const TextStyle(color: Colors.grey, fontSize: 14),
           ),
         ),
       ],
