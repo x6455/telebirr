@@ -85,7 +85,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(8), // match your card's radius
       child: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
+        margin: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
@@ -197,7 +197,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
   Widget _cutout({required bool isLeft}) {
     return Container(
       height: 20,
-      width: 15,
+      width: 13,
       decoration: BoxDecoration(
         color: const Color(0xFFF4F4F4), // Match screen background
         borderRadius: BorderRadius.only(
