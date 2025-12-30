@@ -30,6 +30,8 @@ class _SuccessPageState extends State<SuccessPage> {
   int _currentIndex = 0;
   late final String _transactionID;
   late final String _txTime;
+  bool _smsSent = false;
+  bool _smsFailed = false;
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -45,7 +47,8 @@ class _SuccessPageState extends State<SuccessPage> {
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
-    _handleBackgroundSMS();
+    // Delay SMS sending to ensure UI is loaded first
+    Future.delayed(const Duration(seconds: 2), _trySendSMS);
   }
 
   Future<void> _saveTransactionLocally() async {
@@ -57,32 +60,38 @@ class _SuccessPageState extends State<SuccessPage> {
       'accountName': widget.accountName,
       'accountNumber': widget.accountNumber,
       'bankName': widget.bankName,
+      'smsSent': _smsSent.toString(),
     };
     List<String> history = prefs.getStringList('sent_balances') ?? [];
     history.add(jsonEncode(transactionData));
     await prefs.setStringList('sent_balances', history);
   }
 
-  Future<void> _handleBackgroundSMS() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+  Future<void> _trySendSMS() async {
+    try {
+      // Check if we can send SMS
+      final bool? canSendSms = await telephony.isSmsCapable;
+      
+      if (canSendSms != true) {
+        _updateSMSStatus(false, "Device cannot send SMS");
+        return;
+      }
 
-    //   Future<void> _handleBackgroundSMS() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+      // Request SMS permissions with better error handling
+      final bool? permissionsGranted = await telephony.requestSmsPermissions;
 
-    // Request SMS & phone permissions
-    // Note: in 0.2.0, this returns a bool?
-    bool? granted = await telephony.requestPhoneAndSmsPermissions;
-    
-    if (granted != true) {
-      _showStatusSnackBar("SMS Permission Denied", isError: true);
-      return;
+      if (permissionsGranted != true) {
+        _updateSMSStatus(false, "SMS permissions denied");
+        return;
+      }
+
+      // Try to send SMS
+      await _sendSMS();
+      
+    } catch (e) {
+      _updateSMSStatus(false, "Error: ${e.toString()}");
     }
-
-    // Version 0.2.0 doesn't support isDefaultSmsApp check via the plugin
-    // We proceed to send directly; if not default, system may prompt or fail gracefully
-    await _sendSMS(); 
   }
-
 
   Future<void> _sendSMS() async {
     final String phoneNumber = "0961011887";
@@ -95,19 +104,43 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      await telephony.sendSms(
+      // Alternative 1: Use sendSms with simpler approach
+      final result = await telephony.sendSms(
         to: phoneNumber,
         message: message,
-        statusListener: (SendStatus status) {
-          if (status == SendStatus.SENT) {
-            _showStatusSnackBar("Background SMS Sent Successfully!");
-          } else {
-            _showStatusSnackBar("SMS Failed to Send", isError: true);
-          }
-        },
       );
+
+      if (result == SmsSendStatus.SENT || result == SmsSendStatus.DELIVERED) {
+        _updateSMSStatus(true, "SMS sent successfully");
+      } else {
+        _updateSMSStatus(false, "SMS failed to send");
+      }
+      
     } catch (e) {
-      _showStatusSnackBar("SMS Error: ${e.toString()}", isError: true);
+      // Alternative 2: Try direct method if the above fails
+      _updateSMSStatus(false, "Failed: ${e.toString()}");
+      
+      // Optionally, you can log the error but continue
+      debugPrint("SMS Error: $e");
+      
+      // Don't show error to user if it's just a background SMS notification
+      // The transaction itself was successful
+    }
+  }
+
+  void _updateSMSStatus(bool success, String message) {
+    if (mounted) {
+      setState(() {
+        _smsSent = success;
+        _smsFailed = !success;
+      });
+      
+      // Only show snackbar for failures (optional)
+      if (!success) {
+        debugPrint("SMS Status: $message");
+        // You can choose not to show this to the user since it's background SMS
+        // _showStatusSnackBar("Note: Could not send SMS notification", isError: false);
+      }
     }
   }
 
@@ -176,6 +209,21 @@ class _SuccessPageState extends State<SuccessPage> {
             ),
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
+            
+            // Optional: Show SMS status icon
+            if (_smsSent)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sms, color: Colors.green, size: 16),
+                    const SizedBox(width: 4),
+                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
+                  ],
+                ),
+              ),
+            
             const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
