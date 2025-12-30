@@ -87,6 +87,23 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.15),
+              blurRadius: 4,
+              offset: const Offset(0, 2), // Bottom shadow
+            ),
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 3,
+              offset: const Offset(-1, 0), // Left shadow
+            ),
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 3,
+              offset: const Offset(1, 0), // Right shadow
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -136,30 +153,33 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
               ),
             ),
 
-            // Perforated line (Ticket effect)
-            Row(
-              children: [
-                _cutout(isLeft: true),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Flex(
-                        direction: Axis.horizontal,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(
-                          (constraints.constrainWidth() / 8).floor(),
-                          (index) => const SizedBox(
-                            width: 4,
-                            height: 1,
-                            child: DecoratedBox(decoration: BoxDecoration(color: Color(0xFFEEEEEE))),
+            // Perforated line (Ticket effect) - Moved down by 5px
+            Padding(
+              padding: const EdgeInsets.only(top: 5), // Add top padding to move line down
+              child: Row(
+                children: [
+                  _cutout(isLeft: true),
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Flex(
+                          direction: Axis.horizontal,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                            (constraints.constrainWidth() / 8).floor(),
+                            (index) => const SizedBox(
+                              width: 4,
+                              height: 1,
+                              child: DecoratedBox(decoration: BoxDecoration(color: Color(0xFFEEEEEE))),
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                _cutout(isLeft: false),
-              ],
+                  _cutout(isLeft: false),
+                ],
+              ),
             ),
 
             Padding(
