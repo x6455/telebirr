@@ -9,7 +9,7 @@ class TransactionDetailScreen extends StatelessWidget {
   // Function to trigger the Node.js server
   Future<void> _handleGetReceipt() async {
     // Note: Use '10.0.2.2' for Android Emulator, or your local IP for physical devices
-    final String baseUrl = "http://10.0.2.2:3000/generate-receipt";
+    final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
     
     final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
       'txID': txData['txID'] ?? "N/A",
@@ -90,7 +90,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       const SizedBox(height: 1),
                       const Text(
                         "Get Receipt", 
-                        style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold)
+                        style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.normal)
                       ),
                     ],
                   ),
