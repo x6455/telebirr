@@ -64,8 +64,8 @@ class TransactionDetailScreen extends StatelessWidget {
                   children: [
                     Image.asset(
                       'images/receipt.jpg', // Receipt icon
-                      width: 40,
-                      height: 40,
+                      width: 45,
+                      height: 45,
                      
                     ),
                     const SizedBox(height: 5),
@@ -92,7 +92,7 @@ class TransactionDetailScreen extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: Colors.grey[600], 
+                color: Colors.grey[900], 
                 fontSize: 16,
                 fontWeight: FontWeight.w100,
               ),
@@ -115,7 +115,7 @@ class TransactionDetailScreen extends StatelessWidget {
         child: Divider(
           height: 1,
           thickness: 1,
-          color: Colors.grey[200],
+          color: Colors.grey[300],
         ),
       ),
     ],
