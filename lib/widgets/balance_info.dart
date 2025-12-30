@@ -84,17 +84,18 @@ class _BalanceInfoState extends State<BalanceInfo> {
             ),
           ],
         ),
-        const SizedBox(height: 2),
+        const SizedBox(height: 1),
         Text(
-          balance,
-          textAlign:
-              isMainBalance ? TextAlign.center : TextAlign.start,
-          style: GoogleFonts.roboto(
-            fontSize: widget.balanceFontSize,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+  balance,
+  textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
+  style: GoogleFonts.roboto(
+    fontSize: widget.balanceFontSize,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+    letterSpacing: -1.5, // <-- negative value brings characters closer
+  ),
+),
+
       ],
     );
   }
