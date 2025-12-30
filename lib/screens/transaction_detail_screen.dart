@@ -55,7 +55,7 @@ class TransactionDetailScreen extends StatelessWidget {
             _buildDetailTile("Transaction Status", "Completed"),
             _buildDetailTile("Service Charge", "0.00 (ETB)"), // Assuming 0 or calculate if needed
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Align(
@@ -68,7 +68,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       height: 50,
                      
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 1),
                     const Text("Get Receipt", style: TextStyle(fontSize: 16)),
                   ],
                 ),
@@ -94,10 +94,10 @@ class TransactionDetailScreen extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey[1000], 
                 fontSize: 16,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 5),
             Text(
               value,
               style: const TextStyle(
