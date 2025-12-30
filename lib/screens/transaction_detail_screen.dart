@@ -92,9 +92,9 @@ class TransactionDetailScreen extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: Colors.grey[900], 
+                color: Colors.grey[1000], 
                 fontSize: 16,
-                fontWeight: FontWeight.w200,
+                fontWeight: FontWeight.w400,
               ),
             ),
             const SizedBox(height: 8),
@@ -115,7 +115,7 @@ class TransactionDetailScreen extends StatelessWidget {
         child: Divider(
           height: 1,
           thickness: 1,
-          color: Colors.grey[300],
+          color: Colors.grey[400],
         ),
       ),
     ],
