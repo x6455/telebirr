@@ -62,8 +62,8 @@ class TransactionDetailScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Column(
                   children: [
-                    Image.network(
-                      'https://cdn-icons-png.flaticon.com/512/1611/1611179.png', // Receipt icon
+                    Image.asset(
+                      'receipt.jpg', // Receipt icon
                       width: 40,
                       height: 40,
                       color: Colors.lightGreen,
@@ -71,7 +71,7 @@ class TransactionDetailScreen extends StatelessWidget {
                         const Icon(Icons.receipt_long, color: Colors.lightGreen, size: 40),
                     ),
                     const SizedBox(height: 5),
-                    const Text("Get Receipt", style: TextStyle(fontSize: 14)),
+                    const Text("Get Receipt", style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
@@ -83,30 +83,45 @@ class TransactionDetailScreen extends StatelessWidget {
   }
 
   Widget _buildDetailTile(String title, String value) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(color: Colors.grey, fontSize: 14),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Color(0xFF0077B6), // Light blue color from screenshot
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
+  return Column(
+    children: [
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.grey, 
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(
+                color: Color(0xFF0077B6),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
       ),
-    );
-  }
+      // Divider with same left offset
+      Container(
+        margin: const EdgeInsets.only(left: 20), // Same offset as the text
+        child: Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.grey[600],
+        ),
+      ),
+    ],
+  );
+}
+
 }
