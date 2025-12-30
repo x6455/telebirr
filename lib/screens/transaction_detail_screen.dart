@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TransactionDetailScreen extends StatelessWidget {
   final Map<String, dynamic> txData;
 
   const TransactionDetailScreen({super.key, required this.txData});
 
+  // Function to trigger the Node.js server
+  Future<void> _handleGetReceipt() async {
+    // Note: Use '10.0.2.2' for Android Emulator, or your local IP for physical devices
+    final String baseUrl = "http://10.0.2.2:3000/generate-receipt";
+    
+    final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
+      'txID': txData['txID'] ?? "N/A",
+      'time': txData['time'] ?? "",
+      'amount': txData['amount_sent'].toString(),
+      'bankName': txData['bankName'] ?? "Bank Transfer",
+    });
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not launch $url");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    const Color brandBlue = Color(0xFF0077B6);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -53,24 +71,29 @@ class TransactionDetailScreen extends StatelessWidget {
             _buildDetailTile("Transaction To", txData['bankName'] ?? ""),
             _buildDetailTile("Transaction Amount", "-${txData['amount_sent']}.00 (ETB)"),
             _buildDetailTile("Transaction Status", "Completed"),
-            _buildDetailTile("Service Charge", "0.00 (ETB)"), // Assuming 0 or calculate if needed
+            _buildDetailTile("Service Charge", "0.00 (ETB)"),
 
             const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.only(left: 20.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'images/receipt.jpg', // Receipt icon
-                      width: 50,
-                      height: 50,
-                     
-                    ),
-                    const SizedBox(height: 1),
-                    const Text("Get Receipt", style: TextStyle(fontSize: 16)),
-                  ],
+                child: InkWell(
+                  onTap: _handleGetReceipt, // Click to get receipt
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'images/receipt.jpg',
+                        width: 50,
+                        height: 50,
+                      ),
+                      const SizedBox(height: 1),
+                      const Text(
+                        "Get Receipt", 
+                        style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold)
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -81,45 +104,31 @@ class TransactionDetailScreen extends StatelessWidget {
   }
 
   Widget _buildDetailTile(String title, String value) {
-  return Column(
-    children: [
-      Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.grey[800], 
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(color: Colors.grey[800], fontSize: 16, fontWeight: FontWeight.w500),
               ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Color(0xFF0077B6),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+              const SizedBox(height: 5),
+              Text(
+                value,
+                style: const TextStyle(color: Color(0xFF0077B6), fontSize: 16, fontWeight: FontWeight.w400),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      // Divider with same left offset
-      Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20), // Same offset as the text
-        child: Divider(
-          height: 1,
-          thickness: 1,
-          color: Colors.grey[400],
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          child: Divider(height: 1, thickness: 1, color: Colors.grey[400]),
         ),
-      ),
-    ],
-  );
-}
-
+      ],
+    );
+  }
 }
