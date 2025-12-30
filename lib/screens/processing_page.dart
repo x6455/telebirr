@@ -22,28 +22,24 @@ class ProcessingPage extends StatefulWidget {
 
 class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<Offset> _slideAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // 1. Setup the Slide Animation
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600), // Speed of the slide
-    );
+   _animationController = AnimationController(
+  vsync: this,
+  duration: const Duration(milliseconds: 500),
+  );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(-1.5, 0.0), // Start far left off-screen
-      end: Offset.zero,               // End at original position
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack, // Gives it a slight "bounce" effect
-    ));
+  _scaleAnimation = CurvedAnimation(
+  parent: _animationController,
+  curve: Curves.easeOutCubic, // smooth, no bounce
+  );
 
-    // Start the animation immediately
-    _animationController.forward();
+  _animationController.forward();
+
 
     // 2. Auto-navigate to SuccessPage after 2 seconds
     Timer(const Duration(seconds: 2), () {
@@ -79,9 +75,13 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
         child: Column(
           children: [
             // --- ANIMATED TOP BANNER ---
-            SlideTransition(
-              position: _slideAnimation,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ScaleTransition(
+              scale: _scaleAnimation,
+              alignment: Alignment.centerLeft, // 👈 IMPORTANT
               child: Container(
+
                 width: double.infinity,
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
