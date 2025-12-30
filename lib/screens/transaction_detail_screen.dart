@@ -63,7 +63,7 @@ class TransactionDetailScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Image.asset(
-                      'receipt.jpg', // Receipt icon
+                      'images/receipt.jpg', // Receipt icon
                       width: 40,
                       height: 40,
                      
@@ -92,9 +92,9 @@ class TransactionDetailScreen extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                color: Colors.grey[400], 
+                color: Colors.grey[600], 
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w100,
               ),
             ),
             const SizedBox(height: 8),
@@ -111,11 +111,11 @@ class TransactionDetailScreen extends StatelessWidget {
       ),
       // Divider with same left offset
       Container(
-        margin: const EdgeInsets.only(left: 20, right: 20), // Same offset as the text
+        margin: const EdgeInsets.only(horizontal: 20), // Same offset as the text
         child: Divider(
           height: 1,
           thickness: 1,
-          color: Colors.grey[300],
+          color: Colors.grey[200],
         ),
       ),
     ],
