@@ -228,29 +228,24 @@ class ImageSliderIndicator extends StatelessWidget {
         dotsCount: carouselImages.length,
         position: _currentIndex.toDouble(),
         decorator: DotsDecorator(
-          // ACTIVE DOT (solid dot inside a hole)
-          activeColor: const Color.fromRGBO(141, 199, 63, 1),
-          activeSize: const Size(9.0, 9.0),
-          activeShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.0),
-            side: const BorderSide(
-              color: Color.fromRGBO(245, 245, 245, 1), // background color
-              width: 1.7,
-            ),
-          ),
+          activeColor: const Color.fromRGBO(141, 199, 63, 1), // Green dot inside
+activeSize: const Size(5.0, 5.0), // Smaller dot inside the ring
+activeShape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(2.5),
+),
 
-          // INACTIVE DOTS (hollow rings)
-          size: const Size(9.0, 9.0),
-          color: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0),
-            side: const BorderSide(
-              color: Color.fromRGBO(141, 199, 63, 1),
-              width: 2.0,
-            ),
-          ),
+// INACTIVE DOTS (rings/holes)
+size: const Size(9.0, 9.0), // Keep your original size
+color: Colors.transparent,
+shape: RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(4.5), // Half of 9.0
+  side: const BorderSide(
+    color: Color.fromRGBO(141, 199, 63, 1),
+    width: 1.0, // Keep your 1px border
+  ),
+),
 
-          spacing: const EdgeInsets.symmetric(horizontal: 4.0),
+spacing: const EdgeInsets.symmetric(horizontal: 8.0), 
         ),
       ),
     );
