@@ -92,7 +92,7 @@ class TransactionDetailScreen extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                color: Colors.grey[900], 
+                color: Colors.grey[800], 
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
