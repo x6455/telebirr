@@ -92,9 +92,9 @@ class TransactionDetailScreen extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                color: Colors.grey, 
+                color: Colors.grey[400], 
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 8),
@@ -111,11 +111,11 @@ class TransactionDetailScreen extends StatelessWidget {
       ),
       // Divider with same left offset
       Container(
-        margin: const EdgeInsets.only(left: 20), // Same offset as the text
+        margin: const EdgeInsets.only(left: 20, right: 20), // Same offset as the text
         child: Divider(
           height: 1,
           thickness: 1,
-          color: Colors.grey[600],
+          color: Colors.grey[300],
         ),
       ),
     ],
