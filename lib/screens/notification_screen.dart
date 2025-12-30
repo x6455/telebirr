@@ -97,7 +97,7 @@ class _NotificationTile extends StatelessWidget {
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 15, 
+          fontSize: 16, 
           color: Colors.black87,
           fontWeight: FontWeight.w400,
         ),
