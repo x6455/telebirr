@@ -66,9 +66,7 @@ class TransactionDetailScreen extends StatelessWidget {
                       'receipt.jpg', // Receipt icon
                       width: 40,
                       height: 40,
-                      color: Colors.lightGreen,
-                      errorBuilder: (context, error, stackTrace) => 
-                        const Icon(Icons.receipt_long, color: Colors.lightGreen, size: 40),
+                     
                     ),
                     const SizedBox(height: 5),
                     const Text("Get Receipt", style: TextStyle(fontSize: 16)),
