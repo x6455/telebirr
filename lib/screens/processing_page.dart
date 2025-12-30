@@ -3,7 +3,6 @@ import 'dart:async';
 import 'success_page.dart';
 import 'package:telebirrbybr7/services/notification_service.dart';
 
-
 class ProcessingPage extends StatefulWidget {
   final String amount;
   final String accountName;
@@ -22,7 +21,8 @@ class ProcessingPage extends StatefulWidget {
   State<ProcessingPage> createState() => _ProcessingPageState();
 }
 
-class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProviderStateMixin {
+class _ProcessingPageState extends State<ProcessingPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
@@ -30,41 +30,38 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
   void initState() {
     super.initState();
 
-   _animationController = AnimationController(
-  vsync: this,
-  duration: const Duration(milliseconds: 700),
-  );
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
 
-  _scaleAnimation = CurvedAnimation(
-  parent: _animationController,
-  curve: Curves.easeOutCubic, // smooth, no bounce
-  );
+    _scaleAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    );
 
-  _animationController.forward();
+    _animationController.forward();
 
+    Timer(const Duration(seconds: 2), () async {
+      if (!mounted) return;
 
-  Timer(const Duration(seconds: 2), () async {
-  if (!mounted) return;
-
-  // 🔔 Show system notification
-  await NotificationService.showTransferSuccess(
-    amount: widget.amount,
-  );
-
-  // ➡ Navigate to success page
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(
-      builder: (context) => SuccessPage(
+      await NotificationService.showTransferSuccess(
         amount: widget.amount,
-        accountName: widget.accountName,
-        accountNumber: widget.accountNumber,
-        bankName: widget.bankName,
-      ),
-    ),
-  );
-});
-  }
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SuccessPage(
+            amount: widget.amount,
+            accountName: widget.accountName,
+            accountNumber: widget.accountNumber,
+            bankName: widget.bankName,
+          ),
+        ),
+      );
+    });
+  } // ✅ initState ends HERE
 
   @override
   void dispose() {
@@ -85,36 +82,41 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
             Align(
               alignment: Alignment.centerLeft,
               child: ScaleTransition(
-              scale: _scaleAnimation,
-              alignment: Alignment.centerLeft, // 👈 IMPORTANT
-              child: Container(
-
-                width: double.infinity,
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF222222),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "Transfer to Bank",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "Transfer to Bank Success for -${widget.amount}.00",
-                      style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13),
-                    ),
-                  ],
+                scale: _scaleAnimation,
+                alignment: Alignment.centerLeft,
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF222222),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Transfer to Bank",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Transfer to Bank Success for -${widget.amount}.00",
+                        style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-            
+
             const SizedBox(height: 40),
 
             // Processing Icon and Text
@@ -123,37 +125,46 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
                 CircleAvatar(
                   radius: 30,
                   backgroundColor: primaryGreen,
-                  child: const Icon(Icons.access_time, color: Colors.white, size: 35),
+                  child: const Icon(Icons.access_time,
+                      color: Colors.white, size: 35),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "Processing",
-                  style: TextStyle(color: primaryGreen, fontSize: 18, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      color: primaryGreen,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500),
                 ),
               ],
             ),
 
             const SizedBox(height: 60),
-            const Divider(indent: 30, endIndent: 30, color: Color(0xFFEEEEEE)),
+            const Divider(
+                indent: 30, endIndent: 30, color: Color(0xFFEEEEEE)),
 
             const Spacer(),
 
-            // Bottom Finished Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
               child: SizedBox(
                 width: 200,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {}, 
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryGreen,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
                   ),
                   child: const Text(
                     "Finished",
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
