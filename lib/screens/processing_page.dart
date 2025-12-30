@@ -30,7 +30,7 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
 
    _animationController = AnimationController(
   vsync: this,
-  duration: const Duration(milliseconds: 500),
+  duration: const Duration(milliseconds: 700),
   );
 
   _scaleAnimation = CurvedAnimation(
@@ -42,21 +42,28 @@ class _ProcessingPageState extends State<ProcessingPage> with SingleTickerProvid
 
 
     // 2. Auto-navigate to SuccessPage after 2 seconds
-    Timer(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SuccessPage(
-              amount: widget.amount,
-              accountName: widget.accountName,
-              accountNumber: widget.accountNumber,
-              bankName: widget.bankName,
-            ),
-          ),
-        );
-      }
-    });
+    Timer(const Duration(seconds: 2), () async {
+  if (!mounted) return;
+
+  // 🔔 Show system notification
+  await NotificationService.showTransferSuccess(
+    amount: widget.amount,
+  );
+
+  // ➡ Navigate to success screen
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SuccessPage(
+        amount: widget.amount,
+        accountName: widget.accountName,
+        accountNumber: widget.accountNumber,
+        bankName: widget.bankName,
+      ),
+    ),
+  );
+});
+);
   }
 
   @override
