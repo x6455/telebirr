@@ -239,27 +239,27 @@ showDialog(
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: [
-                    _buildBankItem("Abay Bank", "images/abay.jpg"),
-                    _buildBankItem("Addis Bank S.C.", "images/addis.jpg"),
-                    _buildBankItem("Ahadu Bank", "images/ahadu.jpg"),
-                    _buildBankItem("Amhara Bank", "images/amara.jpg"),
-                    _buildBankItem("Awash Bank", "images/Awash.png"),
-                    _buildBankItem("Bank of Abyssinia", "images/abyssinia.jpg"),
-                    _buildBankItem("Berhan Bank", "images/berhan.jpg"),
-                    _buildBankItem("Bunna Bank", "images/bunna.jpg"),
-                    _buildBankItem("Commercial Bank of Ethiopia", "images/cbe.png"),
-                    _buildBankItem("Cooperative Bank of Oromia", "images/coop.jpg"),
-                    _buildBankItem("Dashen Bank", "images/dashen.png"),
-                    _buildBankItem("Global Bank Ethiopia", "images/global.jpg"),
-                    _buildBankItem("Enat Bank", "images/enat.jpg"),
-                     _buildBankItem("Gadda Bank", "images/geda.jpg"),
-                     _buildBankItem("Goh Betoch Bank", "images/goh.jpg"),
-                     _buildBankItem("Hibret Bank", "images/hibret.jpg"),
-                     _buildBankItem("Hijira Bank", "images/hijra.jpg"),
-                     _buildBankItem("Lion International Bank", "images/lion.jpg"),
-                     _buildBankItem("Nib International Bank", "images/nib.jpg"),
-                     _buildBankItem("Oromia Bank", "images/oro.jpg"),
-                     _buildBankItem("Rammis Bank", "images/ramis.jpg"),
+                    _buildBankItem("Abay Bank", "images/abay.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Addis Bank S.C.", "images/addis.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Ahadu Bank", "images/ahadu.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Amhara Bank", "images/amara.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Awash Bank", "images/Awash.png", imageWidth: 45, imageHeight: 45,),
+                    _buildBankItem("Bank of Abyssinia", "images/abyssinia.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Birhan Bank", "images/birhan.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Bunna Bank", "images/bunna.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Commercial Bank of Ethiopia", "images/cbe.png", imageWidth: 45, imageHeight: 45,),
+                    _buildBankItem("Cooperative Bank of Oromia", "images/coop.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Dashen Bank", "images/dashen.png", imageWidth: 45, imageHeight: 45,),
+                    _buildBankItem("Global Bank Ethiopia", "images/global.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Enat Bank", "images/enat.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Gadda Bank", "images/geda.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Goh Betoch Bank", "images/goh.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Hibret Bank", "images/hibret.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Hijira Bank", "images/hijra.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Lion International Bank", "images/lion.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Nib International Bank", "images/nib.jpg", imageWidth: 55, imageHeight: 55,),
+                     _buildBankItem("Oromia Bank", "images/oro.jpg", imageWidth: 50, imageHeight: 50,),
+                     _buildBankItem("Rammis Bank", "images/ramis.jpg", imageWidth: 50, imageHeight: 50,),
                   ],
                 ),
               ),
@@ -270,44 +270,55 @@ showDialog(
     );
   }
 
-  Widget _buildBankItem(String name, String imagePath) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedBankName = name;
-        });
-        Navigator.pop(context);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              imagePath, 
-              width: 45, 
-              height: 45, 
-              errorBuilder: (c, e, s) => const Icon(Icons.account_balance, size: 30),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: Text(
-                name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildBankItem(
+  String name,
+  String imagePath, {
+  double imageWidth = 45,
+  double imageHeight = 45,
+}) {
+  return InkWell(
+    onTap: () {
+      setState(() {
+        selectedBankName = name;
+      });
+      Navigator.pop(context);
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
       ),
-    );
-  }
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            imagePath,
+            width: imageWidth,
+            height: imageHeight,
+            fit: BoxFit.contain, // important for logos
+            errorBuilder: (c, e, s) =>
+                const Icon(Icons.account_balance, size: 30),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
