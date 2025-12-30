@@ -85,12 +85,12 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
     child: ClipRRect(
       borderRadius: BorderRadius.circular(8), // match your card's radius
       child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
+        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.15),
+              color: Colors.grey.withOpacity(0.19),
               blurRadius: 4,
               offset: const Offset(0, 2), // only bottom shadow
             ),
@@ -99,7 +99,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: Row(
                 children: [
                   const CircleAvatar(
@@ -145,7 +145,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
 
             // Perforated line (Ticket effect)
             Padding(
-              padding: const EdgeInsets.only(top: 5),
+              padding: const EdgeInsets.only(top: 10),
               child: Row(
                 children: [
                   _cutout(isLeft: true),
@@ -197,7 +197,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
   Widget _cutout({required bool isLeft}) {
     return Container(
       height: 20,
-      width: 10,
+      width: 15,
       decoration: BoxDecoration(
         color: const Color(0xFFF4F4F4), // Match screen background
         borderRadius: BorderRadius.only(
