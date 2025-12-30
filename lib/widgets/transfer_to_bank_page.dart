@@ -239,7 +239,7 @@ showDialog(
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: [
-                    _buildBankItem("Abay Bank", "images/abay.jpg", imageWidth: 50, imageHeight: 50,),
+                    _buildBankItem("Abay Bank", "images/abay.jpg", imageWidth: 100, imageHeight: 100,),
                     _buildBankItem("Addis Bank S.C.", "images/addis.jpg", imageWidth: 50, imageHeight: 50,),
                     _buildBankItem("Ahadu Bank", "images/ahadu.jpg", imageWidth: 50, imageHeight: 50,),
                     _buildBankItem("Amhara Bank", "images/amara.jpg", imageWidth: 50, imageHeight: 50,),
