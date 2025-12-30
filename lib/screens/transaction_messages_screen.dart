@@ -73,35 +73,26 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
   }
 
   Widget _buildTransactionCard(Map<String, dynamic> tx) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TransactionDetailScreen(txData: tx),
-          ),
-        );
-      },
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TransactionDetailScreen(txData: tx),
+        ),
+      );
+    },
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(8), // match your card's radius
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.15),
               blurRadius: 4,
-              offset: const Offset(0, 2), // Bottom shadow
-            ),
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 3,
-              offset: const Offset(-1, 0), // Left shadow
-            ),
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 3,
-              offset: const Offset(1, 0), // Right shadow
+              offset: const Offset(0, 2), // only bottom shadow
             ),
           ],
         ),
@@ -113,7 +104,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
                 children: [
                   const CircleAvatar(
                     radius: 24,
-                    backgroundColor: Color(0xFF0056B3), // Darker blue from screenshot
+                    backgroundColor: Color(0xFF0056B3),
                     child: Icon(Icons.check, color: Colors.white, size: 28),
                   ),
                   const SizedBox(width: 12),
@@ -137,7 +128,6 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
                       ],
                     ),
                   ),
-                  // Red status dot
                   Align(
                     alignment: Alignment.topRight,
                     child: Container(
@@ -153,9 +143,9 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
               ),
             ),
 
-            // Perforated line (Ticket effect) - Moved down by 5px
+            // Perforated line (Ticket effect)
             Padding(
-              padding: const EdgeInsets.only(top: 5), // Add top padding to move line down
+              padding: const EdgeInsets.only(top: 5),
               child: Row(
                 children: [
                   _cutout(isLeft: true),
@@ -170,7 +160,11 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
                             (index) => const SizedBox(
                               width: 4,
                               height: 1,
-                              child: DecoratedBox(decoration: BoxDecoration(color: Color(0xFFEEEEEE))),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFEEEEEE),
+                                ),
+                              ),
                             ),
                           ),
                         );
@@ -195,8 +189,10 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _cutout({required bool isLeft}) {
     return Container(
