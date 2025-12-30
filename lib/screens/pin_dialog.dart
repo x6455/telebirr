@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'success_page.dart'; // Ensure this file is created
+import 'package:intl/intl.dart'; // ✅ For number formatting
 import 'processing_page.dart';
-
+import 'success_page.dart'; // Ensure this exists
 
 class PinDialog {
   static void show(
@@ -15,6 +15,9 @@ class PinDialog {
   }) {
     String pin = "";
 
+    // Format the amount string with commas
+    final formattedAmount = NumberFormat("#,##0.00").format(double.parse(amount));
+
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -22,8 +25,6 @@ class PinDialog {
       barrierColor: Colors.black54,
       pageBuilder: (context, anim1, anim2) {
         return StatefulBuilder(builder: (context, setModalState) {
-          
-          // --- INTERNAL KEY TAP LOGIC WITH LOADER ---
           void onKeyTap(String value) {
             setModalState(() {
               if (value == "x") {
@@ -33,46 +34,44 @@ class PinDialog {
               }
             });
 
-            // Inside the onKeyTap function in pin_dialog.dart
+            if (pin.length == 6) {
+              // Show Loader Box
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => Center(
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Center(child: TelebirrLoader()),
+                  ),
+                ),
+              );
 
-if (pin.length == 6) {
-  // Show the Loader Box
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => Center(
-      child: Container(
-        width: 100, height: 100,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: const Center(child: TelebirrLoader()),
-      ),
-    ),
-  );
+              // After 2 seconds, navigate to Processing Page
+              Future.delayed(const Duration(seconds: 2), () {
+                if (context.mounted) {
+                  Navigator.of(context).pop(); // Close Loader
+                  Navigator.of(context).pop(); // Close PIN dialog
 
-  // After 2 seconds, move to the INTERMEDIATE Processing Page
-  Future.delayed(const Duration(seconds: 2), () {
-    if (context.mounted) {
-      Navigator.of(context).pop(); // Close Loader box
-      Navigator.of(context).pop(); // Close PIN Dialog
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProcessingPage( // New Navigation Target
-            amount: amount,
-            accountName: accountName,
-            accountNumber: accountNumber,
-            bankName: bankName,
-          ),
-        ),
-      );
-    }
-  });
-}
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProcessingPage(
+                        amount: formattedAmount,
+                        accountName: accountName,
+                        accountNumber: accountNumber,
+                        bankName: bankName,
+                      ),
+                    ),
+                  );
+                }
+              });
+            }
           }
 
           return Scaffold(
@@ -80,10 +79,10 @@ if (pin.length == 6) {
             body: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // 1. FLOATING PIN BOX
+                // --- PIN Box ---
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  height: 270, // Height fixed as requested
+                  height: 270,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -99,7 +98,8 @@ if (pin.length == 6) {
                         ),
                       ),
                       const Text("Enter PIN",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 15),
                       RichText(
                         text: TextSpan(
@@ -107,7 +107,7 @@ if (pin.length == 6) {
                               color: Colors.black, fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
-                                text: "$amount.00 ",
+                                text: "$formattedAmount ",
                                 style: const TextStyle(fontSize: 36)),
                             const TextSpan(
                                 text: "ETB", style: TextStyle(fontSize: 16)),
@@ -115,18 +115,18 @@ if (pin.length == 6) {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      // 6 Gray Rectangles
+                      // --- 6 Gray Rectangles ---
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(6, (index) {
                           bool isFilled = pin.length > index;
                           return Container(
                             margin: const EdgeInsets.symmetric(horizontal: 5),
-                            width: 30,
-                            height: 30,
+                            width: 50,
+                            height: 45,
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(0),
                             ),
                             child: Center(
                               child: isFilled
@@ -134,7 +134,8 @@ if (pin.length == 6) {
                                       width: 10,
                                       height: 10,
                                       decoration: const BoxDecoration(
-                                          color: Colors.black, shape: BoxShape.circle),
+                                          color: Colors.black,
+                                          shape: BoxShape.circle),
                                     )
                                   : null,
                             ),
@@ -145,10 +146,9 @@ if (pin.length == 6) {
                   ),
                 ),
 
-                // 2. TRANSPARENT SPACE (150)
                 const SizedBox(height: 150),
 
-                // 3. GRID NUMBER PAD
+                // --- Number Pad ---
                 Container(
                   color: Colors.white,
                   child: GridView.builder(
@@ -178,17 +178,23 @@ if (pin.length == 6) {
 
                       return Container(
                         decoration: BoxDecoration(
-                          color: isGrayBackground ? const Color(0xFFEEEEEE) : Colors.white,
-                          border: Border.all(color: Colors.grey.withOpacity(0.2), width: 0.5),
+                          color: isGrayBackground
+                              ? const Color(0xFFDDDDDD)
+                              : Colors.white,
+                          border: Border.all(
+                              color: Colors.grey.withOpacity(0.2), width: 0.5),
                         ),
                         child: TextButton(
-                          style: TextButton.styleFrom(
+                          style: ButtonStyle(
                             splashFactory: NoSplash.splashFactory,
-                            foregroundColor: Colors.black,
+                            overlayColor: MaterialStateProperty.all(Colors.transparent),
+                            backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                            foregroundColor: MaterialStateProperty.all(Colors.black),
                           ),
                           onPressed: isDisabled ? null : () => onKeyTap(label),
                           child: label == "x"
-                              ? const Icon(Icons.backspace_outlined, color: Colors.black)
+                              ? const Icon(Icons.backspace_outlined,
+                                  color: Colors.black)
                               : Text(label,
                                   style: const TextStyle(
                                       fontSize: 24, color: Colors.black)),
@@ -206,7 +212,7 @@ if (pin.length == 6) {
   }
 }
 
-// --- TELEBIRR LOADER WIDGET ---
+// --- Loader Widget ---
 class TelebirrLoader extends StatefulWidget {
   const TelebirrLoader({super.key});
 
