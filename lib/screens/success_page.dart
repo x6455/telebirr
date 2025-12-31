@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:telephony/telephony.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -26,12 +24,9 @@ class SuccessPage extends StatefulWidget {
 }
 
 class _SuccessPageState extends State<SuccessPage> {
-  final Telephony telephony = Telephony.instance;
   int _currentIndex = 0;
   late final String _transactionID;
   late final String _txTime;
-  bool _smsSent = false;
-  bool _smsFailed = false;
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -41,174 +36,32 @@ class _SuccessPageState extends State<SuccessPage> {
     'images/Banner5.jpg',
   ];
 
-  double _roundToZeroCents(double value) {
-  // Forces .00 by rounding to nearest whole ETB
-  return value.roundToDouble();
-}
-
-Map<String, double> _calculateCharges(String amount) {
-  final double sent = double.parse(amount.replaceAll(',', ''));
-
-  final double vat = sent * 0.003; // 0.3%
-  final double serviceCharge = vat * 0.15; // 15% of VAT
-
-  double total = sent + vat + serviceCharge;
-
-  // Adjust so total has no cents
-  final double adjustedTotal = _roundToZeroCents(total);
-
-  // Difference absorbed into service charge (bank-style compromise)
-  final double adjustment = adjustedTotal - total;
-  final double adjustedServiceCharge = serviceCharge + adjustment;
-
-  return {
-    'sent': sent,
-    'vat': vat,
-    'service': adjustedServiceCharge,
-    'total': adjustedTotal,
-  };
-}
-
-
   @override
   void initState() {
     super.initState();
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
-    _saveTransactionLocally();
-    // Delay SMS sending to ensure UI is loaded first
-    Future.delayed(const Duration(seconds: 2), _trySendSMS);
   }
 
-  Future<void> _saveTransactionLocally() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  final charges = _calculateCharges(widget.amount);
-
-  Map<String, String> transactionData = {
-    'txID': _transactionID,
-    'time': _txTime,
-    'amount_sent': charges['sent']!.toStringAsFixed(2),
-    'vat_0_3_percent': charges['vat']!.toStringAsFixed(2),
-    'service_charge': charges['service']!.toStringAsFixed(2),
-    'total_deducted': charges['total']!.toStringAsFixed(0),
-    'accountName': widget.accountName,
-    'accountNumber': widget.accountNumber,
-    'bankName': widget.bankName,
-    'smsSent': _smsSent.toString(),
-  };
-
-  List<String> history = prefs.getStringList('sent_balances') ?? [];
-  history.add(jsonEncode(transactionData));
-  await prefs.setStringList('sent_balances', history);
-}
-
-
-  Future<void> _trySendSMS() async {
-    try {
-      // Check if we can send SMS
-      final bool? canSendSms = await telephony.isSmsCapable;
-      
-      if (canSendSms != true) {
-        _updateSMSStatus(false, "Device cannot send SMS");
-        return;
-      }
-
-      // Request SMS permissions with better error handling
-      final bool? permissionsGranted = await telephony.requestSmsPermissions;
-
-      if (permissionsGranted != true) {
-        _updateSMSStatus(false, "SMS permissions denied");
-        return;
-      }
-
-      // Try to send SMS
-      await _sendSMS();
-      
-    } catch (e) {
-      _updateSMSStatus(false, "Error: ${e.toString()}");
-    }
+  double _roundToZeroCents(double value) {
+    return value.roundToDouble();
   }
 
-  Future<void> _sendSMS() async {
-    final String phoneNumber = "0961011887";
-    final String message =
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+  Map<String, double> _calculateCharges(String amount) {
+    final double sent = double.parse(amount.replaceAll(',', ''));
+    final double vat = sent * 0.003;
+    final double serviceCharge = vat * 0.15;
+    double total = sent + vat + serviceCharge;
+    final double adjustedTotal = _roundToZeroCents(total);
+    final double adjustment = adjustedTotal - total;
+    final double adjustedServiceCharge = serviceCharge + adjustment;
 
-    try {
-      // Use statusListener for newer versions of telephony package
-      await telephony.sendSms(
-        to: phoneNumber,
-        message: message,
-        statusListener: (SendStatus status) {
-          // Handle different statuses
-          if (status == SendStatus.SENT || status == SendStatus.DELIVERED) {
-            _updateSMSStatus(true, "SMS sent successfully");
-          } else {
-            _updateSMSStatus(false, "SMS failed to send");
-          }
-        },
-      );
-      
-      // If we get here without error, consider it sent
-      // The statusListener will update the actual status
-      _updateSMSStatus(true, "SMS sending initiated");
-      
-    } catch (e) {
-      _updateSMSStatus(false, "Failed: ${e.toString()}");
-      
-      // Optionally, you can log the error but continue
-      debugPrint("SMS Error: $e");
-    }
-  }
-
-  void _updateSMSStatus(bool success, String message) {
-    if (mounted) {
-      setState(() {
-        _smsSent = success;
-        _smsFailed = !success;
-      });
-      
-      // Update shared preferences with SMS status
-      _updateTransactionSMSStatus(success);
-      
-      // Only show snackbar for failures (optional)
-      if (!success) {
-        debugPrint("SMS Status: $message");
-      } else {
-        debugPrint("SMS Status: Success - $message");
-      }
-    }
-  }
-
-  Future<void> _updateTransactionSMSStatus(bool smsSent) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> history = prefs.getStringList('sent_balances') ?? [];
-    
-    if (history.isNotEmpty) {
-      // Get the last transaction (the one we just added)
-      String lastTx = history.last;
-      Map<String, dynamic> txData = jsonDecode(lastTx);
-      txData['smsSent'] = smsSent.toString();
-      history[history.length - 1] = jsonEncode(txData);
-      await prefs.setStringList('sent_balances', history);
-    }
-  }
-
-  void _showStatusSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : const Color(0xFF8DC73F),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    return {
+      'sent': sent,
+      'vat': vat,
+      'service': adjustedServiceCharge,
+      'total': adjustedTotal,
+    };
   }
 
   String _generateTransactionID() {
@@ -232,11 +85,30 @@ Map<String, double> _calculateCharges(String amount) {
     }
   }
 
+  Future<void> _shareViaSMS() async {
+    final String phoneNumber = "0961011887";
+    final String message =
+        "Telebirr Transfer Success\n"
+        "To: ${widget.accountName}\n"
+        "Amount: -${widget.amount}.00 ETB\n"
+        "Bank: ${widget.bankName}\n"
+        "ID: $_transactionID\n"
+        "Time: $_txTime";
+
+    final Uri smsUri =
+        Uri.parse("sms:$phoneNumber?body=${Uri.encodeComponent(message)}");
+
+    if (await canLaunchUrl(smsUri)) {
+      await launchUrl(smsUri);
+    } else {
+      debugPrint("Cannot launch SMS app");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Color primaryGreen = const Color(0xFF8DC73F);
     final charges = _calculateCharges(widget.amount);
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -250,114 +122,99 @@ Map<String, double> _calculateCharges(String amount) {
             const SizedBox(width: 4),
             Text("Download", style: TextStyle(color: primaryGreen, fontSize: 14)),
             const Spacer(),
-            Icon(Icons.share_outlined, color: primaryGreen, size: 20),
-            const SizedBox(width: 4),
-            Text("Share", style: TextStyle(color: primaryGreen, fontSize: 14)),
+            GestureDetector(
+              onTap: _shareViaSMS,
+              child: Row(
+                children: [
+                  Icon(Icons.share_outlined, color: primaryGreen, size: 20),
+                  const SizedBox(width: 4),
+                  Text("Share", style: TextStyle(color: primaryGreen, fontSize: 14)),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: primaryGreen,
-              child: const Icon(Icons.check, color: Colors.white, size: 40),
-            ),
-            const SizedBox(height: 10),
-            Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
-            
-            // Optional: Show SMS status icon
-            if (_smsSent)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms, color: Colors.green, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
-                  ],
-                ),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: primaryGreen,
+                child: const Icon(Icons.check, color: Colors.white, size: 40),
               ),
-            if (_smsFailed)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms_failed, color: Colors.orange, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Not Sent", style: TextStyle(color: Colors.orange, fontSize: 12)),
-                  ],
-                ),
-              ),
-            
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-               Text(
-              "-${_formatNumber(charges['total']!.toString())}.00",
+              const SizedBox(height: 10),
+              Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
+
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    "-${_formatNumber(charges['total']!.toString())}.00",
                     style: const TextStyle(fontSize: 40),
                   ),
-
-                const SizedBox(width: 5),
-                const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
-              ],
-            ),
-            const SizedBox(height: 40),
-            const Divider(indent: 20, endIndent: 20),
-            const SizedBox(height: 10),
-            _detailRow("Transaction Number", _transactionID),
-            _detailRow("Transaction Time:", _txTime),
-            _detailRow("Transaction Type:", "Transfer To Bank"),
-            _detailRow("Transaction To:", widget.accountName.toUpperCase()),
-            _detailRow("Bank Account Number:", widget.accountNumber),
-            _detailRow("Bank Name:", widget.bankName),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.qr_code_2, color: primaryGreen, size: 20),
-                Text(" QR Code ",
-                    style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
-                Icon(Icons.arrow_forward_ios, color: primaryGreen, size: 14),
-                const SizedBox(width: 20),
-              ],
-            ),
-            const SizedBox(height: 12),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 3.5,
-                viewportFraction: 0.92,
-                onPageChanged: (index, reason) =>
-                    setState(() => _currentIndex = index),
+                  const SizedBox(width: 5),
+                  const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
+                ],
               ),
-              items: sliderImages.map((imagePath) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) => Container(
+
+              const SizedBox(height: 30),
+              const Divider(indent: 0, endIndent: 0),
+              const SizedBox(height: 10),
+              _detailRow("Transaction Number", _transactionID),
+              _detailRow("Transaction Time", _txTime),
+              _detailRow("Transaction Type", "Transfer To Bank"),
+              _detailRow("Transaction To", widget.accountName.toUpperCase()),
+              _detailRow("Bank Account Number", widget.accountNumber),
+              _detailRow("Bank Name", widget.bankName),
+              const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(Icons.qr_code_2, color: primaryGreen, size: 20),
+                  Text(" QR Code ",
+                      style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
+                  Icon(Icons.arrow_forward_ios, color: primaryGreen, size: 14),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+              CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 3.5,
+                  viewportFraction: 0.92,
+                  onPageChanged: (index, reason) =>
+                      setState(() => _currentIndex = index),
+                ),
+                items: sliderImages.map((imagePath) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        imagePath,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) => Container(
                           color: Colors.grey[300],
-                          child: const Icon(Icons.image_not_supported)),
+                          child: const Icon(Icons.image_not_supported),
+                        ),
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: DotsIndicator(
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 8),
+              DotsIndicator(
                 dotsCount: sliderImages.length,
                 position: _currentIndex.toDouble(),
                 decorator: DotsDecorator(
@@ -374,11 +231,9 @@ Map<String, double> _calculateCharges(String amount) {
                   spacing: const EdgeInsets.symmetric(horizontal: 4.0),
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              child: SizedBox(
+
+              const Spacer(),
+              SizedBox(
                 width: 200,
                 height: 40,
                 child: ElevatedButton(
@@ -393,9 +248,8 @@ Map<String, double> _calculateCharges(String amount) {
                       style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -403,7 +257,7 @@ Map<String, double> _calculateCharges(String amount) {
 
   Widget _detailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
