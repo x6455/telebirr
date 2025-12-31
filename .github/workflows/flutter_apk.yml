@@ -28,8 +28,11 @@ jobs:
       - name: Install Dependencies
         run: |
           flutter clean
-          flutter pub add telephony:^0.2.0
           flutter pub get
+
+      # ✅ Generate launcher icons
+      - name: Generate Launcher Icons
+        run: flutter pub run flutter_launcher_icons:main
 
       - name: Build Release APK
         run: flutter build apk --release
