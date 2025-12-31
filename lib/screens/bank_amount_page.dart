@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:intl/intl.dart';
 import 'pin_dialog.dart';
 
 class BankAmountPage extends StatefulWidget {
@@ -128,13 +128,14 @@ class _BankAmountPageState extends State<BankAmountPage> {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    double.tryParse(_amount)?.toStringAsFixed(2) ?? "0.00",
-                    style: const TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
+  _formatAmount(_amount),
+  style: const TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  ),
+),
+
                   const SizedBox(width: 4),
                   const Text(
                     "ETB",
@@ -245,6 +246,16 @@ class _BankAmountPageState extends State<BankAmountPage> {
       },
     );
   }
+  
+  String _formatAmount(String value) {
+  if (value.isEmpty) return "0.00";
+
+  final number = double.tryParse(value);
+  if (number == null) return "0.00";
+
+  final formatter = NumberFormat("#,##0.00", "en_US");
+  return formatter.format(number);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -278,9 +289,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                   
                     decoration: BoxDecoration(
                       color: bankColor,
-  borderRadius: const BorderRadius.vertical(
-    top: Radius.circular(12),
-  ),
+ borderRadius: BorderRadius.circular(12),
 ),
                     child: Column(
                       children: [
