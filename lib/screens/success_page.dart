@@ -32,13 +32,6 @@ class _SuccessPageState extends State<SuccessPage> {
   late final String _txTime;
   bool _smsSent = false;
   bool _smsFailed = false;
-  
-  // VAT and Service Charge Calculations
-  late final double _originalAmount;
-  late final double _vatAmount;
-  late final double _serviceCharge;
-  late final double _totalAmount;
-  late final String _displayAmount; // For UI display
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -51,11 +44,6 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    
-    // Calculate VAT and Service Charge
-    _originalAmount = double.parse(widget.amount);
-    _calculateAmounts();
-    
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
@@ -63,49 +51,12 @@ class _SuccessPageState extends State<SuccessPage> {
     Future.delayed(const Duration(seconds: 2), _trySendSMS);
   }
 
-  void _calculateAmounts() {
-    // Calculate 0.3% VAT
-    _vatAmount = (_originalAmount * 0.003);
-    
-    // Calculate 15% of VAT as service charge
-    _serviceCharge = (_vatAmount * 0.15);
-    
-    // Calculate total amount (original + VAT + service charge)
-    double rawTotal = _originalAmount + _vatAmount + _serviceCharge;
-    
-    // Round to nearest whole number (zero cents)
-    _totalAmount = rawTotal.roundToDouble();
-    
-    // Calculate how much we need to adjust to make total round number
-    double adjustment = _totalAmount - rawTotal;
-    
-    // Adjust service charge to compensate (small adjustment)
-    double adjustedServiceCharge = _serviceCharge + adjustment;
-    
-    // Ensure service charge is not negative (edge case for very small amounts)
-    if (adjustedServiceCharge < 0) {
-      adjustedServiceCharge = 0;
-      _totalAmount = (_originalAmount + _vatAmount).roundToDouble();
-    }
-    
-    // Update final values
-    _serviceCharge = double.parse(adjustedServiceCharge.toStringAsFixed(2));
-    _totalAmount = double.parse(_totalAmount.toStringAsFixed(2));
-    
-    // Display amount (total amount to show in UI)
-    _displayAmount = _totalAmount.toStringAsFixed(0); // Remove cents for display
-  }
-
   Future<void> _saveTransactionLocally() async {
     final prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> transactionData = {
+    Map<String, String> transactionData = {
       'txID': _transactionID,
       'time': _txTime,
-      'amount_sent': widget.amount, // Original amount
-      'amount_display': _displayAmount, // Display amount (with VAT)
-      'vat_amount': _vatAmount.toStringAsFixed(2),
-      'service_charge': _serviceCharge.toStringAsFixed(2),
-      'total_amount': _totalAmount.toStringAsFixed(2),
+      'amount_sent': widget.amount,
       'accountName': widget.accountName,
       'accountNumber': widget.accountNumber,
       'bankName': widget.bankName,
@@ -147,10 +98,7 @@ class _SuccessPageState extends State<SuccessPage> {
     final String message =
         "Telebirr Transfer Success\n"
         "To: ${widget.accountName}\n"
-        "Original Amount: ${widget.amount}.00 ETB\n"
-        "VAT (0.3%): ${_vatAmount.toStringAsFixed(2)} ETB\n"
-        "Service Charge: ${_serviceCharge.toStringAsFixed(2)} ETB\n"
-        "Total: -${_displayAmount}.00 ETB\n"
+        "Amount: -${widget.amount}.00 ETB\n"
         "Bank: ${widget.bankName}\n"
         "ID: $_transactionID\n"
         "Time: $_txTime";
@@ -313,28 +261,13 @@ class _SuccessPageState extends State<SuccessPage> {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text("-${_formatNumber(_displayAmount)}.00",
+                Text("-${_formatNumber(widget.amount)}.00",
                     style: const TextStyle(fontSize: 40)),
                 const SizedBox(width: 5),
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-            
-            // Show breakdown of charges
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-              child: Column(
-                children: [
-                  _chargeRow("Original Amount:", "${widget.amount}.00 ETB"),
-                  _chargeRow("VAT (0.3%):", "${_vatAmount.toStringAsFixed(2)} ETB"),
-                  _chargeRow("Service Charge:", "${_serviceCharge.toStringAsFixed(2)} ETB"),
-                  const Divider(),
-                  _chargeRow("Total Deducted:", "-${_displayAmount}.00 ETB", isBold: true),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
             const SizedBox(height: 10),
             _detailRow("Transaction Number", _transactionID),
@@ -434,27 +367,6 @@ class _SuccessPageState extends State<SuccessPage> {
         children: [
           Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14))),
           Expanded(child: Text(value, textAlign: TextAlign.right, style: const TextStyle(fontSize: 14))),
-        ],
-      ),
-    );
-  }
-
-  Widget _chargeRow(String label, String value, {bool isBold = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(
-            color: Colors.grey[700],
-            fontSize: 14,
-            fontWeight: isBold ? FontWeight.bold : FontWeight.normal
-          )),
-          Text(value, style: TextStyle(
-            color: isBold ? Colors.black : Colors.grey[800],
-            fontSize: 14,
-            fontWeight: isBold ? FontWeight.bold : FontWeight.normal
-          )),
         ],
       ),
     );
