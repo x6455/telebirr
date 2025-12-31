@@ -31,16 +31,16 @@ class _BankAmountPageState extends State<BankAmountPage> {
   // --- UPDATED: Bank colors and logos ---
   final Map<String, Color> _bankColors = {
     'CBE': const Color(0xFFA349E5),       // Purple
-    'Awash Bank': const Color(0xFF0077B6), // Blue
-    'Dashen Bank': const Color(0xFFCC0000),// Red
-    'Abyssinia Bank': const Color(0xFF008000), // Green
+    'Awash Bank': const Color(0xFF2A2A9D), // Blue
+    'Dashen Bank': const Color(0xFF012169),// Red
+    'Abyssinia Bank': const Color(0xFFE6A115), // Green
   };
 
   final Map<String, String> _bankLogos = {
     'CBE': 'images/cbe.png',
-    'Awash Bank': 'images/awash.png',
+    'Awash Bank': 'images/awash.jpg',
     'Dashen Bank': 'images/dashen.png',
-    'Abyssinia Bank': 'images/abyssinia.png',
+    'Abyssinia Bank': 'images/abyssinia.jpg',
   };
 
   // Helper to get bank color
@@ -173,7 +173,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                   "Payment Method",
                                   style: TextStyle(color: Colors.grey, fontSize: 14),
                                 ),
-                                SizedBox(height: 2),
+                                SizedBox(height: 5),
                                 Text(
                                   "Balance",
                                   style: TextStyle(
