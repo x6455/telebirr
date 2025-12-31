@@ -24,21 +24,21 @@ class _BankAmountPageState extends State<BankAmountPage> {
   bool _showCursor = true;
   Timer? _cursorTimer;
 
-  // Colors based on your screenshots
+  
   final Color _primaryGreen = const Color(0xFF8DC73F);
   final Color _purpleColor = const Color(0xFFA349E5);
 
   // --- UPDATED: Bank colors and logos ---
   final Map<String, Color> _bankColors = {
-    'CBE': const Color(0xFFA349E5),       // Purple
-    'Awash Bank': const Color(0xFF2A2A9D), // Blue
-    'Dashen Bank': const Color(0xFF012169),// Red
-    'Abyssinia Bank': const Color(0xFFE6A115), // Green
+    'CBE': const Color(0xFFA349E5),       
+    'Awash Bank': const Color(0xFF2A2A9D), 
+    'Dashen Bank': const Color(0xFF012169),
+    'Abyssinia Bank': const Color(0xFFE6A115), 
   };
 
   final Map<String, String> _bankLogos = {
     'CBE': 'images/cbe.png',
-    'Awash Bank': 'images/awash.jpg',
+    'Awash Bank': 'images/Awash.png',
     'Dashen Bank': 'images/dashen.png',
     'Abyssinia Bank': 'images/abyssinia.jpg',
   };
