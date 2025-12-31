@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yourcompany.telebirrbybr7">
 
+    <!-- SMS permissions -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -9,6 +10,9 @@
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    
+    <!-- For Android 13+ -->
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
     <queries>
         <intent>
@@ -35,14 +39,70 @@
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme"
             />
+            
+            <!-- Default LAUNCHER intent filter -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            
+            <!-- INTENT FILTERS TO MAKE APP DEFAULT SMS APP -->
+            <!-- 1. For sending SMS -->
+            <intent-filter>
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+            </intent-filter>
+            
+            <!-- 2. For viewing SMS/MMS -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+            
+            <!-- 3. For receiving SMS (pre-KitKat) -->
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+            
+            <!-- 4. For receiving SMS (KitKat and above) -->
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+            
+            <!-- 5. For receiving MMS -->
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+            
+            <!-- For Android 5.0+ -->
+            <meta-data
+                android:name="android.app.default_sms_response_queries_package"
+                android:value="com.android.mms.service" />
+                
         </activity>
 
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
+        <!-- Broadcast Receiver for SMS -->
+        <receiver
+            android:name=".SmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
