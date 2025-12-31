@@ -6,24 +6,24 @@ class TransactionDetailScreen extends StatelessWidget {
 
   const TransactionDetailScreen({super.key, required this.txData});
 
-  // Function to trigger the Node.js server
   Future<void> _handleGetReceipt() async {
-    // Note: Use '10.0.2.2' for Android Emulator, or your local IP for physical devices
-    final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
-    
-    final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
-      'txID': txData['txID'] ?? "N/A",
-      'time': txData['time'] ?? "",
-      'amount': txData['amount_sent'].toString(),
-      'bankName': txData['bankName'] ?? "Bank Transfer",
-    });
+  final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
 
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint("Could not launch $url");
-    }
+  final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
+    'txID': txData['txID'] ?? "N/A",
+    'time': txData['time'] ?? "",
+    'amount': txData['amount_sent'].toString(),
+    'bankName': txData['bankName'] ?? "Bank Transfer",
+    'accountName': txData['accountName'] ?? "N/A",      // ← ADD THIS
+    'accountNumber': txData['accountNumber'] ?? "N/A",  // ← ADD THIS
+  });
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    debugPrint("Could not launch $url");
   }
+}
 
   @override
   Widget build(BuildContext context) {
