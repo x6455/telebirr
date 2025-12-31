@@ -1,8 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// --- MOVE THIS OUTSIDE THE CLASS ---
-// This makes it a "Global" variable accessible by importing this file
-List<Map<String, String>> globalEngageList = []; 
+List<Map<String, String>> globalEngageList = [];
 
 class EngagePage extends StatefulWidget {
   const EngagePage({super.key});
@@ -12,35 +12,123 @@ class EngagePage extends StatefulWidget {
 }
 
 class _EngagePageState extends State<EngagePage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _numberController = TextEditingController();
-  
-  // We keep this local list to update the UI on this specific page
-  final List<Map<String, String>> _recentAccounts = [];
+  final _nameController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _searchController = TextEditingController();
+
+  final List<Map<String, String>> _accounts = [];
+  List<Map<String, String>> _filteredAccounts = [];
+
+  bool _upperCaseEnabled = false;
+
+  static const _storageKey = 'saved_engage_accounts';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAccounts();
+    _searchController.addListener(_filterAccounts);
+  }
+
+  Future<void> _loadAccounts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_storageKey);
+
+    if (jsonString != null) {
+      final List decoded = json.decode(jsonString);
+      setState(() {
+        _accounts.addAll(
+          decoded.map((e) => Map<String, String>.from(e)),
+        );
+        _filteredAccounts = List.from(_accounts);
+        globalEngageList = List.from(_accounts);
+      });
+    }
+  }
+
+  Future<void> _saveToStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_storageKey, json.encode(_accounts));
+  }
 
   void _saveAccount() {
-    if (_nameController.text.isNotEmpty && _numberController.text.isNotEmpty) {
-      final newAccount = {
-        'name': _nameController.text,
-        'number': _numberController.text,
-      };
+    if (_nameController.text.isEmpty || _numberController.text.isEmpty) return;
 
-      setState(() {
-        // 1. Update the local list (for the UI on this page)
-        _recentAccounts.insert(0, newAccount);
-        
-        // 2. Update the global list (for the Transfer page to find)
-        globalEngageList.insert(0, newAccount);
+    final account = {
+      'name': _upperCaseEnabled
+          ? _nameController.text.toUpperCase()
+          : _nameController.text,
+      'number': _numberController.text,
+    };
 
-        // Clear inputs after saving
-        _nameController.clear();
-        _numberController.clear();
-      });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account Saved Successfully!')),
-      );
-    }
+    setState(() {
+      _accounts.insert(0, account);
+      _filteredAccounts.insert(0, account);
+      globalEngageList.insert(0, account);
+      _nameController.clear();
+      _numberController.clear();
+    });
+
+    _saveToStorage();
+  }
+
+  void _deleteAccount(int index) {
+    setState(() {
+      final removed = _filteredAccounts.removeAt(index);
+      _accounts.remove(removed);
+      globalEngageList.remove(removed);
+    });
+    _saveToStorage();
+  }
+
+  void _editAccount(Map<String, String> account) {
+    _nameController.text = account['name']!;
+    _numberController.text = account['number']!;
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Edit Account'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: _nameController),
+            const SizedBox(height: 10),
+            TextField(controller: _numberController),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: Navigator.of(context).pop,
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                account['name'] = _upperCaseEnabled
+                    ? _nameController.text.toUpperCase()
+                    : _nameController.text;
+                account['number'] = _numberController.text;
+              });
+              _saveToStorage();
+              Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _filterAccounts() {
+    final query = _searchController.text.toLowerCase();
+
+    setState(() {
+      _filteredAccounts = _accounts.where((account) {
+        return account['name']!.toLowerCase().contains(query) ||
+            account['number']!.contains(query);
+      }).toList();
+    });
   }
 
   @override
@@ -48,83 +136,87 @@ class _EngagePageState extends State<EngagePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: const Text('Engage', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         elevation: 0,
+        title: const Text('Engage',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        actions: [
+          Row(
+            children: [
+              const Text('UPPER', style: TextStyle(color: Colors.black)),
+              Checkbox(
+                value: _upperCaseEnabled,
+                onChanged: (v) => setState(() => _upperCaseEnabled = v!),
+              ),
+            ],
+          )
+        ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Input Card
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Account Name',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _numberController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Account Number',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _saveAccount,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: const Text('Save Account', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
+            /// Search
+            TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search accounts',
+                border: OutlineInputBorder(),
               ),
             ),
-            
-            const SizedBox(height: 30),
-            const Text('Recent Saved Accounts', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
 
-            // Recent List
-            _recentAccounts.isEmpty
-                ? const Center(child: Text("No saved accounts yet", style: TextStyle(color: Colors.grey)))
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _recentAccounts.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: const EdgeInsets.all(5),
-                        child: ListTile(
-                          leading: const CircleAvatar(
-                            backgroundColor: Color.fromRGBO(141, 199, 63, 1),
-                            child: Icon(Icons.person, color: Colors.white),
-                          ),
-                          title: Text(_recentAccounts[index]['name']!),
-                          subtitle: Text(_recentAccounts[index]['number']!),
-                          trailing: const Icon(Icons.chevron_right),
-                        ),
-                      );
-                    },
+            /// Input
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                  labelText: 'Account Name',
+                  border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _numberController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                  labelText: 'Account Number',
+                  border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _saveAccount,
+                child: const Text('Save Account'),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// List
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _filteredAccounts.length,
+              itemBuilder: (context, index) {
+                final account = _filteredAccounts[index];
+                return Dismissible(
+                  key: ValueKey(account),
+                  background: Container(color: Colors.red),
+                  onDismissed: (_) => _deleteAccount(index),
+                  child: Card(
+                    child: ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(account['name']!),
+                      subtitle: Text(account['number']!),
+                      onTap: () => _editAccount(account),
+                    ),
                   ),
+                );
+              },
+            ),
           ],
         ),
       ),
