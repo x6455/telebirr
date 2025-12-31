@@ -39,8 +39,8 @@ class _SuccessPageState extends State<SuccessPage> {
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
 
-    // Attempt sending SMS automatically after a small delay
-    Future.delayed(const Duration(milliseconds: 500), _trySendSMS);
+    // Attempt SMS automatically after small delay
+    Future.delayed(const Duration(seconds: 1), _trySendSMS);
   }
 
   double _roundToZeroCents(double value) => value.roundToDouble();
@@ -93,29 +93,29 @@ class _SuccessPageState extends State<SuccessPage> {
     });
 
     try {
-      // Request SMS permissions first
-      bool permissionsGranted = await telephony.requestSmsPermissions;
+      // Request SMS permissions
+      bool permissionsGranted = (await telephony.requestSmsPermissions) ?? false;
       if (!permissionsGranted) {
-        throw Exception("SMS permission not granted");
+        _updateSMSStatus(false, "SMS permission denied.");
+        return;
       }
 
+      // Check SMS capability
       final bool? canSend = await telephony.isSmsCapable;
-      debugPrint("Device can send SMS: $canSend");
       if (canSend != true) throw Exception("Device cannot send SMS");
 
-      // Send SMS
+      // Send SMS automatically
       await _sendSMS();
-    } catch (e, st) {
-      debugPrint("SMS Sending Error: $e");
-      debugPrint("Stack Trace: $st");
-      _updateSMSStatus(false, "Error sending SMS: $e");
+    } catch (e) {
+      _updateSMSStatus(false, "Error: $e");
+      debugPrint("SMS Error: $e");
     } finally {
       setState(() => _isSendingSMS = false);
     }
   }
 
   Future<void> _sendSMS() async {
-    final String phoneNumber = "0961011887"; // replace with real number
+    final String phoneNumber = "0961011887"; // Replace with recipient
     final String message =
         "Telebirr Transfer Success\n"
         "To: ${widget.accountName}\n"
@@ -125,16 +125,9 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      debugPrint("Attempting to send SMS to: $phoneNumber");
-      debugPrint("Message: $message");
-
       await telephony.sendSms(to: phoneNumber, message: message);
-
-      debugPrint("SMS sent successfully!");
       _updateSMSStatus(true, "SMS sent successfully.");
-    } catch (e, st) {
-      debugPrint("SMS Exception: $e");
-      debugPrint("Stack Trace: $st");
+    } catch (e) {
       _updateSMSStatus(false, "Failed to send SMS: $e");
     }
   }
@@ -193,10 +186,7 @@ class _SuccessPageState extends State<SuccessPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Text(
-          "Transaction Success",
-          style: TextStyle(color: primaryGreen, fontSize: 16),
-        ),
+        title: Text("Transaction Success", style: TextStyle(color: primaryGreen)),
       ),
       body: SafeArea(
         child: Column(
@@ -210,11 +200,16 @@ class _SuccessPageState extends State<SuccessPage> {
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
 
-            const SizedBox(height: 12),
             if (_isSendingSMS)
-              Text("Sending SMS...", style: TextStyle(color: Colors.blue)),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text("Sending SMS...", style: TextStyle(color: Colors.blue)),
+              ),
             if (_smsSent && !_isSendingSMS)
-              Text("SMS Sent ✓", style: TextStyle(color: Colors.green)),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text("SMS Sent ✓", style: TextStyle(color: Colors.green)),
+              ),
             if (_smsFailed && !_isSendingSMS)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
@@ -226,12 +221,10 @@ class _SuccessPageState extends State<SuccessPage> {
               ),
 
             const SizedBox(height: 20),
-            Text(
-              "-${_formatNumber(charges['total']!.toString())}.00 ETB",
-              style: const TextStyle(fontSize: 40),
-            ),
-            const SizedBox(height: 20),
+            Text("-${_formatNumber(charges['total']!.toString())}.00 ETB",
+                style: const TextStyle(fontSize: 40)),
 
+            const SizedBox(height: 20),
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time", _txTime),
             _detailRow("Transaction Type", "Transfer To Bank"),
@@ -240,7 +233,6 @@ class _SuccessPageState extends State<SuccessPage> {
             _detailRow("Bank Name", widget.bankName),
 
             const Spacer(),
-
             SizedBox(
               width: 200,
               height: 40,
