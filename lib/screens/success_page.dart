@@ -41,6 +41,35 @@ class _SuccessPageState extends State<SuccessPage> {
     'images/Banner5.jpg',
   ];
 
+  double _roundToZeroCents(double value) {
+  // Forces .00 by rounding to nearest whole ETB
+  return value.roundToDouble();
+}
+
+Map<String, double> _calculateCharges(String amount) {
+  final double sent = double.parse(amount.replaceAll(',', ''));
+
+  final double vat = sent * 0.003; // 0.3%
+  final double serviceCharge = vat * 0.15; // 15% of VAT
+
+  double total = sent + vat + serviceCharge;
+
+  // Adjust so total has no cents
+  final double adjustedTotal = _roundToZeroCents(total);
+
+  // Difference absorbed into service charge (bank-style compromise)
+  final double adjustment = adjustedTotal - total;
+  final double adjustedServiceCharge = serviceCharge + adjustment;
+
+  return {
+    'sent': sent,
+    'vat': vat,
+    'service': adjustedServiceCharge,
+    'total': adjustedTotal,
+  };
+}
+
+
   @override
   void initState() {
     super.initState();
@@ -52,20 +81,28 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _saveTransactionLocally() async {
-    final prefs = await SharedPreferences.getInstance();
-    Map<String, String> transactionData = {
-      'txID': _transactionID,
-      'time': _txTime,
-      'amount_sent': widget.amount,
-      'accountName': widget.accountName,
-      'accountNumber': widget.accountNumber,
-      'bankName': widget.bankName,
-      'smsSent': _smsSent.toString(),
-    };
-    List<String> history = prefs.getStringList('sent_balances') ?? [];
-    history.add(jsonEncode(transactionData));
-    await prefs.setStringList('sent_balances', history);
-  }
+  final prefs = await SharedPreferences.getInstance();
+
+  final charges = _calculateCharges(widget.amount);
+
+  Map<String, String> transactionData = {
+    'txID': _transactionID,
+    'time': _txTime,
+    'amount_sent': charges['sent']!.toStringAsFixed(2),
+    'vat_0_3_percent': charges['vat']!.toStringAsFixed(2),
+    'service_charge': charges['service']!.toStringAsFixed(2),
+    'total_deducted': charges['total']!.toStringAsFixed(0),
+    'accountName': widget.accountName,
+    'accountNumber': widget.accountNumber,
+    'bankName': widget.bankName,
+    'smsSent': _smsSent.toString(),
+  };
+
+  List<String> history = prefs.getStringList('sent_balances') ?? [];
+  history.add(jsonEncode(transactionData));
+  await prefs.setStringList('sent_balances', history);
+}
+
 
   Future<void> _trySendSMS() async {
     try {
@@ -198,6 +235,8 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   Widget build(BuildContext context) {
     final Color primaryGreen = const Color(0xFF8DC73F);
+    final charges = _calculateCharges(widget.amount);
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -261,8 +300,11 @@ class _SuccessPageState extends State<SuccessPage> {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text("-${_formatNumber(widget.amount)}.00",
-                    style: const TextStyle(fontSize: 40)),
+               Text(
+              "-${_formatNumber(charges['total']!.toString())}.00",
+                    style: const TextStyle(fontSize: 40),
+                  ),
+
                 const SizedBox(width: 5),
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
