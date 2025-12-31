@@ -5,11 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// Note: Telephony is no longer strictly needed for opening the app, 
-// but kept here if you use it elsewhere. 
-// We use url_launcher for the "Share" action.
-import 'package:telephony/telephony.dart'; 
-import 'package:url_launcher/url_launcher.dart';
+import 'package:telephony/telephony.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -34,8 +30,9 @@ class _SuccessPageState extends State<SuccessPage> {
   int _currentIndex = 0;
   late final String _transactionID;
   late final String _txTime;
-
-  // Removed _smsSent and _smsFailed booleans as requested (UI removed)
+  bool _smsSent = false;
+  bool _smsFailed = false;
+  bool _isSendingSMS = false;
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -46,15 +43,22 @@ class _SuccessPageState extends State<SuccessPage> {
   ];
 
   double _roundToZeroCents(double value) {
+    // Forces .00 by rounding to nearest whole ETB
     return value.roundToDouble();
   }
 
   Map<String, double> _calculateCharges(String amount) {
     final double sent = double.parse(amount.replaceAll(',', ''));
-    final double vat = sent * 0.003; 
-    final double serviceCharge = vat * 0.15; 
+
+    final double vat = sent * 0.003; // 0.3%
+    final double serviceCharge = vat * 0.15; // 15% of VAT
+
     double total = sent + vat + serviceCharge;
+
+    // Adjust so total has no cents
     final double adjustedTotal = _roundToZeroCents(total);
+
+    // Difference absorbed into service charge (bank-style compromise)
     final double adjustment = adjustedTotal - total;
     final double adjustedServiceCharge = serviceCharge + adjustment;
 
@@ -72,11 +76,13 @@ class _SuccessPageState extends State<SuccessPage> {
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
-    // Removed the auto-send SMS logic here
+    // Start SMS sending immediately
+    _trySendSMS();
   }
 
   Future<void> _saveTransactionLocally() async {
     final prefs = await SharedPreferences.getInstance();
+
     final charges = _calculateCharges(widget.amount);
 
     Map<String, String> transactionData = {
@@ -89,7 +95,7 @@ class _SuccessPageState extends State<SuccessPage> {
       'accountName': widget.accountName,
       'accountNumber': widget.accountNumber,
       'bankName': widget.bankName,
-      'smsSent': "Manual Share", // Updated status
+      'smsSent': _smsSent.toString(),
     };
 
     List<String> history = prefs.getStringList('sent_balances') ?? [];
@@ -97,8 +103,45 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
 
-  // New function to open the SMS app
-  Future<void> _onShareTap() async {
+  Future<void> _trySendSMS() async {
+    if (_isSendingSMS) return;
+    
+    setState(() {
+      _isSendingSMS = true;
+    });
+
+    try {
+      // SIMPLE: Request SMS permissions and ask to become default SMS app
+      final bool? permissionsGranted = await telephony.requestSmsPermissions(
+        askForDefault: true, // THIS MAKES APP DEFAULT SMS APP
+      );
+
+      if (permissionsGranted != true) {
+        _updateSMSStatus(false, "SMS permissions denied");
+        return;
+      }
+
+      // Check if we can send SMS
+      final bool? canSendSms = await telephony.isSmsCapable;
+      
+      if (canSendSms != true) {
+        _updateSMSStatus(false, "Device cannot send SMS");
+        return;
+      }
+
+      // Try to send SMS
+      await _sendSMS();
+
+    } catch (e) {
+      _updateSMSStatus(false, "Error: ${e.toString()}");
+    } finally {
+      setState(() {
+        _isSendingSMS = false;
+      });
+    }
+  }
+
+  Future<void> _sendSMS() async {
     final String phoneNumber = "0961011887";
     final String message =
         "Telebirr Transfer Success\n"
@@ -108,24 +151,60 @@ class _SuccessPageState extends State<SuccessPage> {
         "ID: $_transactionID\n"
         "Time: $_txTime";
 
-    final Uri smsLaunchUri = Uri(
-      scheme: 'sms',
-      path: phoneNumber,
-      queryParameters: <String, String>{
-        'body': message,
-      },
-    );
-
     try {
-      if (await canLaunchUrl(smsLaunchUri)) {
-        await launchUrl(smsLaunchUri);
-      } else {
-        // Fallback or error handling
-        debugPrint("Could not launch SMS app");
-      }
+      // SIMPLE: Just send the SMS without status listener
+      await telephony.sendSms(
+        to: phoneNumber,
+        message: message,
+      );
+
+      // If no error, consider it sent
+      _updateSMSStatus(true, "SMS sent successfully");
+
     } catch (e) {
-      debugPrint("Error launching SMS: $e");
+      _updateSMSStatus(false, "Failed: ${e.toString()}");
+      debugPrint("SMS Error: $e");
     }
+  }
+
+  void _updateSMSStatus(bool success, String message) {
+    if (mounted) {
+      setState(() {
+        _smsSent = success;
+        _smsFailed = !success;
+      });
+
+      // Update shared preferences with SMS status
+      _updateTransactionSMSStatus(success);
+
+      // Log the result
+      debugPrint("SMS Status: $message");
+    }
+  }
+
+  Future<void> _updateTransactionSMSStatus(bool smsSent) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> history = prefs.getStringList('sent_balances') ?? [];
+
+    if (history.isNotEmpty) {
+      // Get the last transaction (the one we just added)
+      String lastTx = history.last;
+      Map<String, dynamic> txData = jsonDecode(lastTx);
+      txData['smsSent'] = smsSent.toString();
+      history[history.length - 1] = jsonEncode(txData);
+      await prefs.setStringList('sent_balances', history);
+    }
+  }
+
+  void _showStatusSnackBar(String message, {bool isError = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : const Color(0xFF8DC73F),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   String _generateTransactionID() {
@@ -134,8 +213,8 @@ class _SuccessPageState extends State<SuccessPage> {
     math.Random rnd = math.Random();
     String letters = String.fromCharCodes(Iterable.generate(
         4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
-    String digits = String.fromCharCodes(Iterable.generate(
-        4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
+    String digits = String.fromCharCodes(
+        Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
     return "CL$letters$digits";
   }
 
@@ -164,44 +243,65 @@ class _SuccessPageState extends State<SuccessPage> {
           children: [
             Icon(Icons.file_download_outlined, color: primaryGreen, size: 20),
             const SizedBox(width: 4),
-            Text("Download",
-                style: TextStyle(color: primaryGreen, fontSize: 14)),
+            Text("Download", style: TextStyle(color: primaryGreen, fontSize: 14)),
             const Spacer(),
-            // Make Share button clickable
-            InkWell(
-              onTap: _onShareTap,
-              child: Row(
-                children: [
-                  Icon(Icons.share_outlined, color: primaryGreen, size: 20),
-                  const SizedBox(width: 4),
-                  Text("Share",
-                      style: TextStyle(color: primaryGreen, fontSize: 14)),
-                ],
-              ),
-            ),
+            Icon(Icons.share_outlined, color: primaryGreen, size: 20),
+            const SizedBox(width: 4),
+            Text("Share", style: TextStyle(color: primaryGreen, fontSize: 14)),
           ],
         ),
       ),
-      // Use Column instead of SingleChildScrollView to stop scrolling
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            // Use Spacer to distribute vertical space evenly
-            const Spacer(flex: 1), 
-            
+            const SizedBox(height: 20),
             CircleAvatar(
               radius: 30,
               backgroundColor: primaryGreen,
               child: const Icon(Icons.check, color: Colors.white, size: 40),
             ),
             const SizedBox(height: 10),
-            Text("Successful",
-                style: TextStyle(color: primaryGreen, fontSize: 18)),
+            Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
 
-            // Removed SMS Status Labels here
+            // Show SMS status
+            if (_isSendingSMS)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sms, color: Colors.blue, size: 16),
+                    const SizedBox(width: 4),
+                    Text("Sending SMS...", style: TextStyle(color: Colors.blue, fontSize: 12)),
+                  ],
+                ),
+              ),
+            if (_smsSent && !_isSendingSMS)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sms, color: Colors.green, size: 16),
+                    const SizedBox(width: 4),
+                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
+                  ],
+                ),
+              ),
+            if (_smsFailed && !_isSendingSMS)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sms_failed, color: Colors.red, size: 16),
+                    const SizedBox(width: 4),
+                    Text("SMS Failed", style: TextStyle(color: Colors.red, fontSize: 12)),
+                  ],
+                ),
+              ),
 
-            const Spacer(flex: 1),
-
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -212,40 +312,30 @@ class _SuccessPageState extends State<SuccessPage> {
                   style: const TextStyle(fontSize: 40),
                 ),
                 const SizedBox(width: 5),
-                const Text("(ETB)",
-                    style: TextStyle(fontSize: 16, color: Colors.black)),
+                const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-
-            const Spacer(flex: 1),
+            const SizedBox(height: 40),
             const Divider(indent: 20, endIndent: 20),
-            const Spacer(flex: 1),
-
-            // Details Section
+            const SizedBox(height: 10),
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
-
-            const Spacer(flex: 1),
-
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Icon(Icons.qr_code_2, color: primaryGreen, size: 20),
                 Text(" QR Code ",
-                    style: TextStyle(
-                        color: primaryGreen, fontWeight: FontWeight.bold)),
+                    style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
                 Icon(Icons.arrow_forward_ios, color: primaryGreen, size: 14),
                 const SizedBox(width: 20),
               ],
             ),
-
-            const Spacer(flex: 1),
-
-            // Carousel Section
+            const SizedBox(height: 12),
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
@@ -271,7 +361,6 @@ class _SuccessPageState extends State<SuccessPage> {
                 );
               }).toList(),
             ),
-            
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: DotsIndicator(
@@ -287,17 +376,33 @@ class _SuccessPageState extends State<SuccessPage> {
                   color: Colors.transparent,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
-                      side: BorderSide(
-                          color: primaryGreen.withOpacity(0.4), width: 2.0)),
+                      side: BorderSide(color: primaryGreen.withOpacity(0.4), width: 2.0)),
                   spacing: const EdgeInsets.symmetric(horizontal: 4.0),
                 ),
               ),
             ),
-
-            const Spacer(flex: 2),
-
+            const SizedBox(height: 30),
+            // Retry SMS button if failed
+            if (_smsFailed && !_isSendingSMS)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 5),
+                child: SizedBox(
+                  width: 200,
+                  height: 40,
+                  child: ElevatedButton(
+                    onPressed: _trySendSMS,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text("Retry SMS",
+                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                  ),
+                ),
+              ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
                 width: 200,
                 height: 40,
@@ -314,7 +419,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20), // Bottom padding
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -323,18 +428,15 @@ class _SuccessPageState extends State<SuccessPage> {
 
   Widget _detailRow(String label, String value) {
     return Padding(
-      // Reduced vertical padding slightly to ensure fit
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-              child: Text(label,
-                  style: const TextStyle(color: Colors.grey, fontSize: 14))),
+              child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14))),
           Expanded(
               child: Text(value,
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(fontSize: 14))),
+                  textAlign: TextAlign.right, style: const TextStyle(fontSize: 14))),
         ],
       ),
     );
