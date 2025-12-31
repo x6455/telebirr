@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 class TransactionDetailScreen extends StatelessWidget {
   final Map<String, dynamic> txData;
@@ -24,6 +25,18 @@ class TransactionDetailScreen extends StatelessWidget {
     debugPrint("Could not launch $url");
   }
 }
+
+
+  String _formatAmount(dynamic value) {
+  if (value == null) return "0.00";
+
+  final number = double.tryParse(value.toString());
+  if (number == null) return "0.00";
+
+  final formatter = NumberFormat("#,##0.00", "en_US");
+  return formatter.format(number);
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -69,14 +82,15 @@ class TransactionDetailScreen extends StatelessWidget {
             _buildDetailTile("Transaction No", txData['txID'] ?? ""),
             _buildDetailTile("Transaction Type", "Transfer to Bank"),
             _buildDetailTile("Transaction To", txData['bankName'] ?? ""),
-            _buildDetailTile("Transaction Amount", "-${_formatAmount(txData['amount_sent'])} (ETB)",
+            _buildDetailTile(
+  "Transaction Amount",
+  "-${_formatAmount(txData['amount_sent'])} (ETB)",
 ),
            _buildDetailTile("Transaction Status", "Completed"),
-          _buildDetailTile("Service Charge", "${_formatAmount(txData['service_charge'])} (ETB)",
+_buildDetailTile(
+  "Service Charge",
+  "${_formatAmount(txData['service_charge'] ?? 0)} (ETB)",
 ),
-
-           
-            _buildDetailTile("Service Charge", "0.00 (ETB)"),
 
             const SizedBox(height: 15),
             Padding(
