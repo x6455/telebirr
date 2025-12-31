@@ -118,7 +118,7 @@ class _TransactionMessagesScreenState extends State<TransactionMessagesScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          "-${tx['amount_sent']}.00",
+                          "-${tx['amount_sent']}",
                           style: const TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.normal,
