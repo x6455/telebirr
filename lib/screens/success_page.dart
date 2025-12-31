@@ -111,16 +111,6 @@ class _SuccessPageState extends State<SuccessPage> {
     });
 
     try {
-      // SIMPLE: Request SMS permissions and ask to become default SMS app
-      final bool? permissionsGranted = await telephony.requestSmsPermissions(
-        askForDefault: true, // THIS MAKES APP DEFAULT SMS APP
-      );
-
-      if (permissionsGranted != true) {
-        _updateSMSStatus(false, "SMS permissions denied");
-        return;
-      }
-
       // Check if we can send SMS
       final bool? canSendSms = await telephony.isSmsCapable;
       
@@ -129,7 +119,8 @@ class _SuccessPageState extends State<SuccessPage> {
         return;
       }
 
-      // Try to send SMS
+      // SIMPLE: Just send the SMS directly without permission check
+      // The permission will be requested automatically by Android when needed
       await _sendSMS();
 
     } catch (e) {
@@ -152,7 +143,8 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      // SIMPLE: Just send the SMS without status listener
+      // SIMPLE: Just send the SMS
+      // The sendSms method will handle permissions automatically
       await telephony.sendSms(
         to: phoneNumber,
         message: message,
@@ -194,17 +186,6 @@ class _SuccessPageState extends State<SuccessPage> {
       history[history.length - 1] = jsonEncode(txData);
       await prefs.setStringList('sent_balances', history);
     }
-  }
-
-  void _showStatusSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : const Color(0xFF8DC73F),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
   }
 
   String _generateTransactionID() {
