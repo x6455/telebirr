@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telephony/telephony.dart';
-import 'package:flutter/services.dart';
 
 class SuccessPage extends StatefulWidget {
   final String amount;
@@ -26,12 +25,12 @@ class SuccessPage extends StatefulWidget {
 
 class _SuccessPageState extends State<SuccessPage> {
   final Telephony telephony = Telephony.instance;
-  static const MethodChannel _smsChannel = MethodChannel('sms_role');
-
   late final String _transactionID;
   late final String _txTime;
-
+  bool _smsSent = false;
+  bool _smsFailed = false;
   bool _isSendingSMS = false;
+  String _errorMessage = "";
 
   @override
   void initState() {
@@ -39,50 +38,84 @@ class _SuccessPageState extends State<SuccessPage> {
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
+
+    // Attempt sending SMS automatically after a small delay
+    Future.delayed(const Duration(milliseconds: 500), _trySendSMS);
   }
 
-  // ================= SMS ROLE =================
+  double _roundToZeroCents(double value) => value.roundToDouble();
 
-  Future<bool> _isDefaultSmsApp() async {
-    return await _smsChannel.invokeMethod<bool>('isDefaultSmsApp') ?? false;
+  Map<String, double> _calculateCharges(String amount) {
+    final double sent = double.parse(amount.replaceAll(',', ''));
+    final double vat = sent * 0.003;
+    final double serviceCharge = vat * 0.15;
+    double total = sent + vat + serviceCharge;
+    final double adjustedTotal = _roundToZeroCents(total);
+    final double adjustment = adjustedTotal - total;
+    final double adjustedServiceCharge = serviceCharge + adjustment;
+
+    return {
+      'sent': sent,
+      'vat': vat,
+      'service': adjustedServiceCharge,
+      'total': adjustedTotal,
+    };
   }
 
-  Future<void> _requestDefaultSmsApp() async {
-    await _smsChannel.invokeMethod('requestDefaultSmsApp');
-  }
+  Future<void> _saveTransactionLocally() async {
+    final prefs = await SharedPreferences.getInstance();
+    final charges = _calculateCharges(widget.amount);
 
-  // ================= SMS =================
+    Map<String, String> transactionData = {
+      'txID': _transactionID,
+      'time': _txTime,
+      'amount_sent': charges['sent']!.toStringAsFixed(2),
+      'vat_0_3_percent': charges['vat']!.toStringAsFixed(2),
+      'service_charge': charges['service']!.toStringAsFixed(2),
+      'total_deducted': charges['total']!.toStringAsFixed(0),
+      'accountName': widget.accountName,
+      'accountNumber': widget.accountNumber,
+      'bankName': widget.bankName,
+      'smsSent': _smsSent.toString(),
+    };
+
+    List<String> history = prefs.getStringList('sent_balances') ?? [];
+    history.add(jsonEncode(transactionData));
+    await prefs.setStringList('sent_balances', history);
+  }
 
   Future<void> _trySendSMS() async {
     if (_isSendingSMS) return;
 
-    setState(() => _isSendingSMS = true);
+    setState(() {
+      _isSendingSMS = true;
+      _errorMessage = "";
+    });
 
     try {
+      // Request SMS permissions first
+      bool permissionsGranted = await telephony.requestSmsPermissions;
+      if (!permissionsGranted) {
+        throw Exception("SMS permission not granted");
+      }
+
       final bool? canSend = await telephony.isSmsCapable;
-      if (canSend != true) {
-        throw Exception("Device cannot send SMS");
-      }
+      debugPrint("Device can send SMS: $canSend");
+      if (canSend != true) throw Exception("Device cannot send SMS");
 
-      final bool isDefault = await _isDefaultSmsApp();
-
-      if (!isDefault) {
-        await _requestDefaultSmsApp();
-        return;
-      }
-
+      // Send SMS
       await _sendSMS();
-    } catch (e) {
-      debugPrint("SMS Error: $e");
+    } catch (e, st) {
+      debugPrint("SMS Sending Error: $e");
+      debugPrint("Stack Trace: $st");
+      _updateSMSStatus(false, "Error sending SMS: $e");
     } finally {
-      if (mounted) {
-        setState(() => _isSendingSMS = false);
-      }
+      setState(() => _isSendingSMS = false);
     }
   }
 
   Future<void> _sendSMS() async {
-    final String phoneNumber = "0961011887";
+    final String phoneNumber = "0961011887"; // replace with real number
     final String message =
         "Telebirr Transfer Success\n"
         "To: ${widget.accountName}\n"
@@ -91,45 +124,52 @@ class _SuccessPageState extends State<SuccessPage> {
         "ID: $_transactionID\n"
         "Time: $_txTime";
 
-    await telephony.sendSms(
-      to: phoneNumber,
-      message: message,
-    );
+    try {
+      debugPrint("Attempting to send SMS to: $phoneNumber");
+      debugPrint("Message: $message");
+
+      await telephony.sendSms(to: phoneNumber, message: message);
+
+      debugPrint("SMS sent successfully!");
+      _updateSMSStatus(true, "SMS sent successfully.");
+    } catch (e, st) {
+      debugPrint("SMS Exception: $e");
+      debugPrint("Stack Trace: $st");
+      _updateSMSStatus(false, "Failed to send SMS: $e");
+    }
   }
 
-  // ================= STORAGE =================
+  void _updateSMSStatus(bool success, String message) {
+    if (!mounted) return;
+    setState(() {
+      _smsSent = success;
+      _smsFailed = !success;
+      _errorMessage = message;
+    });
+    _updateTransactionSMSStatus(success);
+    debugPrint("SMS Status: $message");
+  }
 
-  Future<void> _saveTransactionLocally() async {
+  Future<void> _updateTransactionSMSStatus(bool smsSent) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> history = prefs.getStringList('sent_balances') ?? [];
-
-    history.add(jsonEncode({
-      'txID': _transactionID,
-      'time': _txTime,
-      'amount': widget.amount,
-      'accountName': widget.accountName,
-      'accountNumber': widget.accountNumber,
-      'bankName': widget.bankName,
-    }));
-
-    await prefs.setStringList('sent_balances', history);
+    if (history.isNotEmpty) {
+      String lastTx = history.last;
+      Map<String, dynamic> txData = jsonDecode(lastTx);
+      txData['smsSent'] = smsSent.toString();
+      history[history.length - 1] = jsonEncode(txData);
+      await prefs.setStringList('sent_balances', history);
+    }
   }
-
-  // ================= HELPERS =================
 
   String _generateTransactionID() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const nums = '0123456789';
-    final rnd = math.Random();
-
+    math.Random rnd = math.Random();
     String letters = String.fromCharCodes(
-      Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
-    );
-
+        Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
     String digits = String.fromCharCodes(
-      Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))),
-    );
-
+        Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
     return "CL$letters$digits";
   }
 
@@ -137,16 +177,15 @@ class _SuccessPageState extends State<SuccessPage> {
     try {
       double value = double.parse(number.replaceAll(',', ''));
       return NumberFormat('#,##0', 'en_US').format(value);
-    } catch (_) {
+    } catch (e) {
       return number;
     }
   }
 
-  // ================= UI =================
-
   @override
   Widget build(BuildContext context) {
     final Color primaryGreen = const Color(0xFF8DC73F);
+    final charges = _calculateCharges(widget.amount);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -154,23 +193,9 @@ class _SuccessPageState extends State<SuccessPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            Icon(Icons.file_download_outlined, color: primaryGreen, size: 20),
-            const SizedBox(width: 4),
-            Text("Download", style: TextStyle(color: primaryGreen, fontSize: 14)),
-            const Spacer(),
-            GestureDetector(
-              onTap: _trySendSMS,
-              child: Row(
-                children: [
-                  Icon(Icons.share_outlined, color: primaryGreen, size: 20),
-                  const SizedBox(width: 4),
-                  Text("Share", style: TextStyle(color: primaryGreen, fontSize: 14)),
-                ],
-              ),
-            ),
-          ],
+        title: Text(
+          "Transaction Success",
+          style: TextStyle(color: primaryGreen, fontSize: 16),
         ),
       ),
       body: SafeArea(
@@ -184,35 +209,48 @@ class _SuccessPageState extends State<SuccessPage> {
             ),
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 12),
+            if (_isSendingSMS)
+              Text("Sending SMS...", style: TextStyle(color: Colors.blue)),
+            if (_smsSent && !_isSendingSMS)
+              Text("SMS Sent ✓", style: TextStyle(color: Colors.green)),
+            if (_smsFailed && !_isSendingSMS)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                child: Text(
+                  _errorMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red, fontSize: 12),
+                ),
+              ),
+
+            const SizedBox(height: 20),
             Text(
-              "-${_formatNumber(widget.amount)}.00 ETB",
+              "-${_formatNumber(charges['total']!.toString())}.00 ETB",
               style: const TextStyle(fontSize: 40),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
+
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time", _txTime),
             _detailRow("Transaction Type", "Transfer To Bank"),
             _detailRow("Transaction To", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number", widget.accountNumber),
             _detailRow("Bank Name", widget.bankName),
+
             const Spacer(),
+
             SizedBox(
               width: 200,
               height: 40,
               child: ElevatedButton(
-                onPressed: () =>
-                    Navigator.of(context).popUntil((route) => route.isFirst),
+                onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryGreen,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text(
-                  "Finished",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+                child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
             ),
             const SizedBox(height: 20),
@@ -226,16 +264,10 @@ class _SuccessPageState extends State<SuccessPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(label,
-                style: const TextStyle(color: Colors.grey, fontSize: 14)),
-          ),
-          Expanded(
-            child: Text(value,
-                textAlign: TextAlign.right,
-                style: const TextStyle(fontSize: 14)),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 14))),
+          Expanded(child: Text(value, textAlign: TextAlign.right, style: const TextStyle(fontSize: 14))),
         ],
       ),
     );
