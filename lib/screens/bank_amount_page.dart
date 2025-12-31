@@ -28,6 +28,31 @@ class _BankAmountPageState extends State<BankAmountPage> {
   final Color _primaryGreen = const Color(0xFF8DC73F);
   final Color _purpleColor = const Color(0xFFA349E5);
 
+  // --- UPDATED: Bank colors and logos ---
+  final Map<String, Color> _bankColors = {
+    'CBE': const Color(0xFFA349E5),       // Purple
+    'Awash Bank': const Color(0xFF0077B6), // Blue
+    'Dashen Bank': const Color(0xFFCC0000),// Red
+    'Abyssinia Bank': const Color(0xFF008000), // Green
+  };
+
+  final Map<String, String> _bankLogos = {
+    'CBE': 'images/cbe.png',
+    'Awash Bank': 'images/awash.png',
+    'Dashen Bank': 'images/dashen.png',
+    'Abyssinia Bank': 'images/abyssinia.png',
+  };
+
+  // Helper to get bank color
+  Color _getBankColor(String bankName) {
+    return _bankColors[bankName] ?? _purpleColor;
+  }
+
+  // Helper to get bank logo
+  String _getBankLogo(String bankName) {
+    return _bankLogos[bankName] ?? 'images/cbe.png';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -62,22 +87,21 @@ class _BankAmountPageState extends State<BankAmountPage> {
     });
   }
 
-  // --- NEW: THE BOTTOM SHEET FUNCTION ---
   void _showConfirmationBottomSheet() {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows it to take needed height
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          height: 350, // Fixed height for the sheet
+          height: 350,
           decoration: const BoxDecoration(
-            color: Color(0xFFF8F9FA), // Slightly off-white background
+            color: Color(0xFFF8F9FA),
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
             children: [
-              // 1. Close Button
+              // Close Button
               Align(
                 alignment: Alignment.topLeft,
                 child: IconButton(
@@ -86,7 +110,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                 ),
               ),
 
-              // 2. Title
+              // Title
               const Text(
                 "Transfer To Bank",
                 style: TextStyle(
@@ -97,14 +121,13 @@ class _BankAmountPageState extends State<BankAmountPage> {
               ),
               const SizedBox(height: 20),
 
-              // 3. Amount Display
+              // Amount Display
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-                    // Format amount to 2 decimal places if possible
                     double.tryParse(_amount)?.toStringAsFixed(2) ?? "0.00",
                     style: const TextStyle(
                       fontSize: 36,
@@ -125,14 +148,12 @@ class _BankAmountPageState extends State<BankAmountPage> {
               ),
               const SizedBox(height: 30),
 
-              // 4. Payment Method Section
+              // Payment Method Section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
-                    
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -142,18 +163,17 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ),
                       child: Row(
                         children: [
-                          // Wallet Icon
                           Icon(Icons.account_balance_wallet, color: _primaryGreen, size: 28),
                           const SizedBox(width: 15),
-                          // Text Info
                           const Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                      "Payment Method",
-                      style: TextStyle(color: Colors.grey, fontSize: 14),),
-                                const SizedBox(height: 2),
+                                  "Payment Method",
+                                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                                ),
+                                SizedBox(height: 2),
                                 Text(
                                   "Balance",
                                   style: TextStyle(
@@ -173,7 +193,6 @@ class _BankAmountPageState extends State<BankAmountPage> {
                               ],
                             ),
                           ),
-                          // Check Icon
                           Icon(Icons.check_circle, color: _primaryGreen, size: 24),
                         ],
                       ),
@@ -184,33 +203,24 @@ class _BankAmountPageState extends State<BankAmountPage> {
 
               const Spacer(),
 
-              // 5. Bottom Transfer Button
+              // Bottom Transfer Button
               Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    // Locate the "Transfer" button inside your BottomSheet function
-// and change the onPressed to this:
-
-// Inside _showConfirmationBottomSheet()
-onPressed: () {
-  Navigator.pop(context); // 1. Close the Bottom Sheet Slider
-
-  // 2. Open the Floating PIN Dialog with ALL required fields
-  PinDialog.show(
-    context, 
-    amount: _amount.isEmpty ? "0.00" : _amount, 
-    primaryGreen: _primaryGreen,
-    // Add these lines to pass the missing fields:
-    accountName: widget.accountName,
-    accountNumber: widget.accountNumber,
-    bankName: widget.bankName,
-  );
-},
-
-
+                    onPressed: () {
+                      Navigator.pop(context);
+                      PinDialog.show(
+                        context, 
+                        amount: _amount.isEmpty ? "0.00" : _amount, 
+                        primaryGreen: _primaryGreen,
+                        accountName: widget.accountName,
+                        accountNumber: widget.accountNumber,
+                        bankName: widget.bankName,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryGreen,
                       shape: RoundedRectangleBorder(
@@ -239,6 +249,8 @@ onPressed: () {
   @override
   Widget build(BuildContext context) {
     const Color themeBgColor = Color(0xFFF5F5F5);
+    final bankColor = _getBankColor(widget.bankName);
+    final bankLogo = _getBankLogo(widget.bankName);
 
     return Scaffold(
       backgroundColor: themeBgColor,
@@ -264,7 +276,7 @@ onPressed: () {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: _purpleColor,
+                      color: bankColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -280,9 +292,9 @@ onPressed: () {
                             child: Padding(
                               padding: const EdgeInsets.all(1.0),
                               child: Image.asset(
-                                'images/cbe.png',
+                                bankLogo,
                                 errorBuilder: (c, e, s) =>
-                                    Icon(Icons.account_balance, color: _purpleColor),
+                                    Icon(Icons.account_balance, color: bankColor),
                               ),
                             ),
                           ),
@@ -398,7 +410,6 @@ onPressed: () {
                                 : _primaryGreen.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(4),
                             child: InkWell(
-                              // --- UPDATED: CALLS THE BOTTOM SHEET FUNCTION ---
                               onTap: (_amount.isNotEmpty &&
                                       double.tryParse(_amount) != null &&
                                       double.parse(_amount) > 0)
