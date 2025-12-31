@@ -69,8 +69,13 @@ class TransactionDetailScreen extends StatelessWidget {
             _buildDetailTile("Transaction No", txData['txID'] ?? ""),
             _buildDetailTile("Transaction Type", "Transfer to Bank"),
             _buildDetailTile("Transaction To", txData['bankName'] ?? ""),
-            _buildDetailTile("Transaction Amount", "-${txData['amount_sent']}.00 (ETB)"),
-            _buildDetailTile("Transaction Status", "Completed"),
+            _buildDetailTile("Transaction Amount", "-${_formatAmount(txData['amount_sent'])} (ETB)",
+),
+           _buildDetailTile("Transaction Status", "Completed"),
+          _buildDetailTile("Service Charge", "${_formatAmount(txData['service_charge'])} (ETB)",
+),
+
+           
             _buildDetailTile("Service Charge", "0.00 (ETB)"),
 
             const SizedBox(height: 15),
