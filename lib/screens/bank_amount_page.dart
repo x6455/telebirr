@@ -275,7 +275,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                 children: [
                   Container(
                     width: double.infinity,
-                    height: 100,
+                    height: 85,
                     decoration: BoxDecoration(
                       color: bankColor,
   borderRadius: const BorderRadius.vertical(
@@ -322,7 +322,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text("Amount", style: TextStyle(color: Colors.black, fontSize: 16)),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
                                   Text(
@@ -358,12 +358,12 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 120),
+                  const SizedBox(height: 140),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       "Add notes(optional)",
-                      style: TextStyle(color: _primaryGreen, fontSize: 15),
+                      style: TextStyle(color: _primaryGreen, fontSize: 14),
                     ),
                   ),
                 ],
