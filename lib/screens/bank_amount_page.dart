@@ -275,7 +275,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                 children: [
                   Container(
                     width: double.infinity,
-                    height: 85,
+                  
                     decoration: BoxDecoration(
                       color: bankColor,
   borderRadius: const BorderRadius.vertical(
