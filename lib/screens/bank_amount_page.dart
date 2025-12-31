@@ -278,9 +278,10 @@ class _BankAmountPageState extends State<BankAmountPage> {
                     height: 100,
                     decoration: BoxDecoration(
                       color: bankColor,
-                      topLeft: BorderRadius.circular(12),
-                      topRight: BorderRadius.circular(12),
-                    ),
+  borderRadius: const BorderRadius.vertical(
+    top: Radius.circular(12),
+  ),
+),
                     child: Column(
                       children: [
                         ListTile(
