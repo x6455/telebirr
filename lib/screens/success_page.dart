@@ -33,6 +33,7 @@ class _SuccessPageState extends State<SuccessPage> {
   bool _smsSent = false;
   bool _smsFailed = false;
   bool _isSendingSMS = false;
+  String _errorMessage = "";
 
   final List<String> sliderImages = [
     'images/Banner1.jpg',
@@ -43,22 +44,17 @@ class _SuccessPageState extends State<SuccessPage> {
   ];
 
   double _roundToZeroCents(double value) {
-    // Forces .00 by rounding to nearest whole ETB
     return value.roundToDouble();
   }
 
   Map<String, double> _calculateCharges(String amount) {
     final double sent = double.parse(amount.replaceAll(',', ''));
 
-    final double vat = sent * 0.003; // 0.3%
-    final double serviceCharge = vat * 0.15; // 15% of VAT
+    final double vat = sent * 0.003;
+    final double serviceCharge = vat * 0.15;
 
     double total = sent + vat + serviceCharge;
-
-    // Adjust so total has no cents
     final double adjustedTotal = _roundToZeroCents(total);
-
-    // Difference absorbed into service charge (bank-style compromise)
     final double adjustment = adjustedTotal - total;
     final double adjustedServiceCharge = serviceCharge + adjustment;
 
@@ -76,7 +72,8 @@ class _SuccessPageState extends State<SuccessPage> {
     _transactionID = _generateTransactionID();
     _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     _saveTransactionLocally();
-    // Start SMS sending immediately
+    
+    // Start SMS sending
     _trySendSMS();
   }
 
@@ -108,27 +105,47 @@ class _SuccessPageState extends State<SuccessPage> {
     
     setState(() {
       _isSendingSMS = true;
+      _errorMessage = "";
     });
 
     try {
-      // Check if we can send SMS
+      // 1. Check SMS capability
       final bool? canSendSms = await telephony.isSmsCapable;
       
       if (canSendSms != true) {
-        _updateSMSStatus(false, "Device cannot send SMS");
-        return;
+        throw Exception("Device cannot send SMS");
       }
 
-      // SIMPLE: Just send the SMS directly without permission check
-      // The permission will be requested automatically by Android when needed
-      await _sendSMS();
+      // 2. Check if app is default SMS app
+      final bool? isDefault = await telephony.isDefaultSmsApp;
+      
+      if (isDefault != true) {
+        // Try to become default SMS app
+        await _makeAppDefaultSMS();
+      } else {
+        // Send SMS directly if already default
+        await _sendSMS();
+      }
 
     } catch (e) {
-      _updateSMSStatus(false, "Error: ${e.toString()}");
+      _updateSMSStatus(false, "Error: $e");
+      debugPrint("Full error details: $e");
+      debugPrint("Error type: ${e.runtimeType}");
     } finally {
       setState(() {
         _isSendingSMS = false;
       });
+    }
+  }
+
+  Future<void> _makeAppDefaultSMS() async {
+    try {
+      // Open SMS app settings so user can set our app as default
+      // For now, just try to send SMS anyway
+      await _sendSMS();
+    } catch (e) {
+      // If fails, update error message
+      _updateSMSStatus(false, "Need to set as default SMS app. Error: $e");
     }
   }
 
@@ -143,19 +160,33 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      // SIMPLE: Just send the SMS
-      // The sendSms method will handle permissions automatically
+      debugPrint("Attempting to send SMS to: $phoneNumber");
+      debugPrint("Message: $message");
+      
+      // Try sending SMS
       await telephony.sendSms(
         to: phoneNumber,
         message: message,
       );
 
-      // If no error, consider it sent
       _updateSMSStatus(true, "SMS sent successfully");
+      debugPrint("SMS sent successfully!");
 
     } catch (e) {
-      _updateSMSStatus(false, "Failed: ${e.toString()}");
-      debugPrint("SMS Error: $e");
+      // Get detailed error
+      String detailedError = "SMS Failed: $e";
+      
+      // Check specific error types
+      if (e.toString().contains("permission")) {
+        detailedError = "Permission denied. Need SMS permission.";
+      } else if (e.toString().contains("default")) {
+        detailedError = "App needs to be set as default SMS app in Settings";
+      } else if (e.toString().contains("not available")) {
+        detailedError = "SMS service not available";
+      }
+      
+      _updateSMSStatus(false, detailedError);
+      debugPrint("SMS Error details: $e");
     }
   }
 
@@ -164,9 +195,10 @@ class _SuccessPageState extends State<SuccessPage> {
       setState(() {
         _smsSent = success;
         _smsFailed = !success;
+        _errorMessage = message;
       });
 
-      // Update shared preferences with SMS status
+      // Update shared preferences
       _updateTransactionSMSStatus(success);
 
       // Log the result
@@ -179,7 +211,6 @@ class _SuccessPageState extends State<SuccessPage> {
     List<String> history = prefs.getStringList('sent_balances') ?? [];
 
     if (history.isNotEmpty) {
-      // Get the last transaction (the one we just added)
       String lastTx = history.last;
       Map<String, dynamic> txData = jsonDecode(lastTx);
       txData['smsSent'] = smsSent.toString();
@@ -248,15 +279,22 @@ class _SuccessPageState extends State<SuccessPage> {
             if (_isSendingSMS)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Icon(Icons.sms, color: Colors.blue, size: 16),
-                    const SizedBox(width: 4),
-                    Text("Sending SMS...", style: TextStyle(color: Colors.blue, fontSize: 12)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.sms, color: Colors.blue, size: 16),
+                        const SizedBox(width: 4),
+                        Text("Sending SMS...", style: TextStyle(color: Colors.blue, fontSize: 12)),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text("Please wait...", style: TextStyle(color: Colors.grey, fontSize: 10)),
                   ],
                 ),
               ),
+            
             if (_smsSent && !_isSendingSMS)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
@@ -265,19 +303,33 @@ class _SuccessPageState extends State<SuccessPage> {
                   children: [
                     Icon(Icons.sms, color: Colors.green, size: 16),
                     const SizedBox(width: 4),
-                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
+                    Text("SMS Sent ✓", style: TextStyle(color: Colors.green, fontSize: 12)),
                   ],
                 ),
               ),
+            
             if (_smsFailed && !_isSendingSMS)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
                   children: [
-                    Icon(Icons.sms_failed, color: Colors.red, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Failed", style: TextStyle(color: Colors.red, fontSize: 12)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red, size: 16),
+                        const SizedBox(width: 4),
+                        Text("SMS Failed", style: TextStyle(color: Colors.red, fontSize: 12)),
+                      ],
+                    ),
+                    if (_errorMessage.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                        child: Text(
+                          _errorMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.orange[800], fontSize: 11),
+                        ),
+                      ),
                   ],
                 ),
               ),
