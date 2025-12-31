@@ -25,19 +25,14 @@ class TransactionDetailScreen extends StatelessWidget {
     debugPrint("Could not launch $url");
   }
 }
-
-
-  String _formatAmount(dynamic value) {
-  if (value == null) return "0.00";
-
-  final number = double.tryParse(value.toString());
+ String _formatAmount(dynamic value) {
+  if (value == null || value.toString().isEmpty) return "0.00";
+  String cleanValue = value.toString().replaceAll(',', '');
+  final number = double.tryParse(cleanValue);
   if (number == null) return "0.00";
-
   final formatter = NumberFormat("#,##0.00", "en_US");
   return formatter.format(number);
 }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
