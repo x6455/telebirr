@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       gridLabel: bottomGridLabel,
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.07,
                     )
                   ],
                 ),
