@@ -278,7 +278,8 @@ class _BankAmountPageState extends State<BankAmountPage> {
                     height: 100,
                     decoration: BoxDecoration(
                       color: bankColor,
-                      borderRadius: BorderRadius.circular(12),
+                      topLeft: BorderRadius.circular(12),
+                      topRight: BorderRadius.circular(12),
                     ),
                     child: Column(
                       children: [
@@ -356,7 +357,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 120),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
