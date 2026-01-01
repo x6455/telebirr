@@ -95,7 +95,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
               alignment: Alignment.centerLeft,
               child: Text(
                 todayDate,
-                style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14),
+                style: const TextStyle(fontWeight: FontWeight.w200, color: Colors.black, fontSize: 14),
               ),
             ),
           ),
