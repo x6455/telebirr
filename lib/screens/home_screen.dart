@@ -226,35 +226,47 @@ class ImageSliderIndicator extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: DotsIndicator(
-        dotsCount: carouselImages.length,
-        position: _currentIndex.toDouble(),
-        decorator: DotsDecorator(
-  // ACTIVE DOT (filled + border)
-  activeColor: const Color.fromRGBO(141, 199, 63, 1),
-  activeSize: const Size(5.0, 5.0), // inner filled dot
-  activeShape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(5.5),
-    side: const BorderSide(
-      color: Color.fromRGBO(141, 199, 63, 1),
-      width: 2.0, // visible border around active dot
-    ),
+  dotsCount: carouselImages.length,
+  position: _currentIndex.toDouble(),
+  decorator: const DotsDecorator(
+    spacing: EdgeInsets.symmetric(horizontal: 8.0),
+    // These are basically ignored when we use dotsIndicatorBuilder,
+    // but keep spacing here.
   ),
+  dotsIndicatorBuilder: (position, isActive) {
+    const ringSize = 12.0;     // outer circle size
+    const innerDot = 5.0;      // inner filled dot size
+    const color = Color.fromRGBO(141, 199, 63, 1);
 
-  // INACTIVE DOTS (outer ring)
-  size: const Size(9.0, 9.0),
-  color: Colors.transparent,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(4.5),
-    side: const BorderSide(
-      color: Color.fromRGBO(141, 199, 63, 1),
-      width: 1.0,
-    ),
-  ),
-
-  spacing: const EdgeInsets.symmetric(horizontal: 8.0),
-),
-
+    return Container(
+      width: ringSize,
+      height: ringSize,
+      alignment: Alignment.center,
+      child: Container(
+        width: ringSize,
+        height: ringSize,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: color,
+            width: 1.5,
+          ),
+        ),
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isActive ? innerDot : 0,
+            height: isActive ? innerDot : 0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+            ),
+          ),
+        ),
       ),
+    );
+  },
+)
     );
   }
 }
