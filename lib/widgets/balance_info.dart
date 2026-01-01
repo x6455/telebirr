@@ -60,7 +60,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
           children: [
             // --- STRETCHED LABEL ---
             Transform.scale(
-              scaleX: 1.5, // Slightly stretched label
+              scaleX: 1.2, // Slightly stretched label
               alignment: Alignment.centerLeft,
               child: Text(
                 widget.label,
@@ -69,7 +69,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
                   fontSize: widget.labelFontSize,
                   fontWeight:
                       widget.isLabelBold ? FontWeight.w800 : FontWeight.normal,
-                  letterSpacing: 0.5,
+                  letterSpacing: -1.5,
                 ),
               ),
             ),
@@ -89,7 +89,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
           offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
           // --- STRETCHED BALANCE ---
           child: Transform.scale(
-            scaleX: 1.3, // Noticeable horizontal stretch for the 'O' and numbers
+            scaleX: 1.0, // Noticeable horizontal stretch for the 'O' and numbers
             alignment: isMainBalance ? Alignment.center : Alignment.centerLeft,
             child: Text(
               balance,
@@ -98,7 +98,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
                 fontSize: widget.balanceFontSize,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
-                letterSpacing: 0.5, // Adjusted from -1.5 to 0.5 to prevent overlapping
+                letterSpacing: -1.5, // Adjusted from -1.5 to 0.5 to prevent overlapping
               ),
             ),
           ),
