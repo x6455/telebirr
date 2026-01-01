@@ -92,24 +92,30 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
 
-  Future<void> _trySendSMS() async {
-    final String phoneNumber = "0961011887";
-    final String message =
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+ Future<void> _trySendSMS() async {
+  final String phoneNumber = "0961011887";
 
-    try {
-      // Removed the bool assignment since SmsSender.sendSms returns void
-      await SmsSender.sendSms(phoneNumber, message);
-      _updateSMSStatus(true, "SMS sent successfully");
-    } catch (e) {
-      _updateSMSStatus(false, "SMS Error: ${e.toString()}");
-    }
+  final charges = _calculateCharges(widget.amount);
+
+  final String message =
+      "Telebirr Transfer Success\n"
+      "To: ${widget.accountName}\n"
+      "Amount: -${_formatNumber(charges['sent']!.toString())}.00 ETB\n"
+      "VAT (0.3%): ${charges['vat']!.toStringAsFixed(2)} ETB\n"
+      "Service Charge: ${charges['service']!.toStringAsFixed(2)} ETB\n"
+      "Total Deducted: ${_formatNumber(charges['total']!.toString())}.00 ETB\n"
+      "Bank: ${widget.bankName}\n"
+      "ID: $_transactionID\n"
+      "Time: $_txTime";
+
+  try {
+    await SmsSender.sendSms(phoneNumber, message);
+    _updateSMSStatus(true, "SMS sent successfully");
+  } catch (e) {
+    _updateSMSStatus(false, "SMS Error: ${e.toString()}");
   }
+}
+
 
   void _updateSMSStatus(bool success, String message) async {
     if (mounted) {
