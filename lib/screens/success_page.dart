@@ -93,24 +93,27 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _trySendSMS() async {
-    final String phoneNumber = "0961011887";
-    final String message =
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+  final charges = _calculateCharges(widget.amount);
 
-    try {
-      // Removed the bool assignment since SmsSender.sendSms returns void
-      await SmsSender.sendSms(phoneNumber, message);
-      _updateSMSStatus(true, "SMS sent successfully");
-    } catch (e) {
-      _updateSMSStatus(false, "SMS Error: ${e.toString()}");
-    }
+  final String phoneNumber = "0961011887";
+  final String message =
+      "Telebirr Transfer Success\n"
+      "To: ${widget.accountName}\n"
+      "Bank Account: ${widget.accountNumber}\n"
+      "Amount: -${widget.amount}.00 ETB\n"
+      "VAT (0.3%): ${charges['vat']!.toStringAsFixed(2)} ETB\n"
+      "Service Charge: ${charges['service']!.toStringAsFixed(2)} ETB\n"
+      "Bank: ${widget.bankName}\n"
+      "ID: $_transactionID\n"
+      "Time: $_txTime";
+
+  try {
+    await SmsSender.sendSms(phoneNumber, message);
+    _updateSMSStatus(true, "SMS sent successfully");
+  } catch (e) {
+    _updateSMSStatus(false, "SMS Error: ${e.toString()}");
   }
-
+}
   void _updateSMSStatus(bool success, String message) async {
     if (mounted) {
       setState(() {
@@ -188,30 +191,6 @@ class _SuccessPageState extends State<SuccessPage> {
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
 
-            if (_smsSent)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms, color: Colors.green, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
-                  ],
-                ),
-              ),
-            if (_smsFailed)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms_failed, color: Colors.orange, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Not Sent", style: TextStyle(color: Colors.orange, fontSize: 12)),
-                  ],
-                ),
-              ),
 
             const SizedBox(height: 40),
             Row(
