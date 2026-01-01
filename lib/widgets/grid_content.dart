@@ -152,7 +152,7 @@ class GridContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  
+                  Text(
                     title,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -160,7 +160,7 @@ class GridContent extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  
+                  Text(
                     subtitle,
                     style: TextStyle(
                       color: Colors.grey[600]!,
@@ -239,7 +239,7 @@ class GridContent extends StatelessWidget {
                 children: [
                   gridIcon[index],
                   const SizedBox(height: 5),
-                  
+                  Text(
                     gridLabel[index],
                     maxLines: 3,
                     textAlign: TextAlign.center,
@@ -290,7 +290,7 @@ class GridIcons extends StatelessWidget {
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: 
+              child: Text(
                 'Up to 35%',
                 style: TextStyle(
                   fontSize: 10,
