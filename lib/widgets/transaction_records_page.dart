@@ -39,7 +39,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
     const Color primaryBlue = Color(0xFF0089CF);
     
     // Get current date for the header
-    final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final String todayDate = DateFormat('yyyy-dd').format(DateTime.now());
 
     return Scaffold(
       // 1. Page background set to white
@@ -93,7 +93,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
               alignment: Alignment.centerLeft,
               child: Text(
                 todayDate,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14),
+                style: const TextStyle(fontWeight: FontWeight.normal, color: Colors.black, fontSize: 14),
               ),
             ),
           ),
@@ -136,8 +136,8 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
         textAlign: TextAlign.center,
         style: TextStyle(
           color: isActive ? Colors.white : color, 
-          fontSize: 12, 
-          fontWeight: FontWeight.bold, // Font property for the text
+          fontSize: 16, 
+          fontWeight: FontWeight.normal, // Font property for the text
         ),
       ),
     );
@@ -153,14 +153,14 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
         children: [
           ListTile(
             leading: const CircleAvatar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.orange,
               child: Icon(Icons.more_horiz, color: Colors.orange, size: 30),
             ),
             title: const Text("Transfer Money", style: TextStyle(fontSize: 14)),
             subtitle: Text(time, style: const TextStyle(fontSize: 11, color: Colors.grey)),
             trailing: Text(
-              "-$amount.00", 
-              style: const TextStyle(color: Color(0xFF0089CF), fontWeight: FontWeight.bold, fontSize: 16)
+              "-$amount", 
+              style: const TextStyle(color: Color(0xFF0089CF), fontWeight: FontWeight.normal, fontSize: 24)
             ),
           ),
         ],
