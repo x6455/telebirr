@@ -37,7 +37,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
       case 'Endekise (ETB) ':
         return '2,450.00';
       case 'Reward (ETB) ':
-        return '350.75';
+        return '0.00';
       default:
         return '0.00';
     }
@@ -50,7 +50,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
     final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
 
     return Transform.translate(
-      offset: isReward ? const Offset(-15, 0) : Offset.zero,
+      offset: isReward ? const Offset(-10, 0) : Offset.zero,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment:
@@ -66,11 +66,10 @@ class _BalanceInfoState extends State<BalanceInfo> {
                 style: TextStyle(
                   color: const Color.fromRGBO(247, 255, 234, 1),
                   fontSize: widget.labelFontSize,
-                  fontWeight:
-                      widget.isLabelBold ? FontWeight.w800 : FontWeight.normal,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(width: 15),
+              const SizedBox(width: 11),
               InkWell(
                 onTap: toggleBalanceVisibility,
                 child: Icon(
@@ -83,7 +82,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
           ),
           const SizedBox(height: 1),
           Transform.translate(
-            offset: isMainBalance ? const Offset(-7, 0) : Offset.zero,
+            offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
             child: Text(
               balance,
               textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
@@ -91,6 +90,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
                 fontSize: widget.balanceFontSize,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
+                letterSpacing: showBalance ? 0.0 : -1.5,
               ),
             ),
           ),
