@@ -58,16 +58,22 @@ class _BalanceInfoState extends State<BalanceInfo> {
           mainAxisAlignment:
               isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
-            Text(
-              widget.label,
-              style: TextStyle(
-                color: const Color.fromRGBO(247, 255, 234, 1),
-                fontSize: widget.labelFontSize,
-                fontWeight:
-                    widget.isLabelBold ? FontWeight.w800 : FontWeight.normal,
+            // --- STRETCHED LABEL ---
+            Transform.scale(
+              scaleX: 1.5, // Slightly stretched label
+              alignment: Alignment.centerLeft,
+              child: Text(
+                widget.label,
+                style: TextStyle(
+                  color: const Color.fromRGBO(247, 255, 234, 1),
+                  fontSize: widget.labelFontSize,
+                  fontWeight:
+                      widget.isLabelBold ? FontWeight.w800 : FontWeight.normal,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: 8), // Increased width to account for stretch overlap
             InkWell(
               onTap: toggleBalanceVisibility,
               child: Icon(
@@ -81,14 +87,19 @@ class _BalanceInfoState extends State<BalanceInfo> {
         const SizedBox(height: 1),
         Transform.translate(
           offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
-          child: Text(
-            balance,
-            textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
-            style: GoogleFonts.roboto(
-              fontSize: widget.balanceFontSize,
-              fontWeight: FontWeight.w800, // <-- changed from bold to w800
-              color: Colors.white,
-              letterSpacing: -1.5,
+          // --- STRETCHED BALANCE ---
+          child: Transform.scale(
+            scaleX: 1.3, // Noticeable horizontal stretch for the 'O' and numbers
+            alignment: isMainBalance ? Alignment.center : Alignment.centerLeft,
+            child: Text(
+              balance,
+              textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
+              style: GoogleFonts.roboto(
+                fontSize: widget.balanceFontSize,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                letterSpacing: 0.5, // Adjusted from -1.5 to 0.5 to prevent overlapping
+              ),
             ),
           ),
         ),
