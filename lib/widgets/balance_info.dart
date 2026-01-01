@@ -43,12 +43,16 @@ class _BalanceInfoState extends State<BalanceInfo> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final bool isMainBalance = widget.label == 'Balance (ETB) ';
-    final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
+ @override
+Widget build(BuildContext context) {
+  final bool isMainBalance = widget.label == 'Balance (ETB) ';
+  final bool isReward = widget.label == 'Reward (ETB) '; // Identify Reward
+  final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
 
-    return Column(
+  return Transform.translate(
+    // If it's Reward, shift it left by 15 pixels. Otherwise, stay at 0.
+    offset: isReward ? const Offset(-15, 0) : Offset.zero,
+    child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment:
           isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
@@ -58,9 +62,8 @@ class _BalanceInfoState extends State<BalanceInfo> {
           mainAxisAlignment:
               isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
-            // --- STRETCHED LABEL ---
             Transform.scale(
-              scaleX: 1.2, // Slightly stretched label
+              scaleX: 1.2,
               alignment: Alignment.centerLeft,
               child: Text(
                 widget.label,
@@ -73,11 +76,11 @@ class _BalanceInfoState extends State<BalanceInfo> {
                 ),
               ),
             ),
-            const SizedBox(width: 8), // Increased width to account for stretch overlap
+            const SizedBox(width: 11),
             InkWell(
               onTap: toggleBalanceVisibility,
               child: Icon(
-                showBalance ? Icons.visibility_off : Icons.remove_red_eye_sharp,
+                showBalance ? Icons.visibility : Icons.visibility_off,
                 size: 13,
                 color: const Color.fromRGBO(247, 255, 234, 1),
               ),
@@ -87,9 +90,8 @@ class _BalanceInfoState extends State<BalanceInfo> {
         const SizedBox(height: 1),
         Transform.translate(
           offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
-          // --- STRETCHED BALANCE ---
           child: Transform.scale(
-            scaleX: 1.0, // Noticeable horizontal stretch for the 'O' and numbers
+            scaleX: 1.0,
             alignment: isMainBalance ? Alignment.center : Alignment.centerLeft,
             child: Text(
               balance,
@@ -98,12 +100,13 @@ class _BalanceInfoState extends State<BalanceInfo> {
                 fontSize: widget.balanceFontSize,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
-                letterSpacing: -1.5, // Adjusted from -1.5 to 0.5 to prevent overlapping
+                letterSpacing: -1.5,
               ),
             ),
           ),
         ),
       ],
-    );
-  }
+    ),
+  );
+}
 }
