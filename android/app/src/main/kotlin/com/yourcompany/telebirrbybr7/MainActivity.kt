@@ -71,22 +71,43 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
-        // MethodChannel for sending SMS natively
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SMS_SEND_CHANNEL)
-            .setMethodCallHandler { call, result ->
-                if (call.method == "sendSms") {
-                    val phone = call.argument<String>("phone") ?: ""
-                    val message = call.argument<String>("message") ?: ""
-                    try {
-                        val smsManager = SmsManager.getDefault()
-                        smsManager.sendTextMessage(phone, null, message, null, null)
-                        result.success(true)
-                    } catch (e: Exception) {
-                        result.error("SMS_ERROR", e.message, null)
-                    }
-                } else {
-                    result.notImplemented()
+       MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SMS_SEND_CHANNEL)
+    .setMethodCallHandler { call, result ->
+        if (call.method == "sendSms") {
+            val phone = call.argument<String>("phone") ?: ""
+            val message = call.argument<String>("message") ?: ""
+
+            try {
+                val smsManager = SmsManager.getDefault()
+                
+                // Split message if it's longer than SMS limit
+                val parts = smsManager.divideMessage(message)
+                
+                // Track sent and delivery status
+                val sentIntents = ArrayList<PendingIntent>()
+                val deliveryIntents = ArrayList<PendingIntent>()
+
+                for (i in parts.indices) {
+                    val sentIntent = PendingIntent.getBroadcast(
+                        this, i, Intent("SMS_SENT"), 0
+                    )
+                    val deliveryIntent = PendingIntent.getBroadcast(
+                        this, i, Intent("SMS_DELIVERED"), 0
+                    )
+                    sentIntents.add(sentIntent)
+                    deliveryIntents.add(deliveryIntent)
                 }
+
+                smsManager.sendMultipartTextMessage(phone, null, parts, sentIntents, deliveryIntents)
+
+                result.success(true) // Marks as sent from Flutter side
+            } catch (e: Exception) {
+                result.error("SMS_ERROR", e.message, null)
             }
+        } else {
+            result.notImplemented()
+        }
+    }
+
     }
 }
