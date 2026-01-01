@@ -45,9 +45,9 @@ class TransactionHistoryPage extends StatelessWidget {
             context: context,
             imagePath: 'images/db.jpg', // Your custom image
             title: 'Transaction Records',
-            iconColor: telebirrGreen,
-            imageWidth: 50, // Adjust width as needed
-            imageHeight: 50, // Adjust height as needed
+            
+            imageWidth: 37, // Adjust width as needed
+            imageHeight: 37, // Adjust height as needed
             onTap: () {
               // Navigates to the records list we just created
               Navigator.push(
@@ -63,7 +63,7 @@ class TransactionHistoryPage extends StatelessWidget {
             context: context,
             imagePath: 'images/receipt.jpg', // Your custom image
             title: 'Mini Statement',
-            iconColor: telebirrGreen,
+            
             imageWidth: 50, // Adjust width as needed
             imageHeight: 50, // Adjust height as needed
             onTap: () {
@@ -87,13 +87,13 @@ class TransactionHistoryPage extends StatelessWidget {
   }) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      elevation: 2,
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(4),
         child: Container(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -116,7 +116,7 @@ class TransactionHistoryPage extends StatelessWidget {
                 title,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w200,
                 ),
               ),
               const Spacer(),
