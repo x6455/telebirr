@@ -194,7 +194,7 @@ try {
     ),
   ),
               title: const Text("Transfer Money", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,), ),
-              subtitle: Text(formatedTime, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              subtitle: Text(formattedTime, style: const TextStyle(fontSize: 13, color: Colors.grey)),
               trailing: Text(
                 "-$amount",
                 style: const TextStyle(
