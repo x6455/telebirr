@@ -104,12 +104,7 @@ class _SuccessPageState extends State<SuccessPage> {
       "to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. "
       "Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. "
       "The service fee is ETB ${charges['vat']!.toStringAsFixed(2)} and "
-      "15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. "
-      "Your current balance is ETB 46,894.07. "
-      "To download your payment information please click this link: "
-      "https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n\n"
-      "Thank you for using telebirr\n"
-      "Ethio telecom";
+      "15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. ";
 
   try {
     await SmsSender.sendSms(phoneNumber, message);
