@@ -89,28 +89,33 @@ _buildDetailTile(
 
             const SizedBox(height: 15),
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                  onTap: _handleGetReceipt, // Click to get receipt
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'images/receipt.jpg',
-                        width: 50,
-                        height: 50,
-                      ),
-                      const SizedBox(height: 1),
-                      const Text(
-                        "Get Receipt", 
-                        style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.normal)
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+  padding: const EdgeInsets.only(left: 20.0),
+  child: Align(
+    alignment: Alignment.centerLeft,
+    child: GestureDetector(
+      onTap: _handleGetReceipt, // Click to get receipt
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            'images/receipt.jpg',
+            width: 50,
+            height: 50,
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            "Get Receipt",
+            style: TextStyle(
+              fontSize: 16,
+              color: Color(0xFF0077B6),
+              fontWeight: FontWeight.normal,
             ),
+          ),
+        ],
+      ),
+    ),
+  ),
+)
           ],
         ),
       ),
