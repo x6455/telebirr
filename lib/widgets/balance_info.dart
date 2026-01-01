@@ -6,7 +6,7 @@ class BalanceInfo extends StatefulWidget {
   final double labelFontSize;
   final double balanceFontSize;
   final CrossAxisAlignment crossAxisAlignment;
-  final bool isLabelBold; // ✅ added
+  final bool isLabelBold;
 
   const BalanceInfo({
     super.key,
@@ -14,7 +14,7 @@ class BalanceInfo extends StatefulWidget {
     required this.labelFontSize,
     required this.balanceFontSize,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    this.isLabelBold = false, // ✅ default
+    this.isLabelBold = false,
   });
 
   @override
@@ -43,12 +43,9 @@ class _BalanceInfoState extends State<BalanceInfo> {
     }
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
-    // 1. Define the missing variable here
-    // It is true if the label is 'Balance (ETB) '
     final bool isMainBalance = widget.label == 'Balance (ETB) ';
-    
     final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
 
     return Column(
@@ -66,18 +63,15 @@ class _BalanceInfoState extends State<BalanceInfo> {
               style: TextStyle(
                 color: const Color.fromRGBO(247, 255, 234, 1),
                 fontSize: widget.labelFontSize,
-                fontWeight: widget.isLabelBold
-                    ? FontWeight.bold
-                    : FontWeight.normal,
+                fontWeight:
+                    widget.isLabelBold ? FontWeight.w800 : FontWeight.normal,
               ),
             ),
             const SizedBox(width: 4),
             InkWell(
               onTap: toggleBalanceVisibility,
               child: Icon(
-                showBalance
-                    ? Icons.visibility_off
-                    : Icons.remove_red_eye_sharp,
+                showBalance ? Icons.visibility_off : Icons.remove_red_eye_sharp,
                 size: 13,
                 color: const Color.fromRGBO(247, 255, 234, 1),
               ),
@@ -85,19 +79,20 @@ class _BalanceInfoState extends State<BalanceInfo> {
           ],
         ),
         const SizedBox(height: 1),
-        Text(
-  balance,
-  textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
-  style: GoogleFonts.roboto(
-    fontSize: widget.balanceFontSize,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-    letterSpacing: -1.5, // <-- negative value brings characters closer
-  ),
-),
-
+        Transform.translate(
+          offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
+          child: Text(
+            balance,
+            textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
+            style: GoogleFonts.roboto(
+              fontSize: widget.balanceFontSize,
+              fontWeight: FontWeight.w800, // <-- changed from bold to w800
+              color: Colors.white,
+              letterSpacing: -1.5,
+            ),
+          ),
+        ),
       ],
     );
   }
-
 }
