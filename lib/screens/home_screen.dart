@@ -233,10 +233,10 @@ class ImageSliderIndicator extends StatelessWidget {
   activeColor: const Color.fromRGBO(141, 199, 63, 1),
   activeSize: const Size(5.0, 5.0), // inner filled dot
   activeShape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(2.5),
+    borderRadius: BorderRadius.circular(5.5),
     side: const BorderSide(
       color: Color.fromRGBO(141, 199, 63, 1),
-      width: 1.0, // visible border around active dot
+      width: 2.0, // visible border around active dot
     ),
   ),
 
