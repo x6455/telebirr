@@ -43,9 +43,11 @@ class TransactionHistoryPage extends StatelessWidget {
           const SizedBox(height: 16),
           _buildMenuCard(
             context: context,
-            icon: Icons.paid_outlined, // Icon representing 'Transaction Records'
+            imagePath: 'images/db.jpg', // Your custom image
             title: 'Transaction Records',
             iconColor: telebirrGreen,
+            imageWidth: 50, // Adjust width as needed
+            imageHeight: 50, // Adjust height as needed
             onTap: () {
               // Navigates to the records list we just created
               Navigator.push(
@@ -56,12 +58,14 @@ class TransactionHistoryPage extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 2), // Thin visual break
+          const SizedBox(height: 10), // Thin visual break
           _buildMenuCard(
             context: context,
-            icon: Icons.receipt_long_outlined, // Icon representing 'Mini Statement'
+            imagePath: 'images/receipt.jpg', // Your custom image
             title: 'Mini Statement',
             iconColor: telebirrGreen,
+            imageWidth: 50, // Adjust width as needed
+            imageHeight: 50, // Adjust height as needed
             onTap: () {
               // Future implementation for Mini Statement
             },
@@ -73,34 +77,57 @@ class TransactionHistoryPage extends StatelessWidget {
 
   Widget _buildMenuCard({
     required BuildContext context,
-    required IconData icon,
+    String? imagePath,
+    IconData? icon,
     required String title,
     required Color iconColor,
+    double imageWidth = 40,
+    double imageHeight = 40,
     required VoidCallback onTap,
   }) {
-    return Container(
-      // Padding removed from margin to make it look like a list item
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: Icon(icon, color: iconColor, size: 32),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black,
-            fontWeight: FontWeight.w400,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // Use Image if imagePath is provided, otherwise use Icon
+              if (imagePath != null)
+                Container(
+                  width: imageWidth,
+                  height: imageHeight,
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                  ),
+                )
+              else if (icon != null)
+                Icon(icon, color: iconColor, size: 40),
+              
+              const SizedBox(width: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey[400],
+                size: 16,
+              ),
+            ],
           ),
         ),
-        trailing: const Icon(
-          Icons.arrow_forward_ios,
-          color: Colors.black26,
-          size: 14,
-        ),
-        onTap: onTap,
       ),
     );
   }
