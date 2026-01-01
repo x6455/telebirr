@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'transaction_records_page.dart'; // Ensure this matches your filename
 
 class TransactionHistoryPage extends StatelessWidget {
   const TransactionHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Primary green color from your branding
+    const Color telebirrGreen = Color(0xFF8DC73F);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Light grey background from screenshot
+      backgroundColor: const Color(0xFFF5F5F5), // Light grey background
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -23,7 +27,9 @@ class TransactionHistoryPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_horiz, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              // Context menu action
+            },
           ),
           IconButton(
             icon: const Icon(Icons.cancel_outlined, color: Colors.black),
@@ -36,18 +42,28 @@ class TransactionHistoryPage extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
           _buildMenuCard(
-            icon: Icons.account_balance_wallet_outlined,
+            context: context,
+            icon: Icons.paid_outlined, // Icon representing 'Transaction Records'
             title: 'Transaction Records',
+            iconColor: telebirrGreen,
             onTap: () {
-              // Handle Navigation to Records
+              // Navigates to the records list we just created
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TransactionRecordsPage(),
+                ),
+              );
             },
           ),
-          const SizedBox(height: 2), // Small gap between cards
+          const SizedBox(height: 2), // Thin visual break
           _buildMenuCard(
-            icon: Icons.receipt_long_outlined,
+            context: context,
+            icon: Icons.receipt_long_outlined, // Icon representing 'Mini Statement'
             title: 'Mini Statement',
+            iconColor: telebirrGreen,
             onTap: () {
-              // Handle Navigation to Statement
+              // Future implementation for Mini Statement
             },
           ),
         ],
@@ -56,29 +72,33 @@ class TransactionHistoryPage extends StatelessWidget {
   }
 
   Widget _buildMenuCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
+    required Color iconColor,
     required VoidCallback onTap,
   }) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
+      // Padding removed from margin to make it look like a list item
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF8DC73F), size: 30),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: Icon(icon, color: iconColor, size: 32),
         title: Text(
           title,
           style: const TextStyle(
             fontSize: 16,
-            color: Colors.black87,
+            color: Colors.black,
+            fontWeight: FontWeight.w400,
           ),
         ),
         trailing: const Icon(
           Icons.arrow_forward_ios,
           color: Colors.black26,
-          size: 16,
+          size: 14,
         ),
         onTap: onTap,
       ),
