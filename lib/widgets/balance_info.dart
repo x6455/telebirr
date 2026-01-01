@@ -50,7 +50,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
     final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
 
     return Transform.translate(
-      offset: isReward ? const Offset(-10, 0) : Offset.zero,
+      offset: isReward ? const Offset(-7, 0) : Offset.zero,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment:
@@ -69,7 +69,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(width: 11),
+              const SizedBox(width: 7),
               InkWell(
                 onTap: toggleBalanceVisibility,
                 child: Icon(
@@ -82,13 +82,13 @@ class _BalanceInfoState extends State<BalanceInfo> {
           ),
           const SizedBox(height: 1),
           Transform.translate(
-            offset: isMainBalance ? const Offset(-5, 0) : Offset.zero,
+            offset: isMainBalance ? const Offset(-9, 0) : Offset.zero,
             child: Text(
               balance,
               textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
               style: GoogleFonts.roboto(
                 fontSize: widget.balanceFontSize,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w600,
                 color: Colors.white,
                 letterSpacing: showBalance ? 0.0 : -1.5,
               ),
