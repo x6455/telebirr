@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart'; // Useful for formatting the current date
 
 class TransactionRecordsPage extends StatefulWidget {
   const TransactionRecordsPage({super.key});
@@ -23,12 +24,11 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
     final prefs = await SharedPreferences.getInstance();
     final List<String> historyStrings = prefs.getStringList('sent_balances') ?? [];
     
-    // Convert JSON strings back to Maps and reverse to show newest first
     setState(() {
       _history = historyStrings
           .map((item) => jsonDecode(item) as Map<String, dynamic>)
           .toList()
-          .reversed
+          .reversed // Show newest first
           .toList();
       _isLoading = false;
     });
@@ -37,10 +37,13 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
   @override
   Widget build(BuildContext context) {
     const Color primaryBlue = Color(0xFF0089CF);
-    const Color telebirrGreen = Color(0xFF8DC73F);
+    
+    // Get current date for the header
+    final String todayDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
+      // 1. Page background set to white
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -70,7 +73,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
             ),
           ),
           
-          // Summary Row (Static values to match UI)
+          // Summary Row
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -83,7 +86,19 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
             ),
           ),
 
-          // Transaction List
+          // 2. Single Date Header at the Top
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                todayDate,
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: 14),
+              ),
+            ),
+          ),
+
+          // Transaction List with Alternating Colors
           Expanded(
             child: _isLoading 
               ? const Center(child: CircularProgressIndicator())
@@ -93,7 +108,13 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
                     itemCount: _history.length,
                     itemBuilder: (context, index) {
                       final tx = _history[index];
-                      return _buildTransactionItem(tx);
+                      // 3. Logic for Alternating Colors (Zebra Striping)
+                      // index 0 is white, index 1 is light gray, index 2 is white...
+                      final Color bgColor = (index % 2 == 0) 
+                          ? Colors.white 
+                          : const Color(0xFFF9F9F9); // Very subtle gray
+
+                      return _buildTransactionItem(tx, bgColor);
                     },
                   ),
           ),
@@ -110,29 +131,27 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color),
       ),
-      child: Text(text,
-          textAlign: TextAlign.center,
-          style: TextStyle(color: isActive ? Colors.white : color, fontSize: 12, fontWeight: FontWeight.bold)),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: isActive ? Colors.white : color, 
+          fontSize: 12, 
+          fontWeight: FontWeight.bold, // Font property for the text
+        ),
+      ),
     );
   }
 
-  Widget _buildTransactionItem(Map<String, dynamic> tx) {
-    // Extracting data from your SuccessPage format
+  Widget _buildTransactionItem(Map<String, dynamic> tx, Color backgroundColor) {
     final String amount = tx['amount_sent'] ?? "0.00";
-    final String time = tx['time'] ?? ""; // format: yyyy/MM/dd HH:mm:ss
-    final String dateHeader = time.split(' ')[0].substring(0, 7).replaceAll('/', '-'); // Gets "2026-01"
+    final String time = tx['time'] ?? ""; 
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Date Header (Simplified logic: showing it for every item or group by date)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(dateHeader, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-        ),
-        Container(
-          color: Colors.white,
-          child: ListTile(
+    return Container(
+      color: backgroundColor,
+      child: Column(
+        children: [
+          ListTile(
             leading: const CircleAvatar(
               backgroundColor: Colors.transparent,
               child: Icon(Icons.more_horiz, color: Colors.orange, size: 30),
@@ -144,9 +163,8 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
               style: const TextStyle(color: Color(0xFF0089CF), fontWeight: FontWeight.bold, fontSize: 16)
             ),
           ),
-        ),
-        const Divider(height: 1, indent: 70),
-      ],
+        ],
+      ),
     );
   }
 }
