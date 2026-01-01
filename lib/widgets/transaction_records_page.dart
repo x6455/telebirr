@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Useful for formatting the current date
+import '../screens/transaction_detail_screen.dart';
 
 class TransactionRecordsPage extends StatefulWidget {
   const TransactionRecordsPage({super.key});
@@ -145,25 +146,39 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
 
   Widget _buildTransactionItem(Map<String, dynamic> tx, Color backgroundColor) {
     final String amount = tx['amount_sent'] ?? "0.00";
-    final String time = tx['time'] ?? ""; 
+    final String time = tx['time'] ?? "";
 
     return Container(
       color: backgroundColor,
-      child: Column(
-        children: [
-          ListTile(
-            leading: const CircleAvatar(
-              backgroundColor: Colors.orange,
-              child: Icon(Icons.more_horiz, color: Colors.orange, size: 30),
+      child: InkWell(
+        // This makes the row clickable and navigates to the detail screen
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TransactionDetailScreen(txData: tx),
             ),
-            title: const Text("Transfer Money", style: TextStyle(fontSize: 14)),
-            subtitle: Text(time, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-            trailing: Text(
-              "-$amount", 
-              style: const TextStyle(color: Color(0xFF0089CF), fontWeight: FontWeight.normal, fontSize: 24)
+          );
+        },
+        child: Column(
+          children: [
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Colors.transparent, // Changed to transparent so the orange icon is visible
+                child: Icon(Icons.more_horiz, color: Colors.orange, size: 30),
+              ),
+              title: const Text("Transfer Money", style: TextStyle(fontSize: 14)),
+              subtitle: Text(time, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+              trailing: Text(
+                "-$amount",
+                style: const TextStyle(
+                    color: Color(0xFF0089CF),
+                    fontWeight: FontWeight.normal,
+                    fontSize: 24),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
