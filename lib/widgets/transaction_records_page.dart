@@ -114,7 +114,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
                       // index 0 is white, index 1 is light gray, index 2 is white...
                       final Color bgColor = (index % 2 == 0) 
                           ? Colors.white 
-                          : const Color(0xFFF9F9F9); // Very subtle gray
+                          : const Color(0xFFFBFBFB); // Very subtle gray
 
                       return _buildTransactionItem(tx, bgColor);
                     },
@@ -147,15 +147,19 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
 
   Widget _buildTransactionItem(Map<String, dynamic> tx, Color backgroundColor) {
     final String amount = tx['amount_sent'] ?? "0.00";
-   final String time = tx['time'] ?? "";
-String timeWithoutSeconds = time;
+   final String timeString = tx['time'] ?? "";
+String formattedTime = timeString; // fallback if parsing fails
+
 try {
-  if (time.isNotEmpty) {
-    // Remove seconds from the end
-    timeWithoutSeconds = time.replaceAll(RegExp(r':\d{2}$'), '');
+  if (timeString.isNotEmpty) {
+    // Parse the string into DateTime
+    DateTime parsedTime = DateTime.parse(timeString);
+    // Format as HH:mm (hours and minutes only)
+    formattedTime = DateFormat('HH:mm').format(parsedTime);
   }
 } catch (e) {
-  // Keep original if something goes wrong
+  // Keep original string if parsing fails
+  formattedTime = timeString;
 }
 
     return Container(
@@ -174,23 +178,23 @@ try {
           children: [
             ListTile(
   leading: Container(
-    width: 36, // Size of the circle
-    height: 36, // Size of the circle
+    width: 26, // Size of the circle
+    height: 26, // Size of the circle
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       border: Border.all(
-        color: Colors.orange, // Border color
-        width: 3, // 3px border width
+        color: Color(0xFFFBBB47), // Border color
+        width: 2, // 3px border width
       ),
     ),
     child: const Icon(
       Icons.more_horiz,
-      color: Colors.orange,
-      size: 30, // Slightly smaller to fit inside the circle
+      color: Color(0xFFFBBB47),
+      size: 20, // Slightly smaller to fit inside the circle
     ),
   ),
               title: const Text("Transfer Money", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,), ),
-              subtitle: Text(time, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+              subtitle: Text(formatedTime, style: const TextStyle(fontSize: 13, color: Colors.grey)),
               trailing: Text(
                 "-$amount",
                 style: const TextStyle(
