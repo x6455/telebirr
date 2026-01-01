@@ -34,7 +34,7 @@ class NotificationArea extends StatelessWidget {
               );
             },
             child: const Badge(
-              label: Text('23'),
+              label: Text('4'),
               backgroundColor: Colors.red,
               textColor: Colors.white,
               child: Icon(
