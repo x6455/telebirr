@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
+      backgroundColor: const Color.fromRGBO(250, 250, 250, 1),
       appBar: AppBar(
   // REDUCED HEIGHT: Setting toolbarHeight to 45 (Standard is 56)
   toolbarHeight: 40, 
