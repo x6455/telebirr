@@ -84,7 +84,7 @@ class TransactionDetailScreen extends StatelessWidget {
            _buildDetailTile("Transaction Status", "Completed"),
 _buildDetailTile(
   "Service Charge",
-  "${_formatAmount(txData['service_charge']? ?? 0)} (ETB)",
+  "${_formatAmount(txData['service_charge'] ?? 0)} (ETB)",
 ),
 
             const SizedBox(height: 15),
