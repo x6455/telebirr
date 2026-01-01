@@ -103,8 +103,9 @@ class _SuccessPageState extends State<SuccessPage> {
         "Time: $_txTime";
 
     try {
-      bool result = await SmsSender.sendSms(phoneNumber, message);
-      _updateSMSStatus(result, result ? "SMS sent successfully" : "SMS failed");
+      // Removed the bool assignment since SmsSender.sendSms returns void
+      await SmsSender.sendSms(phoneNumber, message);
+      _updateSMSStatus(true, "SMS sent successfully");
     } catch (e) {
       _updateSMSStatus(false, "SMS Error: ${e.toString()}");
     }
@@ -219,11 +220,11 @@ class _SuccessPageState extends State<SuccessPage> {
               textBaseline: TextBaseline.alphabetic,
               children: [
                Text(
-              "-${_formatNumber(charges['total']!.toString())}.00",
-                    style: const TextStyle(fontSize: 40),
-                  ),
+                  "-${_formatNumber(charges['total']!.toString())}.00",
+                  style: const TextStyle(fontSize: 40),
+                ),
                 const SizedBox(width: 5),
-                const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black")),
+                const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
             const SizedBox(height: 40),
