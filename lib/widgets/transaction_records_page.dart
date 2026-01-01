@@ -189,7 +189,7 @@ try {
       size: 30, // Slightly smaller to fit inside the circle
     ),
   ),
-              title: const Text("Transfer Money", style: TextStyle(fontSize: 16), fontWeight: FontWeight.bold,),
+              title: const Text("Transfer Money", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,), ),
               subtitle: Text(time, style: const TextStyle(fontSize: 13, color: Colors.grey)),
               trailing: Text(
                 "-$amount",
