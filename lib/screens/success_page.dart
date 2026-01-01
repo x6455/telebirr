@@ -95,12 +95,10 @@ class _SuccessPageState extends State<SuccessPage> {
   Future<void> _trySendSMS() async {
     final String phoneNumber = "0961011887";
     final String message =
-        "Telebirr Transfer Success\n"
-        "To: ${widget.accountName}\n"
-        "Amount: -${widget.amount}.00 ETB\n"
-        "Bank: ${widget.bankName}\n"
-        "ID: $_transactionID\n"
-        "Time: $_txTime";
+       "Dear DANEIL\n"
+      "You have transferred ETB ${widget.amount}.00 successfully from your telebirr account 251911891887 to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. The service fee is  ETB ${charges['vat']!.toStringAsFixed(2)} and  15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. Your current balance is ETB 46,894.07. To download your payment information please click this link: https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n"
+      "Thank you for using telebirr\n"
+      "Ethio telecom";
 
     try {
       // Removed the bool assignment since SmsSender.sendSms returns void
