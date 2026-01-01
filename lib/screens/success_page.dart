@@ -99,11 +99,11 @@ class _SuccessPageState extends State<SuccessPage> {
 
   final String message =
     "Telebirr Transfer Successful\n"
-    "To: ${widget.accountName}"
+    "account num ${widget.accountNumber}"
+    "date $_txTime"
     "Amount: -${_formatNumber(charges['sent']!.toString())} ETB"
     "Charges: ${charges['vat']!.toStringAsFixed(2)} VAT, "
     "${charges['service']!.toStringAsFixed(2)} Service"
-    "Total: ${_formatNumber(charges['total']!.toString())} ETB"
     "ID: $_transactionID";
 
 
