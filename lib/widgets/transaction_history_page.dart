@@ -45,7 +45,7 @@ class TransactionHistoryPage extends StatelessWidget {
             context: context,
             imagePath: 'images/db.jpg', // Your custom image
             title: 'Transaction Records',
-            
+            iconColor: Colors.black,
             imageWidth: 37, // Adjust width as needed
             imageHeight: 37, // Adjust height as needed
             onTap: () {
@@ -63,7 +63,7 @@ class TransactionHistoryPage extends StatelessWidget {
             context: context,
             imagePath: 'images/receipt.jpg', // Your custom image
             title: 'Mini Statement',
-            
+            iconColor: Colors.black,
             imageWidth: 50, // Adjust width as needed
             imageHeight: 50, // Adjust height as needed
             onTap: () {
