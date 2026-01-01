@@ -99,7 +99,7 @@ class _SuccessPageState extends State<SuccessPage> {
 
   final String message = 
   "Dear DANEIL\n" +
-  "You have transferred ETB ${widget.amount}.00 successfully from your telebirr account 251911891887 to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. The service fee is ETB ${charges['vat']!.toStringAsFixed(2)} and 15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. Your current balance is ETB 46,894.07. To download your payment information please click this link: https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n" +
+  "You have transferred ETB ${widget.amount} successfully from your telebirr account 251911478904 to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. The service fee is ETB ${charges['vat']!.toStringAsFixed(2)} and 15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. Your current balance is ETB 46,894.07. To download your payment information please click this link: https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n" +
   "Thank you for using telebirr\n" +
   "Ethio telecom";
 
@@ -190,32 +190,8 @@ class _SuccessPageState extends State<SuccessPage> {
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
 
-            if (_smsSent)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms, color: Colors.green, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Sent", style: TextStyle(color: Colors.green, fontSize: 12)),
-                  ],
-                ),
-              ),
-            if (_smsFailed)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sms_failed, color: Colors.orange, size: 16),
-                    const SizedBox(width: 4),
-                    Text("SMS Not Sent", style: TextStyle(color: Colors.orange, fontSize: 12)),
-                  ],
-                ),
-              ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 35),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -229,7 +205,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 35),
             const Divider(indent: 20, endIndent: 20),
             const SizedBox(height: 10),
             _detailRow("Transaction Number", _transactionID),
@@ -295,7 +271,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
@@ -314,7 +290,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 25),
           ],
         ),
       ),
