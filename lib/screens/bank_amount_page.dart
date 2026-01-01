@@ -367,7 +367,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 25),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
