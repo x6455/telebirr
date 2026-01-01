@@ -181,7 +181,7 @@ class _SuccessPageState extends State<SuccessPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 17),
             CircleAvatar(
               radius: 30,
               backgroundColor: primaryGreen,
@@ -191,7 +191,7 @@ class _SuccessPageState extends State<SuccessPage> {
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
 
 
-            const SizedBox(height: 35),
+            const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -271,7 +271,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 17),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
@@ -290,7 +290,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 15),
           ],
         ),
       ),
