@@ -76,7 +76,7 @@ Widget build(BuildContext context) {
                 ),
               ),
             ),
-            const SizedBox(width: 11),
+            const SizedBox(width: 15),
             InkWell(
               onTap: toggleBalanceVisibility,
               child: Icon(
