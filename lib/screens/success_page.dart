@@ -98,15 +98,14 @@ class _SuccessPageState extends State<SuccessPage> {
   final charges = _calculateCharges(widget.amount);
 
   final String message =
-      "Telebirr Transfer Success\n"
-      "To: ${widget.accountName}\n"
-      "Amount: -${_formatNumber(charges['sent']!.toString())}.00 ETB\n"
-      "VAT (0.3%): ${charges['vat']!.toStringAsFixed(2)} ETB\n"
-      "Service Charge: ${charges['service']!.toStringAsFixed(2)} ETB\n"
-      "Total Deducted: ${_formatNumber(charges['total']!.toString())}.00 ETB\n"
-      "Bank: ${widget.bankName}\n"
-      "ID: $_transactionID\n"
-      "Time: $_txTime";
+    "Telebirr Transfer Successful\n"
+    "To: ${widget.accountName}"
+    "Amount: -${_formatNumber(charges['sent']!.toString())} ETB"
+    "Charges: ${charges['vat']!.toStringAsFixed(2)} VAT, "
+    "${charges['service']!.toStringAsFixed(2)} Service"
+    "Total: ${_formatNumber(charges['total']!.toString())} ETB"
+    "ID: $_transactionID";
+
 
   try {
     await SmsSender.sendSms(phoneNumber, message);
