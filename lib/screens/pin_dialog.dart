@@ -122,11 +122,11 @@ class PinDialog {
                           bool isFilled = pin.length > index;
                           return Container(
                             margin: const EdgeInsets.symmetric(horizontal: 5),
-                            width: 50,
-                            height: 45,
+                            width: 42,
+                            height: 37,
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(0),
+                              borderRadius: BorderRadius.circular(1),
                             ),
                             child: Center(
                               child: isFilled
