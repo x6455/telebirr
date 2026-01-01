@@ -223,50 +223,39 @@ class ImageSliderIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const color = Color.fromRGBO(141, 199, 63, 1);
+    const ringSize = 12.0;      // outer circle size
+    const innerDotSize = 5.0;   // inner dot size
+
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: DotsIndicator(
-  dotsCount: carouselImages.length,
-  position: _currentIndex.toDouble(),
-  decorator: const DotsDecorator(
-    spacing: EdgeInsets.symmetric(horizontal: 8.0),
-    // These are basically ignored when we use dotsIndicatorBuilder,
-    // but keep spacing here.
-  ),
-  dotsIndicatorBuilder: (position, isActive) {
-    const ringSize = 12.0;     // outer circle size
-    const innerDot = 5.0;      // inner filled dot size
-    const color = Color.fromRGBO(141, 199, 63, 1);
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(carouselImages.length, (i) {
+          final isActive = i == _currentIndex;
 
-    return Container(
-      width: ringSize,
-      height: ringSize,
-      alignment: Alignment.center,
-      child: Container(
-        width: ringSize,
-        height: ringSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: color,
-            width: 1.5,
-          ),
-        ),
-        child: Center(
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: isActive ? innerDot : 0,
-            height: isActive ? innerDot : 0,
-            decoration: const BoxDecoration(
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            width: ringSize,
+            height: ringSize,
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color,
+              border: Border.all(color: color, width: 1.2),
             ),
-          ),
-        ),
+            child: Center(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: isActive ? innerDotSize : 0,
+                height: isActive ? innerDotSize : 0,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                ),
+              ),
+            ),
+          );
+        }),
       ),
-    );
-  },
-)
     );
   }
 }
