@@ -402,7 +402,7 @@ Padding(
         height: ringSize,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: color, width: 1.2),
+          border: Border.all(color: color, width: 1.0),
         ),
         child: Center(
           child: AnimatedContainer(
