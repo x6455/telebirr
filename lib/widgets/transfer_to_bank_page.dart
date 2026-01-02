@@ -122,10 +122,7 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
   // 2. NEW LOGIC: HANDLE NEXT BUTTON PRESS
   void _handleNextProcess() async {
     // A. Show Loading Dialog
-    // A. Show Loading Dialog with GIF
-showDialog(
-  context: context,
-// A. Show Loading Dialog with GIF
+    
 showDialog(
   context: context,
   barrierDismissible: false,
