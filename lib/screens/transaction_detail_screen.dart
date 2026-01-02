@@ -10,9 +10,7 @@ class TransactionDetailScreen extends StatelessWidget {
   Future<void> _handleGetReceipt() async {
   final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
 
-  Future<void> _handleGetReceipt() async {
-  final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
-
+  
   final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
     'txID': txData['txID'] ?? "N/A",
     'time': txData['time'] ?? "",
