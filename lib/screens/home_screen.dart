@@ -235,7 +235,7 @@ class ImageSliderIndicator extends StatelessWidget {
           final isActive = i == _currentIndex;
 
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
             width: ringSize,
             height: ringSize,
             decoration: BoxDecoration(
