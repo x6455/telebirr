@@ -226,51 +226,65 @@ class _SuccessPageState extends State<SuccessPage> {
               ],
             ),
             const SizedBox(height: 12),
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true,
-                aspectRatio: 3.5,
-                viewportFraction: 0.92,
-                onPageChanged: (index, reason) =>
-                    setState(() => _currentIndex = index),
-              ),
-              items: sliderImages.map((imagePath) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.image_not_supported)),
-                    ),
-                  ),
-                );
-              }).toList(),
+            // 1. Find the CarouselSlider and place this immediately after it
+CarouselSlider(
+  options: CarouselOptions(
+    autoPlay: true,
+    aspectRatio: 3.5,
+    viewportFraction: 0.92,
+    onPageChanged: (index, reason) =>
+        setState(() => _currentIndex = index),
+  ),
+  items: sliderImages.map((imagePath) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.cover,
+          width: double.infinity,
+        ),
+      ),
+    );
+  }).toList(),
+),
+
+// 2. REPLACE the DotsIndicator with this custom implementation:
+Padding(
+  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: List.generate(sliderImages.length, (i) {
+      final isActive = i == _currentIndex;
+      const color = Color(0xFF8DC73F); // Your primaryGreen
+      const ringSize = 8.0;      // outer circle size
+      const innerDotSize = 4.0;   // inner dot size
+
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        width: ringSize,
+        height: ringSize,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: color, width: 1.2),
+        ),
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isActive ? innerDotSize : 0,
+            height: isActive ? innerDotSize : 0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: DotsIndicator(
-                dotsCount: sliderImages.length,
-                position: _currentIndex.toDouble(),
-                decorator: DotsDecorator(
-                  activeColor: primaryGreen,
-                  activeSize: const Size(9.0, 9.0),
-                  activeShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      side: const BorderSide(color: Colors.white, width: 1.7)),
-                  size: const Size(9.0, 9.0),
-                  color: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      side: BorderSide(color: primaryGreen.withOpacity(0.4), width: 2.0)),
-                  spacing: const EdgeInsets.symmetric(horizontal: 4.0),
-                ),
-              ),
-            ),
+          ),
+        ),
+      );
+    }),
+  ),
+),
+
             const SizedBox(height: 17),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
