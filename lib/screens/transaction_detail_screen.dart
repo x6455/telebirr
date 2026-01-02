@@ -10,14 +10,27 @@ class TransactionDetailScreen extends StatelessWidget {
   Future<void> _handleGetReceipt() async {
   final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
 
+  Future<void> _handleGetReceipt() async {
+  final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
+
   final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
     'txID': txData['txID'] ?? "N/A",
     'time': txData['time'] ?? "",
-    'amount': txData['amount_sent'].toString(),
-    'bankName': txData['bankName'] ?? "Bank Transfer",
-    'accountName': txData['accountName'] ?? "N/A",      // ← ADD THIS
-    'accountNumber': txData['accountNumber'] ?? "N/A",  // ← ADD THIS
+    'amount_sent': txData['amount_sent']?.toString() ?? "0.00",
+    'service_charge': txData['service_charge']?.toString() ?? "0.00",
+    'vat_0_3_percent': txData['vat_0_3_percent']?.toString() ?? "0.00",
+    'total_deducted': txData['total_deducted']?.toString() ?? "0",
+    'bankName': txData['bankName'] ?? "N/A",
+    'accountName': txData['accountName'] ?? "N/A",
+    'accountNumber': txData['accountNumber'] ?? "N/A",
   });
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    debugPrint("Could not launch $url");
+  }
+}
 
   if (await canLaunchUrl(url)) {
     await launchUrl(url, mode: LaunchMode.externalApplication);
