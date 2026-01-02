@@ -8,38 +8,36 @@ class TransactionDetailScreen extends StatelessWidget {
   const TransactionDetailScreen({super.key, required this.txData});
 
   Future<void> _handleGetReceipt() async {
-  final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
-
+    final String baseUrl = "http://127.0.0.1:3000/generate-receipt";
   
-  
-  final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
-    'txID': txData['txID'] ?? "N/A",
-    'time': txData['time'] ?? "",
-    'amount_sent': txData['amount_sent']?.toString() ?? "0.00",
-    'service_charge': txData['service_charge']?.toString() ?? "0.00",
-    'vat_0_3_percent': txData['vat_0_3_percent']?.toString() ?? "0.00",
-    'total_deducted': txData['total_deducted']?.toString() ?? "0",
-    'bankName': txData['bankName'] ?? "N/A",
-    'accountName': txData['accountName'] ?? "N/A",
-    'accountNumber': txData['accountNumber'] ?? "N/A",
-  });
+    final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
+      'txID': txData['txID'] ?? "N/A",
+      'time': txData['time'] ?? "",
+      'amount_sent': txData['amount_sent']?.toString() ?? "0.00",
+      'service_charge': txData['service_charge']?.toString() ?? "0.00",
+      'vat_0_3_percent': txData['vat_0_3_percent']?.toString() ?? "0.00",
+      'total_deducted': txData['total_deducted']?.toString() ?? "0",
+      'bankName': txData['bankName'] ?? "N/A",
+      'accountName': txData['accountName'] ?? "N/A",
+      'accountNumber': txData['accountNumber'] ?? "N/A",
+    });
 
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url, mode: LaunchMode.externalApplication);
-  } else {
-    debugPrint("Could not launch $url");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not launch $url");
+    }
   }
-}
-}
 
- String _formatAmount(dynamic value) {
-  if (value == null || value.toString().isEmpty) return "0.00";
-  String cleanValue = value.toString().replaceAll(',', '');
-  final number = double.tryParse(cleanValue);
-  if (number == null) return "0.00";
-  final formatter = NumberFormat("#,##0.00", "en_US");
-  return formatter.format(number);
-}
+  String _formatAmount(dynamic value) {
+    if (value == null || value.toString().isEmpty) return "0.00";
+    String cleanValue = value.toString().replaceAll(',', '');
+    final number = double.tryParse(cleanValue);
+    if (number == null) return "0.00";
+    final formatter = NumberFormat("#,##0.00", "en_US");
+    return formatter.format(number);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,44 +83,43 @@ class TransactionDetailScreen extends StatelessWidget {
             _buildDetailTile("Transaction Type", "Transfer to Bank"),
             _buildDetailTile("Transaction To", txData['bankName'] ?? ""),
             _buildDetailTile(
-  "Transaction Amount",
-  "-${_formatAmount(txData['amount_sent'])} (ETB)",
-),
-           _buildDetailTile("Transaction Status", "Completed"),
-_buildDetailTile(
-  "Service Charge",
-  "-${_formatAmount(txData['service_charge'] ?? 0)} (ETB)",
-),
-
+              "Transaction Amount",
+              "-${_formatAmount(txData['amount_sent'])} (ETB)",
+            ),
+            _buildDetailTile("Transaction Status", "Completed"),
+            _buildDetailTile(
+              "Service Charge",
+              "-${_formatAmount(txData['service_charge'] ?? 0)} (ETB)",
+            ),
             const SizedBox(height: 15),
             Padding(
-  padding: const EdgeInsets.only(left: 20.0),
-  child: Align(
-    alignment: Alignment.centerLeft,
-    child: GestureDetector(
-      onTap: _handleGetReceipt, // Click to get receipt
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'images/receipt.jpg',
-            width: 50,
-            height: 50,
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            "Get Receipt",
-            style: TextStyle(
-              fontSize: 16,
-              color: Color(0xFF0077B6),
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    ),
-  ),
-)
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  onTap: _handleGetReceipt,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'images/receipt.jpg',
+                        width: 50,
+                        height: 50,
+                      ),
+                      const SizedBox(height: 5),
+                      const Text(
+                        "Get Receipt",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF0077B6),
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
