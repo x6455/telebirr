@@ -39,7 +39,7 @@ class TransactionHistoryPage extends StatelessWidget {
           _MenuCard(
             imagePath: 'images/db.jpg',
             title: 'Transaction Records',
-            imageSize: 37,
+            imageSize: 33,
             onTap: () {
               Navigator.push(
                 context,
