@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'transaction_records_page.dart'; // Ensure this matches your filename
+import 'transaction_records_page.dart';
 
 class TransactionHistoryPage extends StatelessWidget {
   const TransactionHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Primary green color from your branding
-    const Color telebirrGreen = Color(0xFF8DC73F);
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5), // Light grey background
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: null,
         automaticallyImplyLeading: false,
         title: const Text(
           'Transaction History',
@@ -27,9 +23,7 @@ class TransactionHistoryPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_horiz, color: Colors.black),
-            onPressed: () {
-              // Context menu action
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.cancel_outlined, color: Colors.black),
@@ -41,50 +35,52 @@ class TransactionHistoryPage extends StatelessWidget {
       body: Column(
         children: [
           const SizedBox(height: 16),
-          _buildMenuCard(
-            context: context,
-            imagePath: 'images/db.jpg', // Your custom image
+
+          _MenuCard(
+            imagePath: 'images/db.jpg',
             title: 'Transaction Records',
-            iconColor: Colors.black,
-            imageWidth: 37, // Adjust width as needed
-            imageHeight: 37, // Adjust height as needed
+            imageSize: 37,
             onTap: () {
-              // Navigates to the records list we just created
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const TransactionRecordsPage(),
+                  builder: (_) => const TransactionRecordsPage(),
                 ),
               );
             },
           ),
-          const SizedBox(height: 10), // Thin visual break
-          _buildMenuCard(
-            context: context,
-            imagePath: 'images/receipt.jpg', // Your custom image
+
+          const SizedBox(height: 10),
+
+          _MenuCard(
+            imagePath: 'images/receipt.jpg',
             title: 'Mini Statement',
-            iconColor: Colors.black,
-            imageWidth: 50, // Adjust width as needed
-            imageHeight: 50, // Adjust height as needed
+            imageSize: 50,
             onTap: () {
-              // Future implementation for Mini Statement
+              // TODO: Implement Mini Statement
             },
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildMenuCard({
-    required BuildContext context,
-    String? imagePath,
-    IconData? icon,
-    required String title,
-    required Color iconColor,
-    double imageWidth = 40,
-    double imageHeight = 40,
-    required VoidCallback onTap,
-  }) {
+class _MenuCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final double imageSize;
+  final VoidCallback onTap;
+
+  const _MenuCard({
+    required this.imagePath,
+    required this.title,
+    required this.onTap,
+    this.imageSize = 40,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       elevation: 0,
@@ -92,38 +88,33 @@ class TransactionHistoryPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: InkWell(
-        onTap: onTap,
         borderRadius: BorderRadius.circular(4),
-        child: Container(
+        onTap: onTap,
+        child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Use Image if imagePath is provided, otherwise use Icon
-              if (imagePath != null)
-                Container(
-                  width: imageWidth,
-                  height: imageHeight,
-                  child: Image.asset(
-                    imagePath,
-                    fit: BoxFit.contain,
-                  ),
-                )
-              else if (icon != null)
-                Icon(icon, color: iconColor, size: 40),
-              
+              SizedBox(
+                width: imageSize,
+                height: imageSize,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                ),
+              ),
               const SizedBox(width: 16),
               Text(
                 title,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w200,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
               const Spacer(),
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.grey[400],
                 size: 16,
+                color: Colors.grey.shade400,
               ),
             ],
           ),
