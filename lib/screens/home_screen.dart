@@ -224,8 +224,8 @@ class ImageSliderIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = Color.fromRGBO(141, 199, 63, 1);
-    const ringSize = 12.0;      // outer circle size
-    const innerDotSize = 5.0;   // inner dot size
+    const ringSize = 8.0;      // outer circle size
+    const innerDotSize = 4.0;   // inner dot size
 
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
