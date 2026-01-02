@@ -125,21 +125,32 @@ class _TransferToBankPageState extends State<TransferToBankPage> {
     // A. Show Loading Dialog with GIF
 showDialog(
   context: context,
+// A. Show Loading Dialog with GIF
+showDialog(
+  context: context,
   barrierDismissible: false,
   builder: (context) => Center(
     child: Container(
-      width: 110,
-      height: 110,
+      width: 100, // The size of the white box
+      height: 100,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: const Center(
-        child: TelebirrLoader(), // The new code-based animation
+      child: Center(
+        child: SizedBox(
+          width: 50,  // CHANGE THIS to make the GIF larger or smaller
+          height: 50, // CHANGE THIS to make the GIF larger or smaller
+          child: Image.asset(
+            'images/loading.gif', 
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     ),
   ),
 );
+
 
 
     // B. Wait for 3 seconds
