@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'transaction_history_page.dart'; // Ensure this matches your filename
+import 'transaction_history_page.dart';
 
 class TransactionDetails extends StatefulWidget {
   const TransactionDetails({super.key});
@@ -11,24 +11,50 @@ class TransactionDetails extends StatefulWidget {
 class _TransactionDetailsState extends State<TransactionDetails> {
   bool _isLoading = false;
 
-  void _handleTap() async {
-    setState(() {
-      _isLoading = true; // Show loading
-    });
+  Future<void> _handleTap() async {
+    if (_isLoading) return;
 
-    // Wait for 2 seconds
+    setState(() => _isLoading = true);
+
+    // show floating loader
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.1), // light gray overlay feel
+      builder: (_) => Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            alignment: Alignment.center,
+            child: Image.asset(
+              'images/loading.gif',
+              width: 50,
+              height: 50,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // wait
     await Future.delayed(const Duration(seconds: 2));
 
-    setState(() {
-      _isLoading = false; // Hide loading
-    });
+    // close loader (only if still mounted)
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
 
-    // Navigate to the transaction history page
+    setState(() => _isLoading = false);
+
+    // navigate
+    if (!mounted) return;
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const TransactionHistoryPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const TransactionHistoryPage()),
     );
   }
 
@@ -36,33 +62,25 @@ class _TransactionDetailsState extends State<TransactionDetails> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _handleTap,
-      child: _isLoading
-          ? Center(
-              child: Image.asset(
-                'images/loading.gif',
-                width: 80,
-                height: 80,
-              ),
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
-                Text(
-                  'Transaction Details',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                    color: Color.fromRGBO(19, 132, 185, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(width: 4), // Small space between text and icon
-                Icon(
-                  Icons.keyboard_arrow_right_rounded,
-                  color: Color.fromRGBO(19, 132, 185, 1),
-                  size: 24,
-                ),
-              ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          Text(
+            'Transaction Details',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: Color.fromRGBO(19, 132, 185, 1),
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          SizedBox(width: 4),
+          Icon(
+            Icons.keyboard_arrow_right_rounded,
+            color: Color.fromRGBO(19, 132, 185, 1),
+            size: 24,
+          ),
+        ],
+      ),
     );
   }
 }
