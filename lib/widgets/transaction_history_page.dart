@@ -82,6 +82,7 @@ class _MenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       elevation: 0,
       shape: RoundedRectangleBorder(
