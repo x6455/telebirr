@@ -384,42 +384,42 @@ CarouselSlider(
     );
   }).toList(),
 ),
-
-// --- UPDATED DOTS INDICATOR ---
+// --- CUSTOM MATCHING DOTS INDICATOR ---
 Padding(
-  padding: const EdgeInsets.only(top: 8.0),
-  child: DotsIndicator(
-  dotsCount: sliderImages.length,
-  position: _currentIndex.toDouble(),
-  decorator: DotsDecorator(
-    // --- ACTIVE DOT (The "Dot inside a hole") ---
-    activeColor: const Color.fromRGBO(141, 199, 63, 1), 
-    activeSize: const Size(9.0, 9.0), // Make this slightly larger than the inactive size
-    activeShape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(6.0),
-      // This border matches the background color to create the "gap"
-      side: const BorderSide(
-        color: Color(0xFFF5F5F5), // Your background color
-        width: 1.7, // The thickness of the "hole" gap
-      ),
-    ),
+  padding: const EdgeInsets.only(top: 10.0, bottom: 8.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: List.generate(sliderImages.length, (i) {
+      final isActive = i == _currentIndex;
+      // Using the exact Telebirr green from your TelebirrLoader above
+      const color = Color.fromRGBO(141, 199, 63, 1); 
+      const ringSize = 8.0;      
+      const innerDotSize = 4.0;  
 
-    // --- INACTIVE DOTS (The "Hole") ---
-    size: const Size(9.0, 9.0),
-    color: Colors.transparent, // Hollow center
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5.0),
-      side: const BorderSide(
-        color: Color.fromRGBO(141, 199, 63, 0.4), // Light green ring
-        width: 2.0,
-      ),
-    ),
-    spacing: const EdgeInsets.symmetric(horizontal: 4.0),
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        width: ringSize,
+        height: ringSize,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: color, width: 1.2),
+        ),
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isActive ? innerDotSize : 0,
+            height: isActive ? innerDotSize : 0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+            ),
+          ),
+        ),
+      );
+    }),
   ),
 ),
 
-
-),
 
             const SizedBox(height: 5),
 
