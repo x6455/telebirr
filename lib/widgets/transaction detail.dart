@@ -43,7 +43,7 @@ class _TransactionDetailsState extends State<TransactionDetails> {
     );
 
     // wait
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 0.7));
 
     // close loader (only if still mounted)
     if (mounted) Navigator.of(context, rootNavigator: true).pop();
