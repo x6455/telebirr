@@ -83,7 +83,7 @@ class _TransactionRecordsPageState extends State<TransactionRecordsPage> {
                 const Text("Pay: -21263.90  Income: 21174.00  Total: -89.90",
                     style: TextStyle(fontSize: 12, color: Colors.black87)),
                 const Spacer(),
-                Icon(Icons.calendar_today_outlined, color: Colors.orange.shade300, size: 20),
+                Icon(Icons.calendar_today_outlined, color: Colors.orange.shade300, size: 25),
               ],
             ),
           ),
