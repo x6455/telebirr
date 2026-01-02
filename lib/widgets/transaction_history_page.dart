@@ -41,7 +41,7 @@ class TransactionHistoryPage extends StatelessWidget {
   title: 'Transaction Records',
   imageWidth: 33,  // Image width only
   imageHeight: 33, // Image height only
-  cardHeight: 100,  // Button/card height
+  cardHeight: 80,  // Button/card height
   onTap: () {
     Navigator.push(
       context,
@@ -59,7 +59,7 @@ _MenuCard(
   title: 'Mini Statement',
   imageWidth: 50,  // Larger image
   imageHeight: 50, // Larger image
-  cardHeight: 100,  // Same button/card height
+  cardHeight: 80,  // Same button/card height
   onTap: () {
     // TODO: Implement Mini Statement
   },
@@ -90,6 +90,7 @@ class _MenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -100,7 +101,7 @@ class _MenuCard extends StatelessWidget {
         onTap: onTap,
         child: Container(
           height: cardHeight ?? 80, // Default card height is 80
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: Row(
             children: [
               SizedBox(
