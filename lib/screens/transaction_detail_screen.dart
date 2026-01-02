@@ -30,11 +30,7 @@ class TransactionDetailScreen extends StatelessWidget {
   }
 }
 
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url, mode: LaunchMode.externalApplication);
-  } else {
-    debugPrint("Could not launch $url");
-  }
+ 
 }
  String _formatAmount(dynamic value) {
   if (value == null || value.toString().isEmpty) return "0.00";
