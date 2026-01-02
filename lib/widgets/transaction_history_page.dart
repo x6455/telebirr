@@ -36,30 +36,34 @@ class TransactionHistoryPage extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
 
-          _MenuCard(
-            imagePath: 'images/db.jpg',
-            title: 'Transaction Records',
-            imageSize: 33,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const TransactionRecordsPage(),
-                ),
-              );
-            },
-          ),
+   _MenuCard(
+  imagePath: 'images/db.jpg',
+  title: 'Transaction Records',
+  imageWidth: 33,  // Image width only
+  imageHeight: 33, // Image height only
+  cardHeight: 100,  // Button/card height
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const TransactionRecordsPage(),
+      ),
+    );
+  },
+),
 
-          const SizedBox(height: 10),
+const SizedBox(height: 10),
 
-          _MenuCard(
-            imagePath: 'images/receipt.jpg',
-            title: 'Mini Statement',
-            imageSize: 50,
-            onTap: () {
-              // TODO: Implement Mini Statement
-            },
-          ),
+_MenuCard(
+  imagePath: 'images/receipt.jpg',
+  title: 'Mini Statement',
+  imageWidth: 50,  // Larger image
+  imageHeight: 50, // Larger image
+  cardHeight: 100,  // Same button/card height
+  onTap: () {
+    // TODO: Implement Mini Statement
+  },
+),       
         ],
       ),
     );
@@ -69,20 +73,23 @@ class TransactionHistoryPage extends StatelessWidget {
 class _MenuCard extends StatelessWidget {
   final String imagePath;
   final String title;
-  final double imageSize;
+  final double? imageWidth;
+  final double? imageHeight;
+  final double? cardHeight;
   final VoidCallback onTap;
 
   const _MenuCard({
     required this.imagePath,
     required this.title,
     required this.onTap,
-    this.imageSize = 40,
+    this.imageWidth,
+    this.imageHeight,
+    this.cardHeight,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -91,13 +98,14 @@ class _MenuCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(4),
         onTap: onTap,
-        child: Padding(
+        child: Container(
+          height: cardHeight ?? 80, // Default card height is 80
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               SizedBox(
-                width: imageSize,
-                height: imageSize,
+                width: imageWidth,
+                height: imageHeight,
                 child: Image.asset(
                   imagePath,
                   fit: BoxFit.contain,
