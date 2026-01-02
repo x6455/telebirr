@@ -36,21 +36,32 @@ class PinDialog {
 
             if (pin.length == 6) {
               // Show Loader Box
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: const Center(child: TelebirrLoader()),
-                  ),
-                ),
-              );
+              // A. Show Loading Dialog with GIF
+showDialog(
+  context: context,
+  barrierDismissible: false,
+  builder: (context) => Center(
+    child: Container(
+      width: 100, // The size of the white background card
+      height: 100,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(13),
+      ),
+      child: Center(
+        child: SizedBox(
+          width: 50,  // EXACT GIF WIDTH
+          height: 50, // EXACT GIF HEIGHT
+          child: Image.asset(
+            'images/loading.gif', 
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+    ),
+  ),
+);
+
 
               // After 2 seconds, navigate to Processing Page
               Future.delayed(const Duration(seconds: 2), () {
