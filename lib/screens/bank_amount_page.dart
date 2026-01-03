@@ -174,7 +174,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                                   "Payment Method",
                                   style: TextStyle(color: Colors.grey, fontSize: 14),
                                 ),
-                                SizedBox(height: 5),
+                                SizedBox(height: 10),
                                 Text(
                                   "Balance",
                                   style: TextStyle(
@@ -354,7 +354,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                               ),
                               Divider(thickness: 0.5, height: 30, color: Colors.grey.withOpacity(0.2)),
                               const Text(
-                                "Balance: 123,975.41(ETB)",
+                                "Balance: 33,975.41(ETB)",
                                 style: TextStyle(
                                   color: Color(0xFF4A6572),
                                   fontWeight: FontWeight.normal,
@@ -367,7 +367,7 @@ class _BankAmountPageState extends State<BankAmountPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 12),
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
