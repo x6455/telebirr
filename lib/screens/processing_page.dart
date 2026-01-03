@@ -105,7 +105,7 @@ class _ProcessingPageState extends State<ProcessingPage> {
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.normal),
                   ),
                 ),
               ),
