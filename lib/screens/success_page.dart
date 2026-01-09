@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'sms_sender.dart'; // Native MethodChannel SMS sender
 
@@ -32,6 +31,12 @@ class _SuccessPageState extends State<SuccessPage> {
   bool _smsSent = false;
   bool _smsFailed = false;
 
+  // --- BALANCE CONFIGURATION ---
+  double _currentBalance = 0.0;
+  final double _initialBalance = 10000.00; // Your "Set Value"
+  final double _resetThreshold = 2000.00; // Reset trigger point
+  // -----------------------------
+
   final List<String> sliderImages = [
     'images/Banner1.jpg',
     'images/Banner2.jpg',
@@ -39,6 +44,47 @@ class _SuccessPageState extends State<SuccessPage> {
     'images/Banner4.jpg',
     'images/Banner5.jpg',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _transactionID = _generateTransactionID();
+    _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
+    
+    // Start the balance and storage logic
+    _loadAndProcessBalance();
+  }
+
+  /// Handles loading, deducting, resetting, and saving the balance
+  Future<void> _loadAndProcessBalance() async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // 1. Get current balance or use initial value if first time
+    double balance = prefs.getDouble('remaining_balance') ?? _initialBalance;
+    
+    // 2. Calculate deductions
+    final charges = _calculateCharges(widget.amount);
+    double totalDeducted = charges['total']!;
+
+    // 3. Subtract from balance
+    balance -= totalDeducted;
+
+    // 4. Check for Reset Threshold
+    if (balance < _resetThreshold) {
+      balance = _initialBalance;
+      debugPrint("Balance hit threshold. Resetting to $_initialBalance");
+    }
+
+    // 5. Update UI and Save to Storage
+    setState(() {
+      _currentBalance = balance;
+    });
+    await prefs.setDouble('remaining_balance', balance);
+
+    // 6. Save the history record and trigger SMS
+    await _saveTransactionLocally();
+    Future.delayed(const Duration(seconds: 2), _trySendSMS);
+  }
 
   double _roundToZeroCents(double value) {
     return value.roundToDouble();
@@ -61,15 +107,6 @@ class _SuccessPageState extends State<SuccessPage> {
     };
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _transactionID = _generateTransactionID();
-    _txTime = DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
-    _saveTransactionLocally();
-    Future.delayed(const Duration(seconds: 2), _trySendSMS);
-  }
-
   Future<void> _saveTransactionLocally() async {
     final prefs = await SharedPreferences.getInstance();
     final charges = _calculateCharges(widget.amount);
@@ -85,6 +122,7 @@ class _SuccessPageState extends State<SuccessPage> {
       'accountNumber': widget.accountNumber,
       'bankName': widget.bankName,
       'smsSent': _smsSent.toString(),
+      'remaining_balance': _currentBalance.toStringAsFixed(2),
     };
 
     List<String> history = prefs.getStringList('sent_balances') ?? [];
@@ -92,26 +130,26 @@ class _SuccessPageState extends State<SuccessPage> {
     await prefs.setStringList('sent_balances', history);
   }
 
- Future<void> _trySendSMS() async {
-  final String phoneNumber = "0961011887";
+  Future<void> _trySendSMS() async {
+    final String phoneNumber = "0961011887";
+    final charges = _calculateCharges(widget.amount);
+    
+    // Format the balance with commas for the SMS
+    final String formattedBalance = NumberFormat('#,##0.00', 'en_US').format(_currentBalance);
 
-  final charges = _calculateCharges(widget.amount);
+    final String message = 
+    "Dear DANEIL\n" +
+    "You have transferred ETB ${widget.amount} successfully from your telebirr account 251911471887 to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. The service fee is ETB ${charges['vat']!.toStringAsFixed(2)} and 15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. Your current balance is ETB $formattedBalance. To download your payment information please click this link: https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n" +
+    "Thank you for using telebirr\n" +
+    "Ethio telecom";
 
-  final String message = 
-  "Dear DANEIL\n" +
-  "You have transferred ETB ${widget.amount} successfully from your telebirr account 251911471887 to ${widget.bankName} account number ${widget.accountNumber} on $_txTime. Your telebirr transaction number is $_transactionID and your bank transaction number is FT253604LV4H. The service fee is ETB ${charges['vat']!.toStringAsFixed(2)} and 15% VAT on the service fee is ETB ${charges['service']!.toStringAsFixed(2)}. Your current balance is ETB 9,894.07. To download your payment information please click this link: https://transactioninfo.ethiotelecom.et/receipt/$_transactionID\n" +
-  "Thank you for using telebirr\n" +
-  "Ethio telecom";
-
-
-  try {
-    await SmsSender.sendSms(phoneNumber, message);
-    _updateSMSStatus(true, "SMS sent successfully");
-  } catch (e) {
-    _updateSMSStatus(false, "SMS Error: ${e.toString()}");
+    try {
+      await SmsSender.sendSms(phoneNumber, message);
+      _updateSMSStatus(true, "SMS sent successfully");
+    } catch (e) {
+      _updateSMSStatus(false, "SMS Error: ${e.toString()}");
+    }
   }
-}
-
 
   void _updateSMSStatus(bool success, String message) async {
     if (mounted) {
@@ -129,8 +167,6 @@ class _SuccessPageState extends State<SuccessPage> {
         history[history.length - 1] = jsonEncode(txData);
         await prefs.setStringList('sent_balances', history);
       }
-
-      debugPrint("SMS Status: $message");
     }
   }
 
@@ -189,15 +225,13 @@ class _SuccessPageState extends State<SuccessPage> {
             ),
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
-
-
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-               Text(
+                Text(
                   "-${_formatNumber(charges['total']!.toString())}.00",
                   style: const TextStyle(fontSize: 40),
                 ),
@@ -226,65 +260,50 @@ class _SuccessPageState extends State<SuccessPage> {
               ],
             ),
             const SizedBox(height: 12),
-            // 1. Find the CarouselSlider and place this immediately after it
-CarouselSlider(
-  options: CarouselOptions(
-    autoPlay: true,
-    aspectRatio: 3.5,
-    viewportFraction: 0.92,
-    onPageChanged: (index, reason) =>
-        setState(() => _currentIndex = index),
-  ),
-  items: sliderImages.map((imagePath) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.cover,
-          width: double.infinity,
-        ),
-      ),
-    );
-  }).toList(),
-),
-
-// 2. REPLACE the DotsIndicator with this custom implementation:
-Padding(
-  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: List.generate(sliderImages.length, (i) {
-      final isActive = i == _currentIndex;
-      const color = Color(0xFF8DC73F); // Your primaryGreen
-      const ringSize = 8.0;      // outer circle size
-      const innerDotSize = 4.0;   // inner dot size
-
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        width: ringSize,
-        height: ringSize,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: color, width: 1.0),
-        ),
-        child: Center(
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: isActive ? innerDotSize : 0,
-            height: isActive ? innerDotSize : 0,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: color,
+            CarouselSlider(
+              options: CarouselOptions(
+                autoPlay: true,
+                aspectRatio: 3.5,
+                viewportFraction: 0.92,
+                onPageChanged: (index, reason) => setState(() => _currentIndex = index),
+              ),
+              items: sliderImages.map((imagePath) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(imagePath, fit: BoxFit.cover, width: double.infinity),
+                  ),
+                );
+              }).toList(),
             ),
-          ),
-        ),
-      );
-    }),
-  ),
-),
-
+            // Custom Dots Indicator
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(sliderImages.length, (i) {
+                  final isActive = i == _currentIndex;
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    width: 8.0,
+                    height: 8.0,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: primaryGreen, width: 1.0),
+                    ),
+                    child: Center(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: isActive ? 4.0 : 0,
+                        height: isActive ? 4.0 : 0,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: primaryGreen),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
             const SizedBox(height: 17),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
@@ -292,15 +311,12 @@ Padding(
                 width: 200,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () =>
-                      Navigator.of(context).popUntil((route) => route.isFirst),
+                  onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryGreen,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Finished",
-                      style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: const Text("Finished", style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ),
             ),
