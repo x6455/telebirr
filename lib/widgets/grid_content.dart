@@ -362,7 +362,7 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/Awash.png'), width: 30),
   Image(image: AssetImage('images/Paymerchant.jpg'), width: 69),
   Image(image: AssetImage('images/trafic.jpg'), width: 70),
-  Image(image: AssetImage('images/trafic.jpg'), width: 30),
+  Image(image: AssetImage('images/trafic.jpg'), width: 70),
   Image(image: AssetImage('images/Devicefin.jpg'), width: 64),
   Image(image: AssetImage('images/Teleev.jpg'), width: 64),
   Image(image: AssetImage('images/Lottery.jpg'), width: 92),
