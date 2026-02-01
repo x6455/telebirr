@@ -14,8 +14,8 @@ List<String> bottomGridLabel = [
   
   'Financial Service With Awash',
   'Pay for Merchant',
-  'AA Trafic Penality Payment',
-  'AATMA Parking Payment',
+  'AA Trafic Pena...',
+  'AATMA Parking...',
   
   'Tele Device Financing',
   'TeleEV Charging',
