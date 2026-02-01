@@ -28,21 +28,19 @@ class _BankAmountPageState extends State<BankAmountPage> {
   final Color _primaryGreen = const Color(0xFF8DC73F);
   final Color _purpleColor = const Color(0xFFA349E5);
 
-  // --- UPDATED: Bank colors and logos ---
-  final Map<String, Color> _bankColors = {
-    'CBE': const Color(0xFFA349E5),       
-    'Awash Bank': const Color(0xFF2A2A9D), 
-    'Dashen Bank': const Color(0xFF012169),
-    'Abyssinia Bank': const Color(0xFFE6A115), 
-  };
+final Map<String, Color> _bankColors = {
+  'CBE': const Color(0xFFA349E5),
+  'Awash Bank': const Color(0xFF2A2A9D),
+  'Dashen Bank': const Color(0xFF012169),
+  'Bank of Abyssinia': const Color(0xFFE6A115), // ✅ FIXED
+};
 
-  final Map<String, String> _bankLogos = {
-    'CBE': 'images/cbe.png',
-    'Awash Bank': 'images/Awash.png',
-    'Dashen Bank': 'images/dashen.png',
-    'Abyssinia Bank': 'images/abyssinia.jpg',
-  };
-
+final Map<String, String> _bankLogos = {
+  'CBE': 'images/cbe.png',
+  'Awash Bank': 'images/Awash.png',
+  'Dashen Bank': 'images/dashen.png',
+  'Bank of Abyssinia': 'images/abyssinia.jpg', // ✅ FIXED
+};
   // Helper to get bank color
   Color _getBankColor(String bankName) {
     return _bankColors[bankName] ?? _purpleColor;
