@@ -33,8 +33,8 @@ class _SuccessPageState extends State<SuccessPage> {
 
   // --- BALANCE CONFIGURATION ---
   double _currentBalance = 0.0;
-  final double _initialBalance = 10000.00; // Your "Set Value"
-  final double _resetThreshold = 2000.00; // Reset trigger point
+  final double _initialBalance = 163000.00; // Your "Set Value"
+  final double _resetThreshold = 1000.00; // Reset trigger point
   // -----------------------------
 
   final List<String> sliderImages = [
