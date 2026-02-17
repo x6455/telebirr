@@ -33,8 +33,8 @@ class _SuccessPageState extends State<SuccessPage> {
 
   // --- BALANCE CONFIGURATION ---
   double _currentBalance = 0.0;
-  final double _initialBalance = 163000.00; // Your "Set Value"
-  final double _resetThreshold = 1000.00; // Reset trigger point
+  final double _initialBalance = 163000.00; // Starting Value
+  final double _resetThreshold = 1000.00;   // Reset trigger point
   // -----------------------------
 
   final List<String> sliderImages = [
@@ -92,16 +92,37 @@ class _SuccessPageState extends State<SuccessPage> {
 
   Map<String, double> _calculateCharges(String amount) {
     final double sent = double.parse(amount.replaceAll(',', ''));
-    final double vat = sent * 0.003;
-    final double serviceCharge = vat * 0.15;
-    double total = sent + vat + serviceCharge;
+    
+    // Calculate raw VAT (0.3%) and Service Charge (15% of VAT)
+    double rawVat = sent * 0.003;
+    double rawServiceCharge = rawVat * 0.15;
+    double combinedFees = rawVat + rawServiceCharge;
+
+    double finalVat;
+    double finalService;
+
+    // Apply the 74.00 ETB CAP on the combined fees
+    if (combinedFees > 74.0) {
+      // If sum of VAT + Service exceeds 74, discard raw values and use cap
+      // Split 74 ETB proportionally (VAT + 15% VAT = 74)
+      finalVat = 74.0 / 1.15; 
+      finalService = 74.0 - finalVat;
+    } else {
+      finalVat = rawVat;
+      finalService = rawServiceCharge;
+    }
+
+    // Final total calculation with rounding adjustment
+    double total = sent + finalVat + finalService;
     final double adjustedTotal = _roundToZeroCents(total);
     final double adjustment = adjustedTotal - total;
-    final double adjustedServiceCharge = serviceCharge + adjustment;
+    
+    // Apply rounding difference to the service charge for a clean total
+    final double adjustedServiceCharge = finalService + adjustment;
 
     return {
       'sent': sent,
-      'vat': vat,
+      'vat': finalVat,
       'service': adjustedServiceCharge,
       'total': adjustedTotal,
     };
@@ -134,7 +155,6 @@ class _SuccessPageState extends State<SuccessPage> {
     final String phoneNumber = "0961011887";
     final charges = _calculateCharges(widget.amount);
     
-    // Format the balance with commas for the SMS
     final String formattedBalance = NumberFormat('#,##0.00', 'en_US').format(_currentBalance);
 
     final String message = 
@@ -277,7 +297,6 @@ class _SuccessPageState extends State<SuccessPage> {
                 );
               }).toList(),
             ),
-            // Custom Dots Indicator
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Row(
