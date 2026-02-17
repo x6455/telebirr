@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class BalanceInfo extends StatefulWidget {
   final String label;
@@ -23,6 +25,22 @@ class BalanceInfo extends StatefulWidget {
 
 class _BalanceInfoState extends State<BalanceInfo> {
   bool showBalance = false;
+  double _storedBalance = 163000.00; // Default matches your initial value
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBalance();
+  }
+
+  // Fetch the balance that SuccessPage is updating
+  Future<void> _loadBalance() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Use the same key 'remaining_balance' used in SuccessPage
+      _storedBalance = prefs.getDouble('remaining_balance') ?? 163000.00;
+    });
+  }
 
   void toggleBalanceVisibility() {
     setState(() {
@@ -33,7 +51,8 @@ class _BalanceInfoState extends State<BalanceInfo> {
   String get balanceValue {
     switch (widget.label) {
       case 'Balance (ETB) ':
-        return '163,874.78';
+        // Format the stored balance with commas
+        return NumberFormat('#,##0.00', 'en_US').format(_storedBalance);
       case 'Endekise (ETB) ':
         return '2,450.00';
       case 'Reward (ETB) ':
@@ -45,6 +64,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
 
   @override
   Widget build(BuildContext context) {
+    // ... (rest of your build method remains the same)
     final bool isMainBalance = widget.label == 'Balance (ETB) ';
     final bool isReward = widget.label == 'Reward (ETB) ';
     final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
