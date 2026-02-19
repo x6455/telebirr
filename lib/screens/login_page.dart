@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/screens/main_screen.dart';
+import 'package:telebirrbybr7/screens/pin_entry_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,11 +57,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset('images/ethio.png', height: 45), // Left Logo
+                  Image.asset('images/ethio.png', height: 25), // Left Logo
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Image.asset('images/telebirr.png', height: 45), // Right Logo
+                      Image.asset('images/telebirr.png', height: 25), // Right Logo
                       const SizedBox(height: 4),
                       const Text(
                         "English ▼",
@@ -124,7 +125,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 decoration: InputDecoration(
                   prefixIcon: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                    child: Text("+251 ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text("+251 ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
                   ),
                   filled: true,
                   fillColor: const Color(0xFFF9F9F9),
@@ -143,15 +144,16 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
               SizedBox(
                 width: double.infinity,
-                height: 55,
+                height: 45,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MainScreen()),
-                      (route) => false,
-                    );
-                  },
+                  // Inside LoginPage Next Button
+onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const PinEntryPage()),
+  );
+},
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF008DCD),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -194,7 +196,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               const Text(
                 "@2023 ethiotelecom. All rights reserved 1.0.0 version",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
               const SizedBox(height: 20),
             ],
