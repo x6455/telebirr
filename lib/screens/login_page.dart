@@ -8,64 +8,111 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  // Matches the number in your screenshot
+class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController(text: "961011887");
+  
+  // Animation controller for the sliding text
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat(reverse: true);
+
+    // Creates the 20px horizontal offset effect
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(-0.05, 0), // Slight left
+      end: const Offset(0.05, 0),   // Slight right
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // The light mint/green background from your image
-      backgroundColor: const Color(0xFFF3F9E9), 
+      backgroundColor: const Color(0xFFF3F9E9),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Column(
             children: [
               const SizedBox(height: 10),
-              // Top Logos
+              
+              // 1 & 2. Top Logos and English selector positioning
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.network('https://upload.wikimedia.org/wikipedia/en/b/b3/Ethio_telecom_logo.png', height: 40, errorBuilder: (c, e, s) => const Icon(Icons.business)),
-                  const Text("English ▼", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Image.network('https://upload.wikimedia.org/wikipedia/commons/b/bc/Telebirr_Logo.png', height: 40, errorBuilder: (c, e, s) => const Icon(Icons.account_balance_wallet)),
+                  Image.asset('images/ethio.png', height: 45), // Left Logo
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Image.asset('images/telebirr.png', height: 45), // Right Logo
+                      const SizedBox(height: 4),
+                      const Text(
+                        "English ▼",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                    ],
+                  ),
                 ],
               ),
               
               const SizedBox(height: 60),
 
-              // Welcome Text
-              const Text(
-                "Welcome to telebirr SuperA",
-                style: TextStyle(fontSize: 22, color: Color(0xFF008DCD), fontWeight: FontWeight.w600),
-              ),
-              const Text(
-                "All-in-One",
-                style: TextStyle(fontSize: 18, color: Color(0xFF008DCD)),
+              // 4. Animated "Welcome" text moving right to left
+              SlideTransition(
+                position: _slideAnimation,
+                child: const Column(
+                  children: [
+                    Text(
+                      "Welcome to telebirr SuperApp",
+                      style: TextStyle(
+                        fontSize: 22, 
+                        color: Color(0xFF008DCD), 
+                        fontWeight: FontWeight.w600
+                      ),
+                    ),
+                    Text(
+                      "All-in-One",
+                      style: TextStyle(fontSize: 18, color: Color(0xFF008DCD)),
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 30),
 
-              // Login Label with Green Underline
               Column(
                 children: [
                   const Text(
                     "Login",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 4),
                     height: 3,
                     width: 50,
-                    color: const Color(0xFF8DC73F), // telebirr green
+                    color: const Color(0xFF8DC73F),
                   ),
                 ],
               ),
 
               const SizedBox(height: 50),
 
-              // Mobile Number Input
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Mobile Number", style: TextStyle(color: Colors.grey, fontSize: 16)),
@@ -94,13 +141,11 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 40),
 
-              // Next Button
               SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to MainScreen and clear navigation stack
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -108,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF008DCD), // telebirr blue
+                    backgroundColor: const Color(0xFF008DCD),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   child: const Text("Next", style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -117,12 +162,14 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 25),
 
-              // Footer Links
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account ? "),
-                  Text("Create New Account", style: TextStyle(color: Colors.lightGreen.shade700, fontWeight: FontWeight.bold)),
+                  Text(
+                    "Create New Account", 
+                    style: TextStyle(color: Colors.lightGreen.shade700, fontWeight: FontWeight.bold)
+                  ),
                 ],
               ),
 
@@ -138,7 +185,17 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 60),
 
-              const Text("Terms and Conditions", style: TextStyle(color: Color(0xFF8DC73F), decoration: TextDecoration.underline)),
+              // 3. Terms and Versioning info
+              const Text(
+                "Terms and Conditions", 
+                style: TextStyle(color: Color(0xFF8DC73F)) // No underline
+              ),
+              const SizedBox(height: 5),
+              const Text(
+                "@2023 ethiotelecom. All rights reserved 1.0.0 version",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
               const SizedBox(height: 20),
             ],
           ),
