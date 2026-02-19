@@ -12,27 +12,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController(text: "961011887");
   
-  // Animation controller for the sliding text
-  late AnimationController _animationController;
-  late Animation<Offset> _slideAnimation;
+// 1. Change the Animation type to double for easier pixel control
+late AnimationController _animationController;
+late Animation<double> _scrollAnimation;
 
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat(reverse: true);
+@override
+void initState() {
+  super.initState();
+  
+  _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 8), // Adjust speed (higher = slower train)
+  )..repeat(); // Removed reverse: true so it loops forward only
 
-    // Creates the 20px horizontal offset effect
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(-0.05, 0), // Slight left
-      end: const Offset(0.05, 0),   // Slight right
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-  }
+  _scrollAnimation = Tween<double>(
+    begin: 1.0,  // Start position (1.0 = far right)
+    end: -1.0,   // End position (-1.0 = far left)
+  ).animate(CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.linear, // Constant speed like a train
+  ));
+}
+
 
   @override
   void dispose() {
