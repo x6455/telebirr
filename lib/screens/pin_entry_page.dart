@@ -10,22 +10,33 @@ class PinEntryPage extends StatefulWidget {
 
 class _PinEntryPageState extends State<PinEntryPage> {
   String _pin = "";
-  final int _pinLength = 5; // Telebirr typically uses 5 or 6 digits
+  final int _pinLength = 6; // Set to 6 to match "124589"
+  final String _correctPin = "124589"; // Your default PIN
 
   void _onNumberPress(String number) {
     if (_pin.length < _pinLength) {
       setState(() => _pin += number);
     }
     
-    // Auto-navigate when PIN is complete
+    // Auto-verify when PIN reaches 6 digits
     if (_pin.length == _pinLength) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
-          (route) => false,
-        );
-      });
+      if (_pin == _correctPin) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+            (route) => false,
+          );
+        });
+      } else {
+        // Reset if incorrect
+        Future.delayed(const Duration(milliseconds: 500), () {
+          setState(() => _pin = "");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Incorrect PIN. Please try again.")),
+          );
+        });
+      }
     }
   }
 
@@ -43,6 +54,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
+          // Top left X button
           icon: const Icon(Icons.close, color: Colors.black, size: 28),
           onPressed: () => Navigator.pop(context),
         ),
@@ -56,21 +68,21 @@ class _PinEntryPageState extends State<PinEntryPage> {
           ),
           const SizedBox(height: 30),
           
-          // PIN Dots
+          // PIN Dots: Hollow black border or Solid Green
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_pinLength, (index) {
               bool isFilled = index < _pin.length;
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                width: 15,
-                height: 15,
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                width: 16,
+                height: 16,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isFilled ? const Color(0xFF8DC73F) : Colors.transparent,
                   border: Border.all(
                     color: isFilled ? const Color(0xFF8DC73F) : Colors.black,
-                    width: 1.5,
+                    width: 2,
                   ),
                 ),
               );
@@ -80,30 +92,33 @@ class _PinEntryPageState extends State<PinEntryPage> {
           const SizedBox(height: 25),
           const Text(
             "Forgot PIN?",
-            style: TextStyle(color: Color(0xFF8DC73F), fontSize: 16),
+            style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontWeight: FontWeight.bold),
           ),
           
           const Spacer(),
 
           // Custom Number Pad
           Container(
-            padding: const EdgeInsets.only(bottom: 30),
+            padding: const EdgeInsets.only(bottom: 20),
             child: Column(
               children: [
-                _buildNumberRow(['1', '2', '3']),
-                _buildNumberRow(['4', '5', '6']),
-                _buildNumberRow(['7', '8', '9']),
-                // Bottom row: Empty, 0, Backspace
+                _buildRow(['1', '2', '3']),
+                _buildRow(['4', '5', '6']),
+                _buildRow(['7', '8', '9']),
+                // Custom bottom row: [Empty] [0] [Arrow]
                 Row(
                   children: [
-                    const Expanded(child: SizedBox()), 
+                    const Expanded(child: SizedBox(height: 80)), 
                     _buildNumberButton('0'),
                     Expanded(
                       child: InkWell(
                         onTap: _onBackspace,
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
                         child: const SizedBox(
                           height: 80,
-                          child: Icon(Icons.backspace_outlined, size: 28),
+                          // 1. Backspace changed to arrow style
+                          child: Icon(Icons.arrow_back, size: 30, color: Colors.black),
                         ),
                       ),
                     ),
@@ -117,7 +132,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
     );
   }
 
-  Widget _buildNumberRow(List<String> numbers) {
+  Widget _buildRow(List<String> numbers) {
     return Row(
       children: numbers.map((n) => _buildNumberButton(n)).toList(),
     );
@@ -127,14 +142,14 @@ class _PinEntryPageState extends State<PinEntryPage> {
     return Expanded(
       child: InkWell(
         onTap: () => _onNumberPress(number),
-        splashColor: Colors.transparent, // No UI indication as requested
+        splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         child: Container(
           height: 80,
           alignment: Alignment.center,
           child: Text(
             number,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w400),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
           ),
         ),
       ),
