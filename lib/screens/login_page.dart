@@ -12,28 +12,26 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController(text: "961011887");
   
-// 1. Change the Animation type to double for easier pixel control
-late AnimationController _animationController;
-late Animation<double> _scrollAnimation;
+  late AnimationController _animationController;
+  late Animation<double> _scrollAnimation;
 
-@override
-void initState() {
-  super.initState();
-  
-  _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 8), // Adjust speed (higher = slower train)
-  )..repeat(); // Removed reverse: true so it loops forward only
+  @override
+  void initState() {
+    super.initState();
+    
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8), 
+    )..repeat(); 
 
-  _scrollAnimation = Tween<double>(
-    begin: 1.0,  // Start position (1.0 = far right)
-    end: -1.0,   // End position (-1.0 = far left)
-  ).animate(CurvedAnimation(
-    parent: _animationController,
-    curve: Curves.linear, // Constant speed like a train
-  ));
-}
-
+    _scrollAnimation = Tween<double>(
+      begin: 1.2,  // Start fully off-screen right
+      end: -1.2,   // End fully off-screen left
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.linear, 
+    ));
+  }
 
   @override
   void dispose() {
@@ -53,16 +51,16 @@ void initState() {
             children: [
               const SizedBox(height: 10),
               
-              // 1 & 2. Top Logos and English selector positioning
+              // Top Logos and English selector
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset('images/ethio.png', height: 25), // Left Logo
+                  Image.asset('images/ethio.png', height: 25), 
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Image.asset('images/telebirr.png', height: 25), // Right Logo
+                      Image.asset('images/telebirr.png', height: 25), 
                       const SizedBox(height: 4),
                       const Text(
                         "English ▼",
@@ -75,24 +73,37 @@ void initState() {
               
               const SizedBox(height: 60),
 
-              // 4. Animated "Welcome" text moving right to left
-              SlideTransition(
-                position: _slideAnimation,
-                child: const Column(
-                  children: [
-                    Text(
-                      "Welcome to telebirr SuperApp",
-                      style: TextStyle(
-                        fontSize: 22, 
-                        color: Color(0xFF008DCD), 
-                        fontWeight: FontWeight.w600
-                      ),
+              // Welcome text moving like a train (Vanishes at edges)
+              ClipRect(
+                child: AnimatedBuilder(
+                  animation: _scrollAnimation,
+                  builder: (context, child) {
+                    return FractionalTranslation(
+                      translation: Offset(_scrollAnimation.value, 0),
+                      child: child,
+                    );
+                  },
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Welcome to telebirr SuperApp",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22, 
+                            color: Color(0xFF008DCD), 
+                            fontWeight: FontWeight.w600
+                          ),
+                        ),
+                        Text(
+                          "All-in-One",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18, color: Color(0xFF008DCD)),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "All-in-One",
-                      style: TextStyle(fontSize: 18, color: Color(0xFF008DCD)),
-                    ),
-                  ],
+                  ),
                 ),
               ),
 
@@ -120,41 +131,53 @@ void initState() {
                 child: Text("Mobile Number", style: TextStyle(color: Colors.grey, fontSize: 16)),
               ),
               const SizedBox(height: 10),
-              TextField(
-                controller: _controller,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  prefixIcon: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 12),
-                    child: Text("+251 ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF9F9F9),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
+
+              // --- MOBILE NUMBER INPUT BOX ---
+              SizedBox(
+                width: double.infinity, 
+                height: 55, // Fixed height for the "Box"
+                child: TextField(
+                  controller: _controller,
+                  keyboardType: TextInputType.phone,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("+251 ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFFF9F9F9),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
                 ),
               ),
 
               const SizedBox(height: 40),
 
+              // Next Button
               SizedBox(
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                  // Inside LoginPage Next Button
-onPressed: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const PinEntryPage()),
-  );
-},
-
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PinEntryPage()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF008DCD),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -188,10 +211,9 @@ onPressed: () {
 
               const SizedBox(height: 60),
 
-              // 3. Terms and Versioning info
               const Text(
                 "Terms and Conditions", 
-                style: TextStyle(color: Color(0xFF8DC73F)) // No underline
+                style: TextStyle(color: Color(0xFF8DC73F)) 
               ),
               const SizedBox(height: 5),
               const Text(
