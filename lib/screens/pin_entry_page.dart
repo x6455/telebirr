@@ -75,14 +75,14 @@ class _PinEntryPageState extends State<PinEntryPage> {
               bool isFilled = index < _pin.length;
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                width: 16,
-                height: 16,
+                width: 13,
+                height: 13,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isFilled ? const Color(0xFF8DC73F) : Colors.transparent,
                   border: Border.all(
                     color: isFilled ? const Color(0xFF8DC73F) : Colors.black,
-                    width: 2,
+                    width: 0.5,
                   ),
                 ),
               );
@@ -92,7 +92,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           const SizedBox(height: 25),
           const Text(
             "Forgot PIN?",
-            style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Color(0xFF000000), fontSize: 16, fontWeight: FontWeight.w400),
           ),
           
           const Spacer(),
@@ -149,7 +149,7 @@ class _PinEntryPageState extends State<PinEntryPage> {
           alignment: Alignment.center,
           child: Text(
             number,
-            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
           ),
         ),
       ),
