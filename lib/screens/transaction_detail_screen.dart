@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert'; // Added for encoding
 
 class TransactionDetailScreen extends StatelessWidget {
   final Map<String, dynamic> txData;
@@ -9,25 +8,19 @@ class TransactionDetailScreen extends StatelessWidget {
   const TransactionDetailScreen({super.key, required this.txData});
 
   Future<void> _handleGetReceipt() async {
-    // 1. Prepare the data map
-    final Map<String, String> dataToEncode = {
-      'id': txData['txID'] ?? "N/A",
-      'tm': txData['time'] ?? "",
-      'am': txData['amount_sent']?.toString() ?? "0.00",
-      'sc': txData['service_charge']?.toString() ?? "0.00",
-      'vt': txData['vat_0_3_percent']?.toString() ?? "0.00",
-      'td': txData['total_deducted']?.toString() ?? "0",
-      'bk': txData['bankName'] ?? "N/A",
-      'an': txData['accountName'] ?? "N/A",
-      'no': txData['accountNumber'] ?? "N/A",
-    };
-
-    // 2. Convert to JSON then to Base64
-    String jsonStr = jsonEncode(dataToEncode);
-    String encodedData = base64Url.encode(utf8.encode(jsonStr));
-
-    // 3. Short URL: http://127.0.0.1:3000/r/[BASE64_STRING]
-    final Uri url = Uri.parse("http://127.0.0.1:3000/r/$encodedData");
+    final String baseUrl = "http://127.0.0.1:3000/transaction-ethiotelecom-et";
+  
+    final Uri url = Uri.parse(baseUrl).replace(queryParameters: {
+      'txID': txData['txID'] ?? "N/A",
+      'time': txData['time'] ?? "",
+      'amount_sent': txData['amount_sent']?.toString() ?? "0.00",
+      'service_charge': txData['service_charge']?.toString() ?? "0.00",
+      'vat_0_3_percent': txData['vat_0_3_percent']?.toString() ?? "0.00",
+      'total_deducted': txData['total_deducted']?.toString() ?? "0",
+      'bankName': txData['bankName'] ?? "N/A",
+      'accountName': txData['accountName'] ?? "N/A",
+      'accountNumber': txData['accountNumber'] ?? "N/A",
+    });
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
