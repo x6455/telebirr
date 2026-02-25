@@ -108,7 +108,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
   textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
   style: GoogleFonts.roboto(
     // If showBalance is true, use the full size; otherwise, use a smaller fixed size
-    fontSize: showBalance ? widget.balanceFontSize : 28.0, 
+    fontSize: showBalance ? widget.balanceFontSize : 18.0, 
     fontWeight: FontWeight.w600,
     color: Colors.white,
     // Keep your negative letter spacing for the stars if you like that look
