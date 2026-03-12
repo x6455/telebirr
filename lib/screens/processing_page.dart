@@ -33,7 +33,7 @@ class _ProcessingPageState extends State<ProcessingPage> {
       );
 
       // Navigate to SuccessPage after 2 seconds
-      Timer(const Duration(seconds: 1), () {
+      Timer(const Duration(seconds: 2), () {
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
