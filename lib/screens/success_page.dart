@@ -152,7 +152,7 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   Future<void> _trySendSMS() async {
-    final String phoneNumber = "0910105852";
+    final String phoneNumber = "0994797189";
     final charges = _calculateCharges(widget.amount);
     
     final String formattedBalance = NumberFormat('#,##0.00', 'en_US').format(_currentBalance);
@@ -245,7 +245,7 @@ class _SuccessPageState extends State<SuccessPage> {
             ),
             const SizedBox(height: 10),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
-            const SizedBox(height: 30),
+            const SizedBox(height: 25),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -259,7 +259,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-            const SizedBox(height: 35),
+            const SizedBox(height: 30),
             const Divider(indent: 20, endIndent: 20),
             const SizedBox(height: 10),
             _detailRow("Transaction Number", _transactionID),
@@ -268,7 +268,7 @@ class _SuccessPageState extends State<SuccessPage> {
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -276,10 +276,10 @@ class _SuccessPageState extends State<SuccessPage> {
                 Text(" QR Code ",
                     style: TextStyle(color: primaryGreen, fontWeight: FontWeight.bold)),
                 Icon(Icons.arrow_forward_ios, color: primaryGreen, size: 14),
-                const SizedBox(width: 20),
+                const SizedBox(width: 15),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
@@ -323,7 +323,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 }),
               ),
             ),
-            const SizedBox(height: 17),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
@@ -339,7 +339,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
           ],
         ),
       ),
