@@ -95,7 +95,7 @@ class _ProcessingPageState extends State<ProcessingPage> {
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryGreen,
+                    backgroundColor: primaryBlue,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     elevation: 2,
