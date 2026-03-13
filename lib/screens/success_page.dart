@@ -237,7 +237,7 @@ class _SuccessPageState extends State<SuccessPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 17),
+            const SizedBox(height: 10),
             CircleAvatar(
               radius: 30,
               backgroundColor: primaryGreen,
@@ -259,7 +259,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 25),
             const Divider(indent: 20, endIndent: 20),
             const SizedBox(height: 10),
             _detailRow("Transaction Number", _transactionID),
@@ -268,7 +268,7 @@ class _SuccessPageState extends State<SuccessPage> {
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
