@@ -355,15 +355,15 @@ Stack(
   const Image(image: AssetImage('images/dashen.png'), width: 23),
   const Image(image: AssetImage('images/cbe.png'),width: 30,),
   const Image(image: AssetImage('images/Sinqee.png'),width: 40,),
-  const Image(image: AssetImage('images/Transfertobank.jpg'), width: 57),
+  const Image(image: AssetImage('images/Transfertobank.jpg'), width: 53),
 ];
 
 List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/anive.jpg'), width: 55),
   Image(image: AssetImage('images/Awash.png'), width: 30),
   Image(image: AssetImage('images/Paymerchant.jpg'), width: 69),
-  Image(image: AssetImage('images/trafic.jpg'), width: 65),
-  Image(image: AssetImage('images/trafic.jpg'), width: 65),
+  Image(image: AssetImage('images/trafic.jpg'), width: 60),
+  Image(image: AssetImage('images/trafic.jpg'), width: 60),
   Image(image: AssetImage('images/Devicefin.jpg'), width: 64),
   Image(image: AssetImage('images/Teleev.jpg'), width: 64),
   
