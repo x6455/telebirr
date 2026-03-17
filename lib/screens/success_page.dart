@@ -243,9 +243,9 @@ class _SuccessPageState extends State<SuccessPage> {
               backgroundColor: primaryGreen,
               child: const Icon(Icons.check, color: Colors.white, size: 40),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 13),
             Text("Successful", style: TextStyle(color: primaryGreen, fontSize: 18)),
-            const SizedBox(height: 25),
+            const SizedBox(height: 28),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -259,16 +259,16 @@ class _SuccessPageState extends State<SuccessPage> {
                 const Text("(ETB)", style: TextStyle(fontSize: 16, color: Colors.black)),
               ],
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 28),
             const Divider(indent: 20, endIndent: 20),
-            const SizedBox(height: 10),
+            const SizedBox(height: 13),
             _detailRow("Transaction Number", _transactionID),
             _detailRow("Transaction Time:", _txTime),
             _detailRow("Transaction Type:", "Transfer To Bank"),
             _detailRow("Transaction To:", widget.accountName.toUpperCase()),
             _detailRow("Bank Account Number:", widget.accountNumber),
             _detailRow("Bank Name:", widget.bankName),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -279,7 +279,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 const SizedBox(width: 15),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 13),
             CarouselSlider(
               options: CarouselOptions(
                 autoPlay: true,
@@ -323,7 +323,7 @@ class _SuccessPageState extends State<SuccessPage> {
                 }),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 13),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: SizedBox(
