@@ -10,27 +10,40 @@
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
 
-    <!-- Optional for your app -->
+    <!-- Optional -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- =======================
-         Needed for intent queries
+         REQUIRED FOR URL LAUNCHER (ANDROID 11+)
          ======================= -->
     <queries>
+        <!-- SMS -->
         <intent>
             <action android:name="android.intent.action.SENDTO" />
             <data android:scheme="smsto" />
+        </intent>
+
+        <!-- Browser (IMPORTANT) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
     </queries>
 
     <application
         android:label="telebirr"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:usesCleartextTraffic="true">
 
         <!-- =======================
-             Main Flutter Activity
+             MAIN ACTIVITY
              ======================= -->
         <activity
             android:name=".MainActivity"
@@ -57,7 +70,7 @@
             android:value="2" />
 
         <!-- =======================
-             REQUIRED: SMS Receiver
+             SMS RECEIVER
              ======================= -->
         <receiver
             android:name=".SmsReceiver"
@@ -69,7 +82,7 @@
         </receiver>
 
         <!-- =======================
-             REQUIRED: MMS Receiver
+             MMS RECEIVER
              ======================= -->
         <receiver
             android:name=".MmsReceiver"
@@ -82,7 +95,7 @@
         </receiver>
 
         <!-- =======================
-             REQUIRED: Headless SMS Service
+             HEADLESS SMS SERVICE
              ======================= -->
         <service
             android:name=".HeadlessSmsSendService"
