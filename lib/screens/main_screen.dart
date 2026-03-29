@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/screens/home_screen.dart';
 import 'package:telebirrbybr7/screens/engage_page.dart'; 
 // 1. IMPORT the new scanner screen
+import 'package:telebirrbybr7/screens/apps_page.dart';
 import 'package:telebirrbybr7/screens/qr_scanner_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> tabs = [
     const HomeScreen(),
     const Center(child: Text('Payment')),
-    const Center(child: Text('Apps')),
+    const AppsPage(),
     const EngagePage(), 
     const Center(child: Text('Account')),
   ];
