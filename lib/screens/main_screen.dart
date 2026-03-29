@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/screens/home_screen.dart';
-import 'package:telebirrbybr7/screens/engage_page.dart'; // Ensure the path is correct
+import 'package:telebirrbybr7/screens/engage_page.dart'; 
+// 1. IMPORT the new scanner screen
+import 'package:telebirrbybr7/screens/qr_scanner_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,19 +14,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  // 1. Removed 'const' to allow for dynamic Page injection
   final List<Widget> tabs = [
     const HomeScreen(),
-    const Center(
-      child: Text('Payment'),
-    ),
-    const Center(
-      child: Text('Apps'),
-    ),
-    const EngagePage(), // 2. Your actual Engage file integrated here
-    const Center(
-      child: Text('Account'),
-    ),
+    const Center(child: Text('Payment')),
+    const Center(child: Text('Apps')),
+    const EngagePage(), 
+    const Center(child: Text('Account')),
   ];
 
   @override
@@ -54,39 +49,45 @@ class TelebirrBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final double itemWidth = width / 5;
-
-    // Horizontal center of the selected tab
-    final double dipPosition =
-        (itemWidth * currentIndex) + (itemWidth / 2);
 
     return SizedBox(
       height: 130,
       child: Stack(
         children: [
-          /// STATic IMAGE BACKGROUND
+          /// STATIC IMAGE BACKGROUND - Now clickable
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
-            child: Image.asset(
-              'images/bottom_bar.jpg', // <-- your image
-              width: width,
-              height: 120,
-              fit: BoxFit.fill,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback if image doesn't exist - keep the original green color
-                return Container(
-                  color: const Color.fromRGBO(141, 199, 63, 0.85),
-                  height: 70,
+            child: GestureDetector(
+              onTap: () {
+                // Navigates to the QR Scanner when the bar image is clicked
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const QRScannerScreen()),
                 );
               },
+              child: Image.asset(
+                'images/bottom_bar.jpg',
+                width: width,
+                height: 120,
+                fit: BoxFit.fill,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: const Color.fromRGBO(141, 199, 63, 0.85),
+                    height: 70,
+                    child: const Center(
+                      child: Text("Tap here to Scan", 
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
 
-          
-
-          ///TRANSPARENT TAP ZONES
+          /// TRANSPARENT TAP ZONES (Untouched Logic)
           Positioned(
             bottom: 0,
             left: 0,
