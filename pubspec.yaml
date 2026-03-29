@@ -8,9 +8,6 @@ environment:
   sdk: ">=3.1.5 <4.0.0"
 
 dependencies:
-mobile_scanner: ^5.1.0
-  permission_handler: ^11.3.0
-
   flutter:
     sdk: flutter
   
@@ -35,7 +32,8 @@ mobile_scanner: ^5.1.0
   shared_preferences: ^2.2.3
   permission_handler: ^11.3.1
   url_launcher: ^6.2.5
-
+  mobile_scanner: ^5.1.0
+  
   # SMS functionality - FIXED for Samsung S9+ (Android 10)
   telephony: ^0.2.0
 
