@@ -82,6 +82,7 @@ class _AppsPageState extends State<AppsPage> {
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: [
+                    _buildBankItem("No Bank", ""),
                     _buildBankItem("Abay Bank", "images/abay.jpg"),
                     _buildBankItem("Addis Bank S.C.", "images/addis.jpg"),
                     _buildBankItem("Ahadu Bank", "images/ahadu.jpg"),
