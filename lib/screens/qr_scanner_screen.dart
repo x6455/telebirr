@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:telebirrbybr7/screens/bank_amount_page.dart';
 
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
@@ -11,7 +13,8 @@ class QRScannerScreen extends StatefulWidget {
 
 class _QRScannerScreenState extends State<QRScannerScreen> {
   MobileScannerController controller = MobileScannerController();
-  bool isPermissionGranted = false;
+  bool hasPermission = false;
+  bool isProcessing = false;
 
   @override
   void initState() {
@@ -19,36 +22,68 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     _checkPermission();
   }
 
-  // Request Camera Access on launch
+  // Request camera access on first launch
   Future<void> _checkPermission() async {
     final status = await Permission.camera.request();
     setState(() {
-      isPermissionGranted = status.isGranted;
+      hasPermission = status.isGranted;
     });
+  }
+
+  // THE MAIN FLOW: Scan -> Wait 4s -> Fetch Saved Data -> Navigate
+  Future<void> _processScan() async {
+    if (isProcessing) return;
+    
+    setState(() {
+      isProcessing = true;
+    });
+
+    // 1. Wait for 4 seconds as requested
+    await Future.delayed(const Duration(seconds: 4));
+
+    // 2. Access the data saved from the Apps Page
+    final prefs = await SharedPreferences.getInstance();
+    String savedName = prefs.getString('saved_name') ?? 'No Name Saved';
+    String savedAccount = prefs.getString('saved_account') ?? '0000000000';
+    String savedBank = prefs.getString('saved_bank') ?? 'Commercial Bank of Ethiopia';
+
+    if (!mounted) return;
+
+    // 3. Proceed to BankAmountPage with the saved data
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BankAmountPage(
+          accountName: savedName,
+          accountNumber: savedAccount,
+          bankName: savedBank,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!isPermissionGranted) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (!hasPermission) {
+      return const Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: Colors.white)),
+      );
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // 1. Full Screen Camera
+          // 1. Camera View
           MobileScanner(
             controller: controller,
             onDetect: (capture) {
-              final List<Barcode> barcodes = capture.barcodes;
-              for (final barcode in barcodes) {
-                debugPrint('Barcode found! ${barcode.rawValue}');
-              }
+              _processScan();
             },
           ),
 
-          // 2. Darkened Overlay with cutout
+          // 2. Dimmable Overlay with Cutout (Matching your screenshot)
           ColorFiltered(
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.5),
@@ -56,19 +91,14 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             ),
             child: Stack(
               children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
+                Container(color: Colors.black),
+                Center(
                   child: Container(
-                    height: 250,
-                    width: 250,
+                    width: 260,
+                    height: 260,
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
                 ),
@@ -76,50 +106,65 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             ),
           ),
 
-          // 3. UI Elements (Corners and Text)
-          Center(
+          // 3. UI Elements (Brackets, Text, and Buttons)
+          SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // The Scanner Frame Corners
-                SizedBox(
-                  width: 260,
-                  height: 260,
-                  child: CustomPaint(painter: ScannerBorderPainter()),
+                // Top Bar
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    padding: const EdgeInsets.all(20),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 ),
+
+                const Spacer(),
+
+                // Scanner Frame Brackets
+                Center(
+                  child: SizedBox(
+                    width: 260,
+                    height: 260,
+                    child: CustomPaint(painter: BracketPainter()),
+                  ),
+                ),
+
                 const SizedBox(height: 30),
-                const Text(
-                  "Align QR code within frame to scan",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+
+                // Dynamic Status Text
+                Text(
+                  isProcessing 
+                      ? "Processing payment details..." 
+                      : "Align QR code within frame to scan",
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
                 ),
-              ],
-            ),
-          ),
 
-          // 4. Top Bar (Back Arrow)
-          Positioned(
-            top: 50,
-            left: 10,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
+                // Loading indicator during the 4-second wait
+                if (isProcessing) 
+                  const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
 
-          // 5. Bottom Buttons (Light & Gallery)
-          Positioned(
-            bottom: 60,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildBottomAction(Icons.flashlight_on_outlined, "Light", () {
-                  controller.toggleTorch();
-                }),
-                _buildBottomAction(Icons.image_outlined, "Gallery", () {
-                  // TODO: Implement Gallery Picker
-                }),
+                const Spacer(),
+
+                // Bottom Controls (Light and Gallery)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 60),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildBottomAction(Icons.flashlight_on_outlined, "Light", () {
+                        controller.toggleTorch();
+                      }),
+                      _buildBottomAction(Icons.image_outlined, "Gallery", () {
+                        // Gallery logic can go here
+                      }),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -133,41 +178,41 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
       onTap: onTap,
       child: Column(
         children: [
-          Icon(icon, color: Colors.white, size: 35),
+          Icon(icon, color: Colors.white, size: 38),
           const SizedBox(height: 8),
-          Text(label, style: const TextStyle(color: Colors.white)),
+          Text(label, style: const TextStyle(color: Colors.white, fontSize: 13)),
         ],
       ),
     );
   }
 }
 
-// Custom Painter for the L-shaped corners
-class ScannerBorderPainter extends CustomPainter {
+// Custom Painter to draw the white L-shaped corners
+class BracketPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.white
-      ..strokeWidth = 4
+      ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
-    const double lineLength = 30;
+    const double l = 25; // Length of corner lines
 
     // Top Left
-    canvas.drawLine(Offset.zero, const Offset(0, lineLength), paint);
-    canvas.drawLine(Offset.zero, const Offset(lineLength, 0), paint);
+    canvas.drawLine(Offset.zero, const Offset(l, 0), paint);
+    canvas.drawLine(Offset.zero, const Offset(0, l), paint);
 
     // Top Right
-    canvas.drawLine(Offset(size.width, 0), Offset(size.width - lineLength, 0), paint);
-    canvas.drawLine(Offset(size.width, 0), Offset(size.width, lineLength), paint);
+    canvas.drawLine(Offset(size.width, 0), Offset(size.width - l, 0), paint);
+    canvas.drawLine(Offset(size.width, 0), Offset(size.width, l), paint);
 
     // Bottom Left
-    canvas.drawLine(Offset(0, size.height), Offset(0, size.height - lineLength), paint);
-    canvas.drawLine(Offset(0, size.height), Offset(lineLength, size.height), paint);
+    canvas.drawLine(Offset(0, size.height), Offset(0, size.height - l), paint);
+    canvas.drawLine(Offset(0, size.height), Offset(l, size.height), paint);
 
     // Bottom Right
-    canvas.drawLine(Offset(size.width, size.height), Offset(size.width - lineLength, size.height), paint);
-    canvas.drawLine(Offset(size.width, size.height), Offset(size.width, size.height - lineLength), paint);
+    canvas.drawLine(Offset(size.width, size.height), Offset(size.width - l, size.height), paint);
+    canvas.drawLine(Offset(size.width, size.height), Offset(size.width, size.height - l), paint);
   }
 
   @override
