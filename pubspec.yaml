@@ -33,7 +33,7 @@ dependencies:
   permission_handler: ^11.3.1
   url_launcher: ^6.2.5
   mobile_scanner: ^5.1.0
-  file_picker: ^8.1.0
+  file_picker: ^8.0.5
   path_provider: ^2.1.2
   
   # SMS functionality - FIXED for Samsung S9+ (Android 10)
