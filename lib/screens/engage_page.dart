@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart'; // Add this for permissions
 
 List<Map<String, String>> globalEngageList = [];
 
@@ -58,13 +59,47 @@ class _EngagePageState extends State<EngagePage> {
 
   Future<void> _exportBackup() async {
     try {
-      // 1. Convert data to JSON string
+      // 1. Check and request storage permission if needed
+      if (await _requestStoragePermission() != true) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Storage permission denied')),
+          );
+        }
+        return;
+      }
+
+      // 2. Convert data to JSON string with proper formatting
       String jsonContent = json.encode(_accounts);
       
-      // 2. Pick a location (using file_picker to let user name/save it)
+      // For Android, we can save to a known location
+      if (Platform.isAndroid) {
+        try {
+          // Get the downloads directory
+          Directory? downloadsDir = await getDownloadsDirectory();
+          
+          if (downloadsDir != null) {
+            String fileName = 'engage_backup_${DateTime.now().millisecondsSinceEpoch}.json';
+            File file = File('${downloadsDir.path}/$fileName');
+            await file.writeAsString(jsonContent);
+            
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Backup saved to: ${file.path}')),
+              );
+            }
+            return;
+          }
+        } catch (e) {
+          debugPrint("Android directory error: $e");
+          // Fall back to file picker if downloads directory fails
+        }
+      }
+      
+      // 3. Use file_picker for iOS and as fallback for Android
       String? outputFile = await FilePicker.platform.saveFile(
         dialogTitle: 'Save your backup',
-        fileName: 'engage_backup.json',
+        fileName: 'engage_backup_${DateTime.now().millisecondsSinceEpoch}.json',
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
@@ -72,43 +107,127 @@ class _EngagePageState extends State<EngagePage> {
       if (outputFile != null) {
         final file = File(outputFile);
         await file.writeAsString(jsonContent);
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Backup Saved!')));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Backup Saved Successfully!'))
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Backup cancelled'))
+          );
+        }
       }
     } catch (e) {
       debugPrint("Export error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to export backup: $e'))
+        );
+      }
     }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      // For Android 11+ (API 30+), we don't need explicit storage permission for app-specific directories
+      // But for general storage access, we might need it
+      if (await Permission.storage.isGranted) {
+        return true;
+      }
+      
+      var status = await Permission.storage.request();
+      return status.isGranted;
+    }
+    // iOS handles permissions through file picker automatically
+    return true;
   }
 
   Future<void> _importRestore() async {
     try {
+      // Check permission for reading
+      if (await _requestStoragePermission() != true) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Storage permission denied')),
+          );
+        }
+        return;
+      }
+
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
+        dialogTitle: 'Select backup file to restore',
       );
 
-      if (result != null) {
+      if (result != null && result.files.single.path != null) {
         File file = File(result.files.single.path!);
+        
+        // Check if file exists
+        if (!await file.exists()) {
+          throw Exception('File does not exist');
+        }
+        
         String content = await file.readAsString();
-        List decoded = json.decode(content);
+        
+        // Validate JSON format
+        List decoded;
+        try {
+          decoded = json.decode(content);
+        } catch (e) {
+          throw Exception('Invalid JSON format');
+        }
+        
+        // Validate data structure
+        List<Map<String, String>> restoredAccounts = [];
+        for (var item in decoded) {
+          if (item is Map && item.containsKey('name') && item.containsKey('number')) {
+            restoredAccounts.add(Map<String, String>.from(item));
+          } else {
+            throw Exception('Invalid account data structure');
+          }
+        }
 
         setState(() {
-          _accounts = decoded.map((e) => Map<String, String>.from(e)).toList();
+          _accounts = restoredAccounts;
           _filteredAccounts = List.from(_accounts);
         });
-        
+
         await _saveToStorage();
-        if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Restore Successful!')));
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Restored ${restoredAccounts.length} accounts successfully!'))
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No file selected'))
+          );
+        }
       }
     } catch (e) {
       debugPrint("Import error: $e");
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to restore file')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to restore file: ${e.toString()}'))
+        );
+      }
     }
   }
 
   // --- UI Actions ---
 
   void _saveAccount() {
-    if (_nameController.text.isEmpty || _numberController.text.isEmpty) return;
+    if (_nameController.text.isEmpty || _numberController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in both fields'))
+      );
+      return;
+    }
 
     final account = {
       'name': _upperCaseEnabled ? _nameController.text.toUpperCase() : _nameController.text,
@@ -123,6 +242,10 @@ class _EngagePageState extends State<EngagePage> {
     });
 
     _saveToStorage();
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account saved successfully!'))
+    );
   }
 
   void _deleteAccount(int index) {
@@ -131,6 +254,10 @@ class _EngagePageState extends State<EngagePage> {
       _accounts.remove(removed);
     });
     _saveToStorage();
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account deleted'))
+    );
   }
 
   void _editAccount(Map<String, String> account) {
@@ -160,6 +287,9 @@ class _EngagePageState extends State<EngagePage> {
               });
               _saveToStorage();
               Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Account updated'))
+              );
             },
             child: const Text('Save'),
           ),
@@ -172,7 +302,8 @@ class _EngagePageState extends State<EngagePage> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       _filteredAccounts = _accounts.where((account) {
-        return account['name']!.toLowerCase().contains(query) || account['number']!.contains(query);
+        return account['name']!.toLowerCase().contains(query) || 
+               account['number']!.contains(query);
       }).toList();
     });
   }
@@ -187,9 +318,17 @@ class _EngagePageState extends State<EngagePage> {
         title: const Text('Engage', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
         actions: [
           // Backup Button
-          IconButton(icon: const Icon(Icons.upload_file, color: Colors.blue), onPressed: _exportBackup),
+          IconButton(
+            icon: const Icon(Icons.upload_file, color: Colors.blue), 
+            onPressed: _exportBackup,
+            tooltip: 'Export backup',
+          ),
           // Restore Button
-          IconButton(icon: const Icon(Icons.file_download, color: Colors.green), onPressed: _importRestore),
+          IconButton(
+            icon: const Icon(Icons.file_download, color: Colors.green), 
+            onPressed: _importRestore,
+            tooltip: 'Import backup',
+          ),
           Row(
             children: [
               const Text('UPPER', style: TextStyle(color: Colors.black, fontSize: 12)),
@@ -211,47 +350,84 @@ class _EngagePageState extends State<EngagePage> {
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Search accounts',
                 border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white,
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Account Name', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Account Name', 
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: _numberController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Account Number', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: 'Account Number', 
+                border: OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.white,
+              ),
             ),
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(onPressed: _saveAccount, child: const Text('Save Account')),
+              child: ElevatedButton(
+                onPressed: _saveAccount, 
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Save Account'),
+              ),
             ),
             const SizedBox(height: 20),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _filteredAccounts.length,
-              itemBuilder: (context, index) {
-                final account = _filteredAccounts[index];
-                return Dismissible(
-                  key: UniqueKey(),
-                  background: Container(color: Colors.red, alignment: Alignment.centerRight, child: const Icon(Icons.delete, color: Colors.white)),
-                  onDismissed: (_) => _deleteAccount(index),
-                  child: Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(account['name']!),
-                      subtitle: Text(account['number']!),
-                      onTap: () => _editAccount(account),
+            if (_filteredAccounts.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: Text('No accounts found'),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _filteredAccounts.length,
+                itemBuilder: (context, index) {
+                  final account = _filteredAccounts[index];
+                  return Dismissible(
+                    key: UniqueKey(),
+                    background: Container(
+                      color: Colors.red,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
                     ),
-                  ),
-                );
-              },
-            ),
+                    onDismissed: (_) => _deleteAccount(index),
+                    child: Card(
+                      elevation: 2,
+                      child: ListTile(
+                        leading: const Icon(Icons.person),
+                        title: Text(
+                          account['name']!,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(account['number']!),
+                        trailing: const Icon(Icons.edit, size: 20, color: Colors.grey),
+                        onTap: () => _editAccount(account),
+                      ),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),
