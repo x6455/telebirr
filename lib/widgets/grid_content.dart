@@ -291,7 +291,7 @@ class GridIcons extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'Up to 35%',
+                'Up to 25%',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
