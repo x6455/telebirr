@@ -349,10 +349,12 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/anive.jpg'), width: 55),
   Image(image: AssetImage('images/Awash.png'), width: 30),
   Image(image: AssetImage('images/Paymerchant.jpg'), width: 69),
-  Image(image: AssetImage('images/trafic.jpg'), width: 60),
-  Image(image: AssetImage('images/trafic.jpg'), width: 60),
-  Image(image: AssetImage('images/Devicefin.jpg'), width: 64),
   Image(image: AssetImage('images/Teleev.jpg'), width: 64),
+  Image(image: AssetImage('images/tolo.jpg'), width: 64),
+  Image(image: AssetImage('images/trafic.jpg'), width: 60),
+  Image(image: AssetImage('images/trafic.jpg'), width: 60),
+  
+  
   
   
   Image(image: AssetImage('images/More.jpg'), width: 60),
