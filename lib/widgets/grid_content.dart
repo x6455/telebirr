@@ -259,12 +259,11 @@ class GridContent extends StatelessWidget {
       },
     );
   }
-} // Missing closing brace was here
+}
 
-// Moved outside of GridContent class
 class GridIcons extends StatelessWidget {
   final IconData icon;
-  
+
   const GridIcons({
     super.key,
     required this.icon,
@@ -312,50 +311,48 @@ class GridIcons extends StatelessWidget {
 List<Widget> topGridIcon = [
   const Image(image: AssetImage('images/Test.jpg'), width: 75),
   const Image(image: AssetImage('images/Cashinout.jpg'), width: 45),
-Stack(
-  clipBehavior: Clip.none, // Allows the badge to sit cleanly on the edge
-  children: [
-    const Image(
-      image: AssetImage('images/Airtime.jpg'),
-      width: 65,
-    ),
-    Positioned(
-      top: -14,
-      left: -12,
-      // Removed 'right: 0' so the badge only grows as wide as the text
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFFF9B041), // Matching the exact orange color from the image
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),     // High roundness top-left
-            bottomRight: Radius.circular(12), // High roundness bottom-right
-            topRight: Radius.circular(12),    
-            bottomLeft: Radius.circular(0),   // Subtle roundness bottom-left
+  Stack(
+    clipBehavior: Clip.none, // Allows the badge to sit cleanly on the edge
+    children: [
+      const Image(
+        image: AssetImage('images/Airtime.jpg'),
+        width: 65,
+      ),
+      Positioned(
+        top: -14,
+        left: -12,
+        // Removed 'right: 0' so the badge only grows as wide as the text
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Color(0xFFF9B041), // Matching the exact orange color from the image
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),     // High roundness top-left
+              bottomRight: Radius.circular(12), // High roundness bottom-right
+              topRight: Radius.circular(12),    
+              bottomLeft: Radius.circular(0),   // Subtle roundness bottom-left
+            ),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8), // Increased horizontal padding
+            child: Text(
+              'Up to +25%', // Added the '+' sign to match the image
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500, // Medium weight looks closer to the image
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+            ),
           ),
         ),
       ),
-  
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8), // Increased horizontal padding
-          child: Text(
-            'Up to +25%', // Added the '+' sign to match the image
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500, // Medium weight looks closer to the image
-              color: Colors.white,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-          ),
-        ),
-    ),
-  ],
-),
-
-  const Image(image: AssetImage('images/Zemen.png'),width: 35,),
+    ],
+  ),
+  const Image(image: AssetImage('images/Zemen.png'), width: 35),
   const Image(image: AssetImage('images/dashen.png'), width: 23),
-  const Image(image: AssetImage('images/cbe.png'),width: 30,),
-  const Image(image: AssetImage('images/Sinqee.png'),width: 40,),
+  const Image(image: AssetImage('images/cbe.png'), width: 30),
+  const Image(image: AssetImage('images/Sinqee.png'), width: 40),
   const Image(image: AssetImage('images/Transfertobank.jpg'), width: 53),
 ];
 
@@ -367,9 +364,5 @@ List<Widget> bottomGridIcon = const [
   Image(image: AssetImage('images/tolo.jpg'), width: 64),
   Image(image: AssetImage('images/trafic.jpg'), width: 60),
   Image(image: AssetImage('images/trafic.jpg'), width: 60),
-  
-  
-  
-  
   Image(image: AssetImage('images/More.jpg'), width: 60),
 ];
