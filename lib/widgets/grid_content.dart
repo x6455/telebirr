@@ -334,6 +334,20 @@ Stack(
           ),
         ),
       ),
+  
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 2, horizontal: 8), // Increased horizontal padding
+          child: Text(
+            'Up to +25%', // Added the '+' sign to match the image
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500, // Medium weight looks closer to the image
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+          ),
+        ),
     ),
   ],
 ),
