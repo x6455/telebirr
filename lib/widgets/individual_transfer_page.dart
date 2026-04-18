@@ -313,11 +313,11 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
             _buildRecentTile("Abera", Colors.amber),
             
             // 5 Additional Names
-            _buildRecentTile("Biruk", Colors.blue),
-            _buildRecentTile("Meron", Colors.purple),
-            _buildRecentTile("Natnael", Colors.teal),
-            _buildRecentTile("Samirawit", Colors.pink),
-            _buildRecentTile("Yonas", Colors.indigo),
+            _buildRecentTile("Biruk", Colors.amber),
+            _buildRecentTile("Meron", Colors.amber),
+            _buildRecentTile("Natnael", Colors.amber),
+            _buildRecentTile("Samirawit", Colors.amber),
+            _buildRecentTile("Yonas", Colors.amber),
           ],
         ),
       ),
@@ -337,18 +337,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
         ),
         title: Text(name, style: const TextStyle(fontSize: 15)),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {
-          // Auto-fill the phone number when tapping on recent contact
-          // This would need phone numbers associated with names
-          setState(() {
-            _numberController.clear();
-            // Example: _numberController.text = "912345678";
-            // For demo purposes, showing a snackbar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Selected: $name')),
-            );
-          });
-        },
+        
       ),
     );
   }
