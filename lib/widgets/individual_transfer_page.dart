@@ -155,7 +155,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 13),
 
                   /// 🔹 Input Card
                   Container(
@@ -175,7 +175,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                           "Please Enter Mobile Number",
                           style: TextStyle(
                               color: Colors.black87,
-                              fontSize: 14),
+                              fontSize: 17),
                         ),
                         const SizedBox(height: 12),
 
@@ -185,7 +185,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                           keyboardType:
                               TextInputType.phone,
                           maxLength: 9,
-                          enabled: !_isLoading,
+                          
                           textAlignVertical:
                               TextAlignVertical.center,
                           style: const TextStyle(
@@ -208,7 +208,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                                 "+251 ",
                                 style: TextStyle(
                                   color: Colors.black
-                                      .withOpacity(0.8),
+                                      .withOpacity(1.0),
                                   fontSize: 16,
                                 ),
                               ),
@@ -300,37 +300,70 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                     ),
                   ),
 
-                  /// 🔹 Recent Section
                   Padding(
-                    padding:
-                        const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment
-                              .spaceBetween,
-                      children: [
-                        const Text("Recent",
-                            style: TextStyle(
-                                fontSize: 17,
-                                fontWeight:
-                                    FontWeight.normal)),
-                        Icon(Icons.delete_outline,
-                            color: Colors.grey[400]),
+  padding: const EdgeInsets.all(16.0),
+  child: Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12), // ✅ same as input card
+    ),
+    child: Column(
+      children: [
+        /// Header
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Recent",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+              ),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Clear Recents'),
+                      content: const Text('Remove all recent contacts?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Clear'),
+                        ),
                       ],
                     ),
-                  ),
-
-                  _buildRecentTile("Hewan", Colors.amber),
-                  _buildRecentTile("TEWABE", Colors.amber),
-                  _buildRecentTile("Abera", Colors.amber),
-                  _buildRecentTile("Biruk", Colors.amber),
-                  _buildRecentTile("Meron", Colors.amber),
-                  _buildRecentTile("Natnael", Colors.amber),
-                  
-                ],
+                  );
+                },
+                child: Icon(Icons.delete_outline, color: Colors.grey[400]),
               ),
-            ),
+            ],
           ),
+        ),
+
+        const Divider(height: 1),
+
+        /// Contacts list inside rounded container
+        _buildRecentTile("Hewan", Colors.amber),
+        _buildRecentTile("TEWABE", Colors.amber),
+        _buildRecentTile("Abera", Colors.amber),
+        _buildRecentTile("Biruk", Colors.amber),
+        _buildRecentTile("Meron", Colors.amber),
+        _buildRecentTile("Natnael", Colors.amber),
+        _buildRecentTile("Samirawit", Colors.amber),
+        _buildRecentTile("Yonas", Colors.amber),
+      ],
+    ),
+  ),
+),
+
+
 
           /// ✅ LOADER OVERLAY (NO UI SHIFT)
           if (_isLoading)
@@ -360,30 +393,17 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   }
 
   Widget _buildRecentTile(String name, Color avatarColor) {
-  return Column(
-    children: [
-      ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        leading: CircleAvatar(
-          backgroundColor: avatarColor,
-          child: const Icon(Icons.person, color: Colors.white),
-        ),
-        title: Text(name, style: const TextStyle(fontSize: 15)),
-        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {
-          _focusNode.requestFocus();
-        },
-      ),
-
-      /// 🔹 SHORTER DIVIDER
-      const Divider(
-        height: 0,
-        thickness: 1,
-        indent: 72,     // 👈 controls left offset
-        endIndent: 16,  // 👈 controls right offset
-        color: Color(0xFFF0F0F0),
-      ),
-    ],
+  return ListTile(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+    leading: CircleAvatar(
+      backgroundColor: avatarColor,
+      child: const Icon(Icons.person, color: Colors.white),
+    ),
+    title: Text(name, style: const TextStyle(fontSize: 15)),
+    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+    onTap: () {
+      _focusNode.requestFocus();
+    },
   );
 }
 }
