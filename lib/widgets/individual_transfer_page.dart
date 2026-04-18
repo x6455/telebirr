@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'dart:async';
 
 class IndividualTransferPage extends StatefulWidget {
   const IndividualTransferPage({super.key});
 
   @override
-  State<IndividualTransferPage> createState() => _IndividualTransferPageState();
+  State<IndividualTransferPage> createState() =>
+      _IndividualTransferPageState();
 }
 
-class _IndividualTransferPageState extends State<IndividualTransferPage> {
+class _IndividualTransferPageState
+    extends State<IndividualTransferPage> {
   int _currentIndex = 0;
 
   final List<String> sliderImages = [
@@ -20,11 +21,13 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     'images/Banner5.jpg',
   ];
 
-  final TextEditingController _numberController = TextEditingController();
-  bool _isButtonEnabled = false;
-  bool _isLoading = false;
+  final TextEditingController _numberController =
+      TextEditingController();
 
   final FocusNode _focusNode = FocusNode();
+
+  bool _isButtonEnabled = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -34,7 +37,8 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
 
   void _checkInput() {
     setState(() {
-      _isButtonEnabled = _numberController.text.length == 9;
+      _isButtonEnabled =
+          _numberController.text.length == 9;
     });
   }
 
@@ -48,8 +52,6 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     if (mounted) {
       setState(() => _isLoading = false);
     }
-
-    _focusNode.requestFocus();
   }
 
   @override
@@ -63,28 +65,26 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
+
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
-          'Send Money to Individual',
-          style: TextStyle(
-              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+          "Send Money to Individual",
+          style: TextStyle(color: Colors.black),
         ),
+        iconTheme:
+            const IconThemeData(color: Colors.black),
       ),
+
       body: Stack(
         children: [
           GestureDetector(
-            onTap: () {
-              _focusNode.unfocus();
-            },
+            onTap: () => _focusNode.unfocus(),
             child: SingleChildScrollView(
               child: Column(
                 children: [
+
                   const SizedBox(height: 10),
 
                   /// 🔹 Slider
@@ -99,68 +99,29 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                         });
                       },
                     ),
-                    items: sliderImages.map((imagePath) {
+                    items: sliderImages.map((img) {
                       return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                        margin:
+                            const EdgeInsets.symmetric(
+                                horizontal: 5),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius:
+                              BorderRadius.circular(12),
                           child: Image.asset(
-                            imagePath,
+                            img,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              color: Colors.grey[300],
-                              child:
-                                  const Icon(Icons.image_not_supported),
-                            ),
                           ),
                         ),
                       );
                     }).toList(),
                   ),
 
-                  /// 🔹 Indicator
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                          List.generate(sliderImages.length, (i) {
-                        final isActive = i == _currentIndex;
-                        return Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 3.0),
-                          width: 8.0,
-                          height: 8.0,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.green, width: 0.8),
-                          ),
-                          child: Center(
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 50),
-                              width: isActive ? 4.0 : 0,
-                              height: isActive ? 4.0 : 0,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-
-                  const SizedBox(height: 13),
+                  const SizedBox(height: 10),
 
                   /// 🔹 Input Card
                   Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16),
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -173,9 +134,6 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       children: [
                         const Text(
                           "Please Enter Mobile Number",
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 17),
                         ),
                         const SizedBox(height: 12),
 
@@ -185,20 +143,19 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                           keyboardType:
                               TextInputType.phone,
                           maxLength: 9,
-                          
                           textAlignVertical:
                               TextAlignVertical.center,
                           style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),
+                              fontSize: 16,
+                              color: Colors.black),
+
                           decoration: InputDecoration(
                             counterText: "",
                             contentPadding:
                                 const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 14,
-                            ),
+                                    horizontal: 12,
+                                    vertical: 14),
+
                             prefixIcon: Padding(
                               padding:
                                   const EdgeInsets.only(
@@ -207,51 +164,45 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                               child: Text(
                                 "+251 ",
                                 style: TextStyle(
-                                  color: Colors.black
-                                      .withOpacity(1.0),
-                                  fontSize: 16,
-                                ),
+                                    color: Colors
+                                        .black
+                                        .withOpacity(
+                                            0.7)),
                               ),
                             ),
-                            suffixIcon: Row(
-                              mainAxisSize:
-                                  MainAxisSize.min,
-                              children: [
-                                Icon(
-                                    Icons
-                                        .qr_code_scanner,
-                                    color: Colors
-                                        .lightGreen[600]),
-                                const SizedBox(
-                                    width: 12),
-                                Icon(
-                                    Icons
-                                        .contact_phone_outlined,
-                                    color: Colors
-                                        .lightGreen[600]),
-                                const SizedBox(
-                                    width: 12),
-                              ],
-                            ),
+
                             enabledBorder:
                                 OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .lightGreen[400]!),
                               borderRadius:
                                   BorderRadius.circular(
                                       8),
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .green
+                                      .shade300),
                             ),
+
                             focusedBorder:
                                 OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(
+                                      8),
                               borderSide:
                                   const BorderSide(
                                       color:
                                           Colors.green,
                                       width: 2),
+                            ),
+
+                            disabledBorder:
+                                OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.circular(
                                       8),
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .green
+                                      .shade300),
                             ),
                           ),
                         ),
@@ -273,14 +224,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                               backgroundColor:
                                   const Color.fromRGBO(
                                       2, 135, 208, 1),
-                              disabledBackgroundColor:
-                                  const Color.fromRGBO(
-                                      2, 135, 208, 0.25),
                               elevation: 0,
-                              shadowColor:
-                                  Colors.transparent,
-                              surfaceTintColor:
-                                  Colors.transparent,
                               shape:
                                   RoundedRectangleBorder(
                                 borderRadius:
@@ -288,84 +232,53 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                                         .circular(8),
                               ),
                             ),
-                            child: const Text(
-                              "Next",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17),
-                            ),
+                            child: const Text("Next"),
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12), // ✅ same as input card
-    ),
-    child: Column(
-      children: [
-        /// Header
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Recent",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Clear Recents'),
-                      content: const Text('Remove all recent contacts?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Clear'),
-                        ),
+                  const SizedBox(height: 16),
+
+                  /// 🔹 CONTACTS (ROUNDED CONTAINER)
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildRecentTile(
+                            "Hewan", Colors.amber),
+                        _buildRecentTile(
+                            "TEWABE", Colors.amber),
+                        _buildRecentTile(
+                            "Abera", Colors.amber),
+                        _buildRecentTile(
+                            "Biruk", Colors.amber),
+                        _buildRecentTile(
+                            "Meron", Colors.amber),
+                        _buildRecentTile(
+                            "Natnael", Colors.amber),
+                        _buildRecentTile(
+                            "Samirawit", Colors.amber),
+                        _buildRecentTile(
+                            "Yonas", Colors.amber),
                       ],
                     ),
-                  );
-                },
-                child: Icon(Icons.delete_outline, color: Colors.grey[400]),
+                  ),
+
+                  const SizedBox(height: 20),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
 
-        const Divider(height: 1),
-
-        /// Contacts list inside rounded container
-        _buildRecentTile("Hewan", Colors.amber),
-        _buildRecentTile("TEWABE", Colors.amber),
-        _buildRecentTile("Abera", Colors.amber),
-        _buildRecentTile("Biruk", Colors.amber),
-        _buildRecentTile("Meron", Colors.amber),
-        _buildRecentTile("Natnael", Colors.amber),
-        _buildRecentTile("Samirawit", Colors.amber),
-        _buildRecentTile("Yonas", Colors.amber),
-      ],
-    ),
-  ),
-),
-
-
-
-          /// ✅ LOADER OVERLAY (NO UI SHIFT)
+          /// 🔹 LOADING OVERLAY
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.1),
@@ -378,7 +291,6 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                     borderRadius:
                         BorderRadius.circular(12),
                   ),
-                  alignment: Alignment.center,
                   child: Image.asset(
                     'images/loading.gif',
                     width: 50,
@@ -392,18 +304,34 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     );
   }
 
-  Widget _buildRecentTile(String name, Color avatarColor) {
-  return ListTile(
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-    leading: CircleAvatar(
-      backgroundColor: avatarColor,
-      child: const Icon(Icons.person, color: Colors.white),
-    ),
-    title: Text(name, style: const TextStyle(fontSize: 15)),
-    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-    onTap: () {
-      _focusNode.requestFocus();
-    },
-  );
-}
+  Widget _buildRecentTile(
+      String name, Color avatarColor) {
+    return Column(
+      children: [
+        ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16),
+          leading: CircleAvatar(
+            backgroundColor: avatarColor,
+            child: const Icon(Icons.person,
+                color: Colors.white),
+          ),
+          title: Text(name),
+          trailing: const Icon(Icons.chevron_right,
+              color: Colors.grey),
+          onTap: () {
+            _focusNode.requestFocus();
+          },
+        ),
+
+        const Divider(
+          height: 1,
+          thickness: 1,
+          indent: 72,
+          endIndent: 16,
+          color: Color(0xFFF0F0F0),
+        ),
+      ],
+    );
+  }
 }
