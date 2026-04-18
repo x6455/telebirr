@@ -203,7 +203,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       focusNode: _focusNode,
                       keyboardType: TextInputType.phone,
                       maxLength: 9,
-                      enabled: !_isLoading,
+                      readOnly: !_isLoading,
                       style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black,
