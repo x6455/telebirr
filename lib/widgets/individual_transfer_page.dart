@@ -263,8 +263,8 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                         child: const Text("Next",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
+                                fontSize: 17,
+                                fontWeight: FontWeight.normal)),
                       ),
                     ),
                   ],
