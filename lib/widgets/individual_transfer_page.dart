@@ -246,27 +246,30 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                     
                     const SizedBox(height: 20),
 
-                    // BUTTON LOGIC
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: (_isButtonEnabled && !_isLoading) ? _handleNext : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
-                          disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25),
-                          disabledForegroundColor: Colors.white,
-                          elevation: _isButtonEnabled ? 2 : 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                        ),
-                        child: const Text("Next",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.normal)),
-                      ),
-                    ),
+                    // BUTTON LOGIC - No shadows
+SizedBox(
+  width: double.infinity,
+  height: 50,
+  child: ElevatedButton(
+    onPressed: (_isButtonEnabled && !_isLoading) ? _handleNext : null,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
+      disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25),
+      disabledForegroundColor: Colors.white,
+      elevation: 0, // Remove shadow
+      shadowColor: Colors.transparent, // Ensure no shadow color
+      surfaceTintColor: Colors.transparent, // Remove surface tint
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    child: const Text("Next",
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 17,
+            fontWeight: FontWeight.normal)),
+  ),
+),
                   ],
                 ),
               ),
