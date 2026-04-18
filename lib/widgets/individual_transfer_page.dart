@@ -311,9 +311,9 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       children: [
                         const Text("Recent",
                             style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 17,
                                 fontWeight:
-                                    FontWeight.bold)),
+                                    FontWeight.normal)),
                         Icon(Icons.delete_outline,
                             color: Colors.grey[400]),
                       ],
@@ -326,8 +326,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                   _buildRecentTile("Biruk", Colors.amber),
                   _buildRecentTile("Meron", Colors.amber),
                   _buildRecentTile("Natnael", Colors.amber),
-                  _buildRecentTile("Samirawit", Colors.amber),
-                  _buildRecentTile("Yonas", Colors.amber),
+                  
                 ],
               ),
             ),
@@ -361,27 +360,30 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   }
 
   Widget _buildRecentTile(String name, Color avatarColor) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
-            bottom:
-                BorderSide(color: Color(0xFFF0F0F0))),
-      ),
-      child: ListTile(
+  return Column(
+    children: [
+      ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         leading: CircleAvatar(
           backgroundColor: avatarColor,
-          child: const Icon(Icons.person,
-              color: Colors.white),
+          child: const Icon(Icons.person, color: Colors.white),
         ),
-        title: Text(name,
-            style: const TextStyle(fontSize: 15)),
-        trailing: const Icon(Icons.chevron_right,
-            color: Colors.grey),
+        title: Text(name, style: const TextStyle(fontSize: 15)),
+        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
         onTap: () {
           _focusNode.requestFocus();
         },
       ),
-    );
-  }
+
+      /// 🔹 SHORTER DIVIDER
+      const Divider(
+        height: 0,
+        thickness: 1,
+        indent: 72,     // 👈 controls left offset
+        endIndent: 16,  // 👈 controls right offset
+        color: Color(0xFFF0F0F0),
+      ),
+    ],
+  );
+}
 }
