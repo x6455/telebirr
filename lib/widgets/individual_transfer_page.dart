@@ -24,11 +24,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   final TextEditingController _numberController = TextEditingController();
   bool _isButtonEnabled = false;
   
-  // Processing UI Logic
-  bool _isProcessing = false;
-  bool _showFailure = false;
-  Timer? _processingTimer;
-  Timer? _failureTimer;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -43,38 +39,57 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
     });
   }
 
-  void _handleNext() {
-    // Show processing UI
-    setState(() {
-      _isProcessing = true;
-      _showFailure = false;
-    });
+  Future<void> _handleNext() async {
+    if (_isLoading) return;
 
-    // Process for 3 seconds then show failure
-    _processingTimer = Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          _isProcessing = false;
-          _showFailure = true;
-        });
+    setState(() => _isLoading = true);
 
-        // Auto-hide failure after 2 seconds
-        _failureTimer = Timer(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              _showFailure = false;
-            });
-          }
-        });
-      }
-    });
+    // Show floating loader with GIF
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.1), // light gray overlay feel
+      builder: (_) => Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            alignment: Alignment.center,
+            child: Image.asset(
+              'images/loading.gif',
+              width: 50,
+              height: 50,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Wait for 3 seconds
+    await Future.delayed(const Duration(seconds: 3));
+
+    // Close loader (only if still mounted)
+    if (mounted) Navigator.of(context, rootNavigator: true).pop();
+
+    setState(() => _isLoading = false);
+
+    // Here you can add navigation or further logic after the 3 seconds
+    // For now, just show a snackbar that it's complete
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Number verified')),
+      );
+    }
   }
 
   @override
   void dispose() {
     _numberController.dispose();
-    _processingTimer?.cancel();
-    _failureTimer?.cancel();
     super.dispose();
   }
 
@@ -138,16 +153,16 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                 children: List.generate(sliderImages.length, (i) {
                   final isActive = i == _currentIndex;
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    margin: const EdgeInsets.symmetric(horizontal: 3.0),
                     width: 8.0,
                     height: 8.0,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.green, width: 1.0),
+                      border: Border.all(color: Colors.green, width: 0.8),
                     ),
                     child: Center(
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
+                        duration: const Duration(milliseconds: 50),
                         width: isActive ? 4.0 : 0,
                         height: isActive ? 4.0 : 0,
                         decoration: const BoxDecoration(
@@ -163,7 +178,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
 
             const SizedBox(height: 10),
 
-            // 2. Input Card with Processing/Failure UI
+            // 2. Input Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16),
               padding: const EdgeInsets.all(20),
@@ -178,117 +193,59 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                       style: TextStyle(color: Colors.black87, fontSize: 14)),
                   const SizedBox(height: 12),
                   
-                  // Show processing UI or normal input
-                  if (_isProcessing)
-                    Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.orange),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.orange,
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            Text(
-                              "Processing...",
-                              style: TextStyle(
-                                color: Colors.orange,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  else if (_showFailure)
-                    Container(
-                      height: 56,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.red),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.error_outline, color: Colors.red, size: 24),
-                            SizedBox(width: 12),
-                            Text(
-                              "Failed! Please try again",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  else
-                    TextField(
-                      controller: _numberController,
-                      keyboardType: TextInputType.phone,
-                      maxLength: 9,
-                      style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal),
-                      decoration: InputDecoration(
-                        counterText: "",
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(left: 12, top: 14),
-                          child: Text(
-                            "+251 ",
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.8),
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal,
-                            ),
+                  TextField(
+                    controller: _numberController,
+                    keyboardType: TextInputType.phone,
+                    maxLength: 9,
+                    enabled: !_isLoading,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.normal),
+                    decoration: InputDecoration(
+                      counterText: "",
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 12, top: 14),
+                        child: Text(
+                          "+251 ",
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.8),
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
-                        suffixIcon: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.qr_code_scanner,
-                                color: Colors.lightGreen[600]),
-                            const SizedBox(width: 12),
-                            Icon(Icons.contact_phone_outlined,
-                                color: Colors.lightGreen[600]),
-                            const SizedBox(width: 12),
-                          ],
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.lightGreen[400]!),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.green, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                      ),
+                      suffixIcon: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.qr_code_scanner,
+                              color: Colors.lightGreen[600]),
+                          const SizedBox(width: 12),
+                          Icon(Icons.contact_phone_outlined,
+                              color: Colors.lightGreen[600]),
+                          const SizedBox(width: 12),
+                        ],
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.lightGreen[400]!),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
+                  ),
                   
                   const SizedBox(height: 20),
 
-                  // BUTTON LOGIC
+                  // BUTTON LOGIC - No UI changes
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: (_isButtonEnabled && !_isProcessing) ? _handleNext : null,
+                      onPressed: (_isButtonEnabled && !_isLoading) ? _handleNext : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
                         disabledBackgroundColor: const Color.fromRGBO(2, 135, 208, 0.25),
@@ -297,20 +254,11 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: _isProcessing
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text("Next",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold)),
+                      child: const Text("Next",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
