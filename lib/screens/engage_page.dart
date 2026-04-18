@@ -58,77 +58,42 @@ class _EngagePageState extends State<EngagePage> {
   // --- Backup & Restore Logic ---
 
   Future<void> _exportBackup() async {
-    try {
-      // 1. Check and request storage permission if needed
-      if (await _requestStoragePermission() != true) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Storage permission denied')),
-          );
-        }
-        return;
-      }
-
-      // 2. Convert data to JSON string with proper formatting
-      String jsonContent = json.encode(_accounts);
-      
-      // For Android, we can save to a known location
-      if (Platform.isAndroid) {
-        try {
-          // Get the downloads directory
-          Directory? downloadsDir = await getDownloadsDirectory();
-          
-          if (downloadsDir != null) {
-            String fileName = 'engage_backup_${DateTime.now().millisecondsSinceEpoch}.json';
-            File file = File('${downloadsDir.path}/$fileName');
-            await file.writeAsString(jsonContent);
-            
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Backup saved to: ${file.path}')),
-              );
-            }
-            return;
-          }
-        } catch (e) {
-          debugPrint("Android directory error: $e");
-          // Fall back to file picker if downloads directory fails
-        }
-      }
-      
-      // 3. Use file_picker for iOS and as fallback for Android
-      String? outputFile = await FilePicker.platform.saveFile(
-        dialogTitle: 'Save your backup',
-        fileName: 'engage_backup_${DateTime.now().millisecondsSinceEpoch}.json',
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-      );
-
-      if (outputFile != null) {
-        final file = File(outputFile);
-        await file.writeAsString(jsonContent);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Backup Saved Successfully!'))
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Backup cancelled'))
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint("Export error: $e");
+  Future<void> _exportBackup() async {
+  try {
+    if (await _requestStoragePermission() != true) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to export backup: $e'))
+          const SnackBar(content: Text('Storage permission denied')),
         );
       }
+      return;
+    }
+
+    String jsonContent = json.encode(_accounts);
+
+    String fileName =
+        'engage_backup_${DateTime.now().millisecondsSinceEpoch}.json';
+
+    String path = "/storage/emulated/0/Download/$fileName";
+
+    File file = File(path);
+    await file.writeAsString(jsonContent);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Saved to Downloads: $fileName')),
+      );
+    }
+  } catch (e) {
+    debugPrint("Export error: $e");
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to export backup: $e')),
+      );
     }
   }
-
+}
   Future<bool> _requestStoragePermission() async {
     if (Platform.isAndroid) {
       // For Android 11+ (API 30+), we don't need explicit storage permission for app-specific directories
