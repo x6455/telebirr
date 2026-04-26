@@ -346,7 +346,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
 
   Widget _buildDivider() {
     return Padding(
-      padding: const EdgeInsets.only(left: 30),
+      padding: const EdgeInsets.only(left: 40),
       child: Divider(
         height: 1,
         thickness: 0.5,
