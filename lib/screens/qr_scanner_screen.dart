@@ -45,7 +45,7 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
     final prefs = await SharedPreferences.getInstance();
     String savedName = prefs.getString('saved_name') ?? 'No Name Saved';
     String savedAccount = prefs.getString('saved_account') ?? '0000000000';
-    String savedBank = prefs.getString('saved_bank') ?? 'Commercial Bank of Ethiopia';
+    String savedBank = prefs.getString('saved_bank') ?? '';
 
     if (!mounted) return;
 
