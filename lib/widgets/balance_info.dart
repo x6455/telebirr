@@ -67,7 +67,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
     // ... (rest of your build method remains the same)
     final bool isMainBalance = widget.label == 'Balance (ETB) ';
     final bool isReward = widget.label == 'Reward (ETB) ';
-    final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
+    final String balance = showBalance ? balanceValue : '✱ ✱ ✱ ✱ ✱ ✱';
 
     return Transform.translate(
       offset: isReward ? const Offset(-7, 0) : Offset.zero,
