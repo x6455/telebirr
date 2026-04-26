@@ -24,30 +24,32 @@ class _BankAmountPageState extends State<BankAmountPage> {
   bool _showCursor = true;
   Timer? _cursorTimer;
 
-  
   final Color _primaryGreen = const Color(0xFF8DC73F);
   final Color _purpleColor = const Color(0xFFA349E5);
 
-final Map<String, Color> _bankColors = {
-  'CBE': const Color(0xFFA349E5),
-  'Awash Bank': const Color(0xFF2A2A9D),
-  'Dashen Bank': const Color(0xFF012169),
-  'Bank of Abyssinia': const Color(0xFFE6A115), // ✅ FIXED
-};
+  final Map<String, Color> _bankColors = {
+    'CBE': const Color(0xFFA349E5),
+    'Awash Bank': const Color(0xFF2A2A9D),
+    'Dashen Bank': const Color(0xFF012169),
+    'Bank of Abyssinia': const Color(0xFFE6A115),
+  };
 
-final Map<String, String> _bankLogos = {
-  'CBE': 'images/cbe.png',
-  'Awash Bank': 'images/Awash.png',
-  'Dashen Bank': 'images/dashen.png',
-  'Bank of Abyssinia': 'images/abyssinia.jpg', // ✅ FIXED
-};
+  final Map<String, String> _bankLogos = {
+    'CBE': 'images/cbe.png',
+    'Awash Bank': 'images/Awash.png',
+    'Dashen Bank': 'images/dashen.png',
+    'Bank of Abyssinia': 'images/abyssinia.jpg',
+  };
+
   // Helper to get bank color
   Color _getBankColor(String bankName) {
+    if (bankName.isEmpty) return Colors.white;
     return _bankColors[bankName] ?? _purpleColor;
   }
 
   // Helper to get bank logo
   String _getBankLogo(String bankName) {
+    if (bankName.isEmpty) return '';
     return _bankLogos[bankName] ?? 'images/cbe.png';
   }
 
@@ -126,14 +128,13 @@ final Map<String, String> _bankLogos = {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Text(
-  _formatAmount(_amount),
-  style: const TextStyle(
-    fontSize: 36,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
-  ),
-),
-
+                    _formatAmount(_amount),
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
                   const SizedBox(width: 4),
                   const Text(
                     "ETB",
@@ -244,22 +245,23 @@ final Map<String, String> _bankLogos = {
       },
     );
   }
-  
+
   String _formatAmount(String value) {
-  if (value.isEmpty) return "0.00";
+    if (value.isEmpty) return "0.00";
 
-  final number = double.tryParse(value);
-  if (number == null) return "0.00";
+    final number = double.tryParse(value);
+    if (number == null) return "0.00";
 
-  final formatter = NumberFormat("#,##0.00", "en_US");
-  return formatter.format(number);
-}
+    final formatter = NumberFormat("#,##0.00", "en_US");
+    return formatter.format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
     const Color themeBgColor = Color(0xFFF5F5F5);
     final bankColor = _getBankColor(widget.bankName);
     final bankLogo = _getBankLogo(widget.bankName);
+    final hasBank = widget.bankName.isNotEmpty;
 
     return Scaffold(
       backgroundColor: themeBgColor,
@@ -284,46 +286,63 @@ final Map<String, String> _bankLogos = {
                 children: [
                   Container(
                     width: double.infinity,
-                  
                     decoration: BoxDecoration(
-                      color: bankColor,
- borderRadius: BorderRadius.circular(12),
-),
+                      color: hasBank ? bankColor : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Column(
                       children: [
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          leading: Container(
-                            width: 35,
-                            height: 35,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: Image.asset(
-                                bankLogo,
-                                errorBuilder: (c, e, s) =>
-                                    Icon(Icons.account_balance, color: bankColor),
-                              ),
-                            ),
-                          ),
+                          leading: hasBank
+                              ? Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Image.asset(
+                                      bankLogo,
+                                      errorBuilder: (c, e, s) =>
+                                          Icon(Icons.account_balance, color: bankColor),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 35,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(Icons.person, color: Colors.grey, size: 20),
+                                ),
                           title: Text(
                             widget.accountName.toUpperCase(),
-                            style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(
+                              color: hasBank ? Colors.white : Colors.black, 
+                              fontWeight: FontWeight.bold, 
+                              fontSize: 18
+                            ),
                           ),
-                          subtitle: Text(
-                            "${widget.bankName} (${widget.accountNumber})",
-                            style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13),
-                          ),
+                          subtitle: hasBank
+                              ? Text(
+                                  "${widget.bankName} (${widget.accountNumber})",
+                                  style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13),
+                                )
+                              : Text(
+                                  widget.accountNumber,
+                                  style: const TextStyle(color: Colors.grey, fontSize: 13),
+                                ),
                         ),
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+                            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
