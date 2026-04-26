@@ -11,7 +11,7 @@ class AppsPage extends StatefulWidget {
 class _AppsPageState extends State<AppsPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
-  String selectedBankName = 'Please Choose';
+  String selectedBankName = '';
   bool _isLoading = false;
 
   @override
@@ -26,17 +26,16 @@ class _AppsPageState extends State<AppsPage> {
     setState(() {
       _nameController.text = prefs.getString('saved_name') ?? '';
       _accountController.text = prefs.getString('saved_account') ?? '';
-      selectedBankName = prefs.getString('saved_bank') ?? 'Please Choose';
+      selectedBankName = prefs.getString('saved_bank') ?? '';
     });
   }
 
   // Save data to storage (Updated to include Bank)
   Future<void> _saveAccount() async {
     if (_nameController.text.isEmpty || 
-        _accountController.text.isEmpty || 
-        selectedBankName == 'Please Choose') {
+        _accountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in all fields and select a bank")),
+        const SnackBar(content: Text("Please fill in all fields")),
       );
       return;
     }
@@ -107,7 +106,7 @@ class _AppsPageState extends State<AppsPage> {
   Widget _buildBankItem(String name, String imagePath) {
     return InkWell(
       onTap: () {
-        setState(() => selectedBankName = name);
+        setState(() => selectedBankName = name == "No Bank" ? '' : name);
         Navigator.pop(context);
       },
       child: Container(
@@ -115,7 +114,10 @@ class _AppsPageState extends State<AppsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(imagePath, width: 45, height: 45, fit: BoxFit.contain),
+            if (imagePath.isNotEmpty)
+              Image.asset(imagePath, width: 45, height: 45, fit: BoxFit.contain)
+            else
+              const Icon(Icons.account_balance, size: 45, color: Colors.grey),
             const SizedBox(height: 5),
             Text(name, textAlign: TextAlign.center, style: const TextStyle(fontSize: 11), maxLines: 2),
           ],
@@ -156,7 +158,13 @@ class _AppsPageState extends State<AppsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(selectedBankName, style: TextStyle(color: selectedBankName == 'Please Choose' ? Colors.grey : Colors.black, fontSize: 16)),
+                    Text(
+                      selectedBankName.isEmpty ? '' : selectedBankName, 
+                      style: TextStyle(
+                        color: selectedBankName.isEmpty ? Colors.grey : Colors.black, 
+                        fontSize: 16
+                      ),
+                    ),
                     const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
                   ],
                 ),
