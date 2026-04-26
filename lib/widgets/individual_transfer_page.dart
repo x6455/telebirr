@@ -111,8 +111,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                             errorBuilder: (context, error, stackTrace) =>
                                 Container(
                               color: Colors.grey[300],
-                              child:
-                                  const Icon(Icons.image_not_supported),
+                              child: const Icon(Icons.image_not_supported),
                             ),
                           ),
                         ),
@@ -122,22 +121,18 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
 
                   /// 🔹 Indicator
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:
-                          List.generate(sliderImages.length, (i) {
+                      children: List.generate(sliderImages.length, (i) {
                         final isActive = i == _currentIndex;
                         return Container(
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 3.0),
+                          margin: const EdgeInsets.symmetric(horizontal: 3.0),
                           width: 8.0,
                           height: 8.0,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.green, width: 0.8),
+                            border: Border.all(color: Colors.green, width: 0.8),
                           ),
                           child: Center(
                             child: AnimatedContainer(
@@ -159,35 +154,27 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
 
                   /// 🔹 Input Card
                   Container(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16),
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
                           "Please Enter Mobile Number",
-                          style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 17),
+                          style: TextStyle(color: Colors.black87, fontSize: 17),
                         ),
                         const SizedBox(height: 12),
 
                         TextField(
                           controller: _numberController,
                           focusNode: _focusNode,
-                          keyboardType:
-                              TextInputType.phone,
+                          keyboardType: TextInputType.phone,
                           maxLength: 9,
-                          
-                          textAlignVertical:
-                              TextAlignVertical.center,
+                          textAlignVertical: TextAlignVertical.center,
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black,
@@ -195,63 +182,35 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                           decoration: InputDecoration(
                             counterText: "",
                             contentPadding:
-                                const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 14,
-                            ),
+                                const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                             prefixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.only(
-                                      left: 12,
-                                      top: 14),
+                              padding: const EdgeInsets.only(left: 12, top: 14),
                               child: Text(
                                 "+251 ",
                                 style: TextStyle(
-                                  color: Colors.black
-                                      .withOpacity(1.0),
+                                  color: Colors.black.withOpacity(1.0),
                                   fontSize: 16,
                                 ),
                               ),
                             ),
                             suffixIcon: Row(
-                              mainAxisSize:
-                                  MainAxisSize.min,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                    Icons
-                                        .qr_code_scanner,
-                                    color: Colors
-                                        .lightGreen[600]),
-                                const SizedBox(
-                                    width: 12),
-                                Icon(
-                                    Icons
-                                        .contact_phone_outlined,
-                                    color: Colors
-                                        .lightGreen[600]),
-                                const SizedBox(
-                                    width: 12),
+                                Icon(Icons.qr_code_scanner,
+                                    color: Colors.lightGreen[600]),
+                                const SizedBox(width: 12),
+                                Icon(Icons.contact_phone_outlined,
+                                    color: Colors.lightGreen[600]),
+                                const SizedBox(width: 12),
                               ],
                             ),
-                            enabledBorder:
-                                OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .lightGreen[400]!),
-                              borderRadius:
-                                  BorderRadius.circular(
-                                      8),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.lightGreen[400]!),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            focusedBorder:
-                                OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(
-                                      color:
-                                          Colors.green,
-                                      width: 2),
-                              borderRadius:
-                                  BorderRadius.circular(
-                                      8),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.green, width: 2),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                         ),
@@ -263,36 +222,23 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                           width: double.infinity,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed:
-                                (_isButtonEnabled &&
-                                        !_isLoading)
-                                    ? _handleNext
-                                    : null,
-                            style: ElevatedButton
-                                .styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(
-                                      2, 135, 208, 1),
+                            onPressed: (_isButtonEnabled && !_isLoading)
+                                ? _handleNext
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromRGBO(2, 135, 208, 1),
                               disabledBackgroundColor:
-                                  const Color.fromRGBO(
-                                      2, 135, 208, 0.25),
+                                  const Color.fromRGBO(2, 135, 208, 0.25),
                               elevation: 0,
-                              shadowColor:
-                                  Colors.transparent,
-                              surfaceTintColor:
-                                  Colors.transparent,
-                              shape:
-                                  RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius
-                                        .circular(8),
+                              shadowColor: Colors.transparent,
+                              surfaceTintColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             child: const Text(
                               "Next",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17),
+                              style: TextStyle(color: Colors.white, fontSize: 17),
                             ),
                           ),
                         ),
@@ -301,69 +247,71 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                   ),
 
                   Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12), // ✅ same as input card
-    ),
-    child: Column(
-      children: [
-        /// Header
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Recent",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Clear Recents'),
-                      content: const Text('Remove all recent contacts?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Clear'),
-                        ),
-                      ],
+                    padding: const EdgeInsets.all(16.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12), // ✅ same as input card
+                      ),
+                      child: Column(
+                        children: [
+                          /// Header
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Recent",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Clear Recents'),
+                                        content: const Text('Remove all recent contacts?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text('Cancel'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Clear'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Icon(Icons.delete_outline, color: Colors.grey[400]),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const Divider(height: 1),
+
+                          /// Contacts list inside rounded container
+                          _buildRecentTile("Hewan", Colors.amber),
+                          _buildRecentTile("TEWABE", Colors.amber),
+                          _buildRecentTile("Abera", Colors.amber),
+                          _buildRecentTile("Biruk", Colors.amber),
+                          _buildRecentTile("Meron", Colors.amber),
+                          _buildRecentTile("Natnael", Colors.amber),
+                          _buildRecentTile("Samirawit", Colors.amber),
+                          _buildRecentTile("Yonas", Colors.amber),
+                        ],
+                      ),
                     ),
-                  );
-                },
-                child: Icon(Icons.delete_outline, color: Colors.grey[400]),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-
-        const Divider(height: 1),
-
-        /// Contacts list inside rounded container
-        _buildRecentTile("Hewan", Colors.amber),
-        _buildRecentTile("TEWABE", Colors.amber),
-        _buildRecentTile("Abera", Colors.amber),
-        _buildRecentTile("Biruk", Colors.amber),
-        _buildRecentTile("Meron", Colors.amber),
-        _buildRecentTile("Natnael", Colors.amber),
-        _buildRecentTile("Samirawit", Colors.amber),
-        _buildRecentTile("Yonas", Colors.amber),
-      ],
-    ),
-  ),
-),
-
-
 
           /// ✅ LOADER OVERLAY (NO UI SHIFT)
           if (_isLoading)
@@ -375,8 +323,7 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                   height: 100,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius:
-                        BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   alignment: Alignment.center,
                   child: Image.asset(
@@ -393,17 +340,17 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
   }
 
   Widget _buildRecentTile(String name, Color avatarColor) {
-  return ListTile(
-    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-    leading: CircleAvatar(
-      backgroundColor: avatarColor,
-      child: const Icon(Icons.person, color: Colors.white),
-    ),
-    title: Text(name, style: const TextStyle(fontSize: 15)),
-    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-    onTap: () {
-      _focusNode.requestFocus();
-    },
-  );
-}
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+      leading: CircleAvatar(
+        backgroundColor: avatarColor,
+        child: const Icon(Icons.person, color: Colors.white),
+      ),
+      title: Text(name, style: const TextStyle(fontSize: 15)),
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      onTap: () {
+        _focusNode.requestFocus();
+      },
+    );
+  }
 }
