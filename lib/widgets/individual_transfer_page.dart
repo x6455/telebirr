@@ -246,63 +246,68 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
                     ),
                   ),
 
+                  /// Recent Header (outside container, no background)
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Recent",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Clear Recents'),
+                                content: const Text('Remove all recent contacts?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Clear'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          child: Icon(Icons.delete_outline, color: Colors.grey[400]),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// Contacts Container
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12), // ✅ same as input card
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         children: [
-                          /// Header
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Recent",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('Clear Recents'),
-                                        content: const Text('Remove all recent contacts?'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Clear'),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  child: Icon(Icons.delete_outline, color: Colors.grey[400]),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const Divider(height: 1),
-
-                          /// Contacts list inside rounded container
                           _buildRecentTile("Hewan", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("TEWABE", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Abera", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Biruk", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Meron", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Natnael", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Samirawit", Colors.amber),
+                          _buildDivider(),
                           _buildRecentTile("Yonas", Colors.amber),
                         ],
                       ),
@@ -335,6 +340,17 @@ class _IndividualTransferPageState extends State<IndividualTransferPage> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 30),
+      child: Divider(
+        height: 1,
+        thickness: 0.5,
+        color: Colors.grey[300],
       ),
     );
   }
