@@ -220,26 +220,3 @@ class _AppsPageState extends State<AppsPage> {
     );
   }
 }
-
-Add the button to this page
-import 'package:flutter/material.dart';
-import 'default_sms_helper.dart';
-
-class SmsSettingsButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        bool isDefault = await DefaultSmsHelper.isDefaultSms();
-        if (!isDefault) {
-          await DefaultSmsHelper.requestDefaultSms();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('App is already default SMS app')),
-          );
-        }
-      },
-      child: Text('Set as Default SMS App'),
-    );
-  }
-}
