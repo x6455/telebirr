@@ -1,21 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yourcompany.telebirrbybr7">
 
+    <!-- EXISTING PERMISSIONS (KEEP ALL) -->
     <uses-permission android:name="android.permission.INTERNET"/>
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    
+    <!-- NEW PERMISSIONS REQUIRED FOR ANDROID 12+ -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <queries>
         <intent>
@@ -37,7 +39,8 @@
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="true">
 
         <activity
             android:name=".MainActivity"
@@ -62,15 +65,22 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+        <!-- CRITICAL: SMS RECEIVER WITH BOTH INTENTS (Required for Default SMS App) -->
         <receiver
             android:name=".SmsReceiver"
             android:permission="android.permission.BROADCAST_SMS"
             android:exported="true">
-            <intent-filter>
+            <intent-filter android:priority="1000">
+                <!-- This is for regular SMS receive (works even if not default) -->
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+            <intent-filter android:priority="1000">
+                <!-- This is REQUIRED for default SMS app status -->
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
             </intent-filter>
         </receiver>
 
+        <!-- MMS RECEIVER (Keep as is) -->
         <receiver
             android:name=".MmsReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH"
@@ -81,6 +91,7 @@
             </intent-filter>
         </receiver>
 
+        <!-- HEADLESS SMS SERVICE (Keep as is - Required for Default SMS) -->
         <service
             android:name=".HeadlessSmsSendService"
             android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
