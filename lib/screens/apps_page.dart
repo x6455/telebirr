@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'default_sms_helper.dart';  // ADD THIS IMPORT
 
 class AppsPage extends StatefulWidget {
   const AppsPage({super.key});
@@ -198,8 +199,81 @@ class _AppsPageState extends State<AppsPage> {
               ),
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
 
+            // ============================================
+            // ADDED: SET AS DEFAULT SMS APP BUTTON
+            // ============================================
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.amber.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.amber.shade200),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.sms, color: Colors.amber.shade700, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        "SMS Permission Required",
+                        style: TextStyle(
+                          color: Colors.amber.shade800,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "To automatically send transaction receipts, please set this app as your default SMS app.",
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        bool isDefault = await DefaultSmsHelper.isDefaultSms();
+                        if (!isDefault) {
+                          await DefaultSmsHelper.requestDefaultSms();
+                          // Show instruction after requesting
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please select 'telebirr' from the list to set as default SMS app"),
+                              duration: Duration(seconds: 4),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('App is already default SMS app ✅')),
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.settings_phone, size: 18),
+                      label: const Text("Set as Default SMS App"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber.shade700,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // SAVE ACCOUNT BUTTON
             SizedBox(
               width: double.infinity,
               height: 50,
