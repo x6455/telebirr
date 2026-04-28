@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     children: [
       BalanceInfo(
         label: 'Balance (ETB) ',
-        balanceFontSize: 23,
+        balanceFontSize: 25,
         labelFontSize: 17,
       ),
       Row(
