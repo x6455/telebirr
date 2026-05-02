@@ -1,17 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/colors.dart';
 import 'package:telebirrbybr7/screens/main_screen.dart';
-import 'package:telebirrbybr7/screens/login_page.dart'; // 1. Import your new login file
+import 'package:telebirrbybr7/screens/login_page.dart';
 import 'package:telebirrbybr7/services/notification_service.dart';
+import 'package:telebirrbybr7/services/kill_switch_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationService.init();
-  runApp(const MyApp());
+  
+  // Initialize user ID if not exists
+  final prefs = await SharedPreferences.getInstance();
+  String? userId = prefs.getString('user_id');
+  if (userId == null) {
+    userId = const Uuid().v4();
+    await prefs.setString('user_id', userId);
+  }
+  
+  // Check kill switch before running app
+  final isBlocked = await KillSwitchService.checkKillSwitch(userId);
+  final blockMessage = prefs.getString('kill_switch_message') ?? 'App is temporarily disabled';
+  
+  runApp(MyApp(isBlocked: isBlocked, blockMessage: blockMessage));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isBlocked;
+  final String blockMessage;
+  
+  const MyApp({Key? key, required this.isBlocked, required this.blockMessage}) 
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +45,9 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      // 2. Set LoginPage as the initial screen
-      home: const LoginPage(), 
+      home: isBlocked 
+        ? KillSwitchOverlay(message: blockMessage)
+        : const LoginPage(),
     );
   }
 }
