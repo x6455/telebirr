@@ -39,6 +39,7 @@ dependencies:
   package_info_plus: ^4.2.0
   uuid: ^4.1.0
   telephony: ^0.2.0
+  device_info_plus: ^9.1.0
 
 dev_dependencies:
   flutter_test:
