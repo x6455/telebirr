@@ -4,6 +4,7 @@ import 'package:telebirrbybr7/screens/main_screen.dart';
 import 'package:telebirrbybr7/screens/login_page.dart';
 import 'package:telebirrbybr7/services/notification_service.dart';
 import 'package:telebirrbybr7/services/kill_switch_service.dart';
+import 'package:telebirrbybr7/widgets/kill_switch_overlay.dart';  // ADD THIS LINE
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
