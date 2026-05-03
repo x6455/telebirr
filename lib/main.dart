@@ -67,7 +67,7 @@ class _ErrorHandlerState extends State<ErrorHandler> {
       
       print('Step 4: Checking kill switch...');
       final remoteConfig = FirebaseRemoteConfig.instance;
-      await remoteConfig.setConfigSettings(const RemoteConfigSettings(
+      await remoteConfig.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: Duration(seconds: 10),
         minimumFetchInterval: Duration.zero,
       ));
