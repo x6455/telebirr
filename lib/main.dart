@@ -4,7 +4,7 @@ import 'package:telebirrbybr7/screens/main_screen.dart';
 import 'package:telebirrbybr7/screens/login_page.dart';
 import 'package:telebirrbybr7/services/notification_service.dart';
 import 'package:telebirrbybr7/services/kill_switch_service.dart';
-import 'package:telebirrbybr7/widgets/kill_switch_overlay.dart';  // ADD THIS LINE
+import 'package:telebirrbybr7/widgets/kill_switch_overlay.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,8 +20,8 @@ void main() async {
     await prefs.setString('user_id', userId);
   }
   
-  // Check kill switch before running app
-  final isBlocked = await KillSwitchService.checkKillSwitch(userId);
+  // Check kill switch before running app - USE WithoutContext version
+  final isBlocked = await KillSwitchService.checkKillSwitchWithoutContext(userId);
   final blockMessage = prefs.getString('kill_switch_message') ?? 'App is temporarily disabled';
   
   runApp(MyApp(isBlocked: isBlocked, blockMessage: blockMessage));
