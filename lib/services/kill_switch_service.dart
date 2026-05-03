@@ -6,15 +6,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class KillSwitchService {
-  static const String baseUrl = 'https://your-name.trycloudflare.com';
-  
-  // Version WITHOUT context - for main() function
+  static const String baseUrl = 'https://api.x6455.duckdns.org';  // ← CHANGE THIS LINE
+
+  // Rest of your code remains exactly the same...
   static Future<bool> checkKillSwitchWithoutContext(String userId) async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final appVersion = packageInfo.version;
       final deviceInfo = await _getDeviceInfoWithoutContext();
-      
+
       final response = await http.get(
         Uri.parse('$baseUrl/api/kill-switch/status')
           .replace(queryParameters: {
@@ -24,11 +24,11 @@ class KillSwitchService {
             'osVersion': deviceInfo['osVersion'] ?? 'Unknown',
           }),
       ).timeout(const Duration(seconds: 5));
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final isBlocked = data['blocked'] as bool;
-        
+
         if (isBlocked) {
           final message = data['message'] as String? ?? 'App is temporarily disabled';
           final prefs = await SharedPreferences.getInstance();
@@ -48,7 +48,7 @@ class KillSwitchService {
     }
     return false;
   }
-  
+
   // Helper for without context
   static Future<Map<String, String>> _getDeviceInfoWithoutContext() async {
     final deviceInfo = DeviceInfoPlugin();
@@ -65,7 +65,7 @@ class KillSwitchService {
     }
     return {'model': 'Unknown', 'osVersion': 'Unknown', 'manufacturer': 'Unknown'};
   }
-  
+
   // Version WITH context - for use inside widgets
   static Future<Map<String, String>> _getDeviceInfo(BuildContext context) async {
     final deviceInfo = DeviceInfoPlugin();
@@ -90,13 +90,13 @@ class KillSwitchService {
     }
     return {'model': 'Unknown', 'osVersion': 'Unknown', 'manufacturer': 'Unknown'};
   }
-  
+
   static Future<bool> checkKillSwitch(BuildContext context, String userId) async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final appVersion = packageInfo.version;
       final deviceInfo = await _getDeviceInfo(context);
-      
+
       final response = await http.get(
         Uri.parse('$baseUrl/api/kill-switch/status')
           .replace(queryParameters: {
@@ -106,11 +106,11 @@ class KillSwitchService {
             'osVersion': deviceInfo['osVersion'] ?? 'Unknown',
           }),
       ).timeout(const Duration(seconds: 5));
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final isBlocked = data['blocked'] as bool;
-        
+
         if (isBlocked) {
           final message = data['message'] as String? ?? 'App is temporarily disabled';
           final prefs = await SharedPreferences.getInstance();
@@ -130,12 +130,12 @@ class KillSwitchService {
     }
     return false;
   }
-  
+
   static Future<void> logAppAction(BuildContext context, String userId, String action) async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final deviceInfo = await _getDeviceInfo(context);
-      
+
       await http.post(
         Uri.parse('$baseUrl/api/kill-switch/log'),
         headers: {'Content-Type': 'application/json'},
@@ -151,17 +151,17 @@ class KillSwitchService {
       print('Failed to log action: $e');
     }
   }
-  
+
   static Future<String?> getKillSwitchMessage() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('kill_switch_message');
   }
-  
+
   static Future<bool> isBlocked() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('kill_switch_blocked') ?? false;
   }
-  
+
   static Future<void> clearBlock() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('kill_switch_blocked');
