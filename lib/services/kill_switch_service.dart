@@ -8,6 +8,65 @@ import 'package:device_info_plus/device_info_plus.dart';
 class KillSwitchService {
   static const String baseUrl = 'https://your-name.trycloudflare.com';
   
+  // Version WITHOUT context - for main() function
+  static Future<bool> checkKillSwitchWithoutContext(String userId) async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      final appVersion = packageInfo.version;
+      final deviceInfo = await _getDeviceInfoWithoutContext();
+      
+      final response = await http.get(
+        Uri.parse('$baseUrl/api/kill-switch/status')
+          .replace(queryParameters: {
+            'userId': userId,
+            'appVersion': appVersion,
+            'deviceModel': deviceInfo['model'] ?? 'Unknown',
+            'osVersion': deviceInfo['osVersion'] ?? 'Unknown',
+          }),
+      ).timeout(const Duration(seconds: 5));
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final isBlocked = data['blocked'] as bool;
+        
+        if (isBlocked) {
+          final message = data['message'] as String? ?? 'App is temporarily disabled';
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('kill_switch_blocked', true);
+          await prefs.setString('kill_switch_message', message);
+          return true;
+        } else {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('kill_switch_blocked');
+          return false;
+        }
+      }
+    } catch (e) {
+      print('Kill switch check failed: $e');
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool('kill_switch_blocked') ?? false;
+    }
+    return false;
+  }
+  
+  // Helper for without context
+  static Future<Map<String, String>> _getDeviceInfoWithoutContext() async {
+    final deviceInfo = DeviceInfoPlugin();
+    try {
+      // Default to Android if we can't determine platform
+      final androidInfo = await deviceInfo.androidInfo;
+      return {
+        'model': androidInfo.model,
+        'osVersion': androidInfo.version.release,
+        'manufacturer': androidInfo.manufacturer,
+      };
+    } catch (e) {
+      print('Failed to get device info: $e');
+    }
+    return {'model': 'Unknown', 'osVersion': 'Unknown', 'manufacturer': 'Unknown'};
+  }
+  
+  // Version WITH context - for use inside widgets
   static Future<Map<String, String>> _getDeviceInfo(BuildContext context) async {
     final deviceInfo = DeviceInfoPlugin();
     try {
