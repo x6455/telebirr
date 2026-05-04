@@ -41,11 +41,7 @@ dependencies:
   telephony: ^0.2.0
   device_info_plus: ^9.1.0
 
-  firebase_core: ^2.15.0
-  firebase_remote_config: ^4.2.0
-  firebase_database: ^10.1.0
-  firebase_analytics: ^10.8.0  # Required for Remote Config targeting [citation:9]
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
