@@ -25,7 +25,7 @@ class BalanceInfo extends StatefulWidget {
 
 class _BalanceInfoState extends State<BalanceInfo> {
   bool showBalance = false;
-  double _storedBalance = 163000.00; // Default matches your initial value
+  double _storedBalance = 76894.00; // Default matches your initial value
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _BalanceInfoState extends State<BalanceInfo> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       // Use the same key 'remaining_balance' used in SuccessPage
-      _storedBalance = prefs.getDouble('remaining_balance') ?? 163000.00;
+      _storedBalance = prefs.getDouble('remaining_balance') ?? 76894.00;
     });
   }
 
@@ -67,13 +67,13 @@ Widget build(BuildContext context) {
   final bool isMainBalance = widget.label == 'Balance (ETB) ';
   final bool isReward = widget.label == 'Reward (ETB) ';
   final bool isEndekise = widget.label == 'Endekise (ETB) ';
-  final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
+  final String balance = showBalance ? balanceValue : '✱ ✱ ✱ ✱ ✱ ✱';
   
   // Determine star size based on the balance type
   double getStarSize() {
     if (!showBalance) {
-      if (isMainBalance) return 18.0;  // Main balance stars
-      if (isEndekise || isReward) return 12.0;  // Smaller stars for Endekise and Reward
+      if (isMainBalance) return 20.0;  // Main balance stars
+      if (isEndekise || isReward) return 9.0;  // Smaller stars for Endekise and Reward
     }
     return widget.balanceFontSize;  // Regular size when visible
   }
@@ -95,7 +95,7 @@ Widget build(BuildContext context) {
               style: TextStyle(
                 color: const Color.fromRGBO(247, 255, 234, 1),
                 fontSize: widget.labelFontSize,
-                fontWeight: FontWeight.w800,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: 7),
