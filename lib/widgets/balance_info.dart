@@ -62,63 +62,69 @@ class _BalanceInfoState extends State<BalanceInfo> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // ... (rest of your build method remains the same)
-    final bool isMainBalance = widget.label == 'Balance (ETB) ';
-    final bool isReward = widget.label == 'Reward (ETB) ';
-    final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
-
-    return Transform.translate(
-      offset: isReward ? const Offset(-7, 0) : Offset.zero,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment:
-            isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment:
-                isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
-            children: [
-              Text(
-                widget.label,
-                style: TextStyle(
-                  color: const Color.fromRGBO(247, 255, 234, 1),
-                  fontSize: widget.labelFontSize,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              const SizedBox(width: 7),
-              InkWell(
-                onTap: toggleBalanceVisibility,
-                child: Icon(
-                  showBalance ? Icons.visibility : Icons.visibility_off,
-                  size: 13,
-                  color: const Color.fromRGBO(247, 255, 234, 1),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 1),
-          Transform.translate(
-            offset: isMainBalance ? const Offset(-9, 0) : Offset.zero,
-            child: Text(
-  balance,
-  textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
-  style: GoogleFonts.roboto(
-    // If showBalance is true, use the full size; otherwise, use a smaller fixed size
-    fontSize: showBalance ? widget.balanceFontSize : 18.0, 
-    fontWeight: FontWeight.w600,
-    color: Colors.white,
-    // Keep your negative letter spacing for the stars if you like that look
-    letterSpacing: showBalance ? 0.0 : -1.5,
-  ),
-),
-
-          ),
-        ],
-      ),
-    );
+@override
+Widget build(BuildContext context) {
+  final bool isMainBalance = widget.label == 'Balance (ETB) ';
+  final bool isReward = widget.label == 'Reward (ETB) ';
+  final bool isEndekise = widget.label == 'Endekise (ETB) ';
+  final String balance = showBalance ? balanceValue : '✱✱✱✱✱✱';
+  
+  // Determine star size based on the balance type
+  double getStarSize() {
+    if (!showBalance) {
+      if (isMainBalance) return 18.0;  // Main balance stars
+      if (isEndekise || isReward) return 12.0;  // Smaller stars for Endekise and Reward
+    }
+    return widget.balanceFontSize;  // Regular size when visible
   }
+
+  return Transform.translate(
+    offset: isReward ? const Offset(-7, 0) : Offset.zero,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment:
+          isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment:
+              isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            Text(
+              widget.label,
+              style: TextStyle(
+                color: const Color.fromRGBO(247, 255, 234, 1),
+                fontSize: widget.labelFontSize,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(width: 7),
+            InkWell(
+              onTap: toggleBalanceVisibility,
+              child: Icon(
+                showBalance ? Icons.visibility : Icons.visibility_off,
+                size: 13,
+                color: const Color.fromRGBO(247, 255, 234, 1),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 1),
+        Transform.translate(
+          offset: isMainBalance ? const Offset(-9, 0) : Offset.zero,
+          child: Text(
+            balance,
+            textAlign: isMainBalance ? TextAlign.center : TextAlign.start,
+            style: GoogleFonts.roboto(
+              fontSize: getStarSize(),  // Use dynamic size based on balance type
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              letterSpacing: showBalance ? 0.0 : -1.5,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
+
