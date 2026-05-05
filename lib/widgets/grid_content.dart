@@ -195,7 +195,7 @@ class GridContent extends StatelessWidget {
   crossAxisCount: 4,
   mainAxisSpacing: 19,
   crossAxisSpacing: 10,
-  mainAxisExtent: 120, // 🔥 exact height in px
+  mainAxisExtent: 100, // 🔥 exact height in px
 ),
       itemCount: 8,
       itemBuilder: (context, index) {
@@ -226,13 +226,8 @@ class GridContent extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                
+                
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
