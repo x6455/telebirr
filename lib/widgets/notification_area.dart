@@ -21,7 +21,7 @@ class NotificationArea extends StatelessWidget {
           ),
         ),
         
-        
+        // Notification Icon with Badge and Navigation
         Padding(
           padding: const EdgeInsets.only(right: 15),
           child: GestureDetector(
@@ -33,7 +33,16 @@ class NotificationArea extends StatelessWidget {
                 ),
               );
             },
-            
+            child: const Badge(
+              label: Text('1'),
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              child: Icon(
+                Icons.notifications_none_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
           ),
         ),
         
