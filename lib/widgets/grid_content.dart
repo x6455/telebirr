@@ -192,11 +192,11 @@ class GridContent extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 19,
-        crossAxisSpacing: 10,
-        childAspectRatio: 0.97,
-      ),
+  crossAxisCount: 4,
+  mainAxisSpacing: 19,
+  crossAxisSpacing: 10,
+  mainAxisExtent: 120, // 🔥 exact height in px
+),
       itemCount: 8,
       itemBuilder: (context, index) {
         bool isSendMoney = gridLabel[index] == 'Send Money';
