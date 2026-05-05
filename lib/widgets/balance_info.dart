@@ -109,7 +109,7 @@ Widget build(BuildContext context) {
             ),
           ],
         ),
-        const SizedBox(height: 1),
+        const SizedBox(height: 5),
         Transform.translate(
           offset: isMainBalance ? const Offset(-9, 0) : Offset.zero,
           child: Text(
