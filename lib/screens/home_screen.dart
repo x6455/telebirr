@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Stack(
             children: [
               Container(
-  height: 180,
+  height: 250,
   width: double.infinity,
   decoration: const BoxDecoration(
     image: DecorationImage(
