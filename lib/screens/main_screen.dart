@@ -71,7 +71,7 @@ class TelebirrBottomBar extends StatelessWidget {
               child: Image.asset(
                 'images/bottom_bar.jpg',
                 width: width,
-                height: 120,
+                height: 127,
                 fit: BoxFit.fill,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
