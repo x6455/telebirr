@@ -83,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
         balanceFontSize: 25,
         labelFontSize: 17,
       ),
+       const SizedBox(height: 12),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
