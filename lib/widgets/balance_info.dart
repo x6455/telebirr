@@ -85,17 +85,17 @@ Widget build(BuildContext context) {
       crossAxisAlignment:
           isMainBalance ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-                Row(
+        Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
               isMainBalance ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
             Text(
               widget.label,
-              style: GoogleFonts.roboto( // <-- Changed to GoogleFonts.roboto here
+              style: TextStyle(
                 color: const Color.fromRGBO(247, 255, 234, 1),
                 fontSize: widget.labelFontSize,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(width: 7),
@@ -109,7 +109,6 @@ Widget build(BuildContext context) {
             ),
           ],
         ),
-
         const SizedBox(height: 5),
         Transform.translate(
           offset: isMainBalance ? const Offset(-9, 0) : Offset.zero,
