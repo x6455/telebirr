@@ -73,7 +73,7 @@ Widget build(BuildContext context) {
   double getStarSize() {
     if (!showBalance) {
       if (isMainBalance) return 20.0;  // Main balance stars
-      if (isEndekise || isReward) return 9.0;  // Smaller stars for Endekise and Reward
+      if (isEndekise || isReward) return 11.0;  // Smaller stars for Endekise and Reward
     }
     return widget.balanceFontSize;  // Regular size when visible
   }
