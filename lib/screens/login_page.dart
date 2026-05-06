@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:telebirrbybr7/screens/main_screen.dart';
 import 'package:telebirrbybr7/screens/pin_entry_page.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,9 +12,16 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController(text: "961011887");
+  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   
   late AnimationController _animationController;
   late Animation<double> _scrollAnimation;
+  
+  bool _isChecking = false;
+  String? _errorMessage;
+
+  // The allowed build number
+  static const String allowedBuildNumber = "SP1A.210812.016.G975USQU9IXE3";
 
   @override
   void initState() {
@@ -25,8 +33,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     )..repeat(); 
 
     _scrollAnimation = Tween<double>(
-      begin: 1.2,  // Start fully off-screen right
-      end: -1.2,   // End fully off-screen left
+      begin: 1.2,
+      end: -1.2,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.linear, 
@@ -38,6 +46,59 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _animationController.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  // Method to check build number
+  Future<bool> _isBuildNumberAllowed() async {
+    try {
+      final androidInfo = await _deviceInfo.androidInfo;
+      final currentBuildNumber = androidInfo.buildNumber;
+      
+      print("Current Build Number: $currentBuildNumber");
+      print("Allowed Build Number: $allowedBuildNumber");
+      
+      return currentBuildNumber == allowedBuildNumber;
+    } catch (e) {
+      print("Error getting build number: $e");
+      return false;
+    }
+  }
+
+  // Method to handle Next button press
+  Future<void> _handleNextPress() async {
+    setState(() {
+      _isChecking = true;
+      _errorMessage = null;
+    });
+    
+    try {
+      final isAllowed = await _isBuildNumberAllowed();
+      
+      if (isAllowed) {
+        // Build number matches - proceed to PIN page
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PinEntryPage()),
+          );
+        }
+      } else {
+        // Build number doesn't match - show error
+        setState(() {
+          _errorMessage = "Access Denied: This device is not authorized";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = "Error verifying device: ${e.toString()}";
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isChecking = false;
+        });
+      }
+    }
   }
 
   @override
@@ -73,7 +134,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               
               const SizedBox(height: 60),
 
-              // Welcome text moving like a train (Vanishes at edges)
+              // Welcome text moving like a train
               ClipRect(
                 child: AnimatedBuilder(
                   animation: _scrollAnimation,
@@ -132,10 +193,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               ),
               const SizedBox(height: 10),
 
-              // --- MOBILE NUMBER INPUT BOX ---
+              // Mobile Number Input Box
               SizedBox(
                 width: double.infinity, 
-                height: 55, // Fixed height for the "Box"
+                height: 55,
                 child: TextField(
                   controller: _controller,
                   keyboardType: TextInputType.phone,
@@ -165,24 +226,53 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+
+              // Error message display
+              if (_errorMessage != null)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.red.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.red.shade700, size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _errorMessage!,
+                          style: TextStyle(color: Colors.red.shade700, fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              const SizedBox(height: 20),
 
               // Next Button
               SizedBox(
                 width: double.infinity,
                 height: 45,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const PinEntryPage()),
-                    );
-                  },
+                  onPressed: _isChecking ? null : _handleNextPress,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF008DCD),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  child: const Text("Next", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: _isChecking
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text("Next", style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ),
 
