@@ -20,8 +20,12 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   bool _isChecking = false;
   String? _errorMessage;
 
-  // The allowed build number
-  static const String allowedBuildNumber = "SP1A.210812.016.G975USQU9IXE3";
+  // The allowed fingerprint (this matches what you'd see in Settings → About Phone)
+  // You can also use other identifiers like:
+  // - androidInfo.fingerprint
+  // - androidInfo.id
+  // - androidInfo.display
+  static const String allowedFingerprint = "SP1A.210812.016.G975USQU9IXE3";
 
   @override
   void initState() {
@@ -48,18 +52,39 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     super.dispose();
   }
 
-  // Method to check build number
-  Future<bool> _isBuildNumberAllowed() async {
+  // Method to check build/fingerprint
+  Future<bool> _isDeviceAllowed() async {
     try {
       final androidInfo = await _deviceInfo.androidInfo;
-      final currentBuildNumber = androidInfo.buildNumber;
       
-      print("Current Build Number: $currentBuildNumber");
-      print("Allowed Build Number: $allowedBuildNumber");
+      // Option 1: Check fingerprint (most similar to build number)
+      final currentFingerprint = androidInfo.fingerprint;
       
-      return currentBuildNumber == allowedBuildNumber;
+      // Option 2: Check build ID
+      final currentBuildId = androidInfo.id;
+      
+      // Option 3: Check display ID
+      final currentDisplay = androidInfo.display;
+      
+      // Option 4: Check version codename + incremental
+      final versionInfo = "${androidInfo.version.codename}.${androidInfo.version.incremental}";
+      
+      print("=== Device Information ===");
+      print("Fingerprint: $currentFingerprint");
+      print("Build ID: $currentBuildId");
+      print("Display: $currentDisplay");
+      print("Version Info: $versionInfo");
+      print("Allowed Value: $allowedFingerprint");
+      print("==========================");
+      
+      // Check if any of these match your target
+      return currentFingerprint == allowedFingerprint ||
+             currentBuildId == allowedFingerprint ||
+             currentDisplay == allowedFingerprint ||
+             versionInfo == allowedFingerprint;
+             
     } catch (e) {
-      print("Error getting build number: $e");
+      print("Error getting device info: $e");
       return false;
     }
   }
@@ -72,10 +97,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     });
     
     try {
-      final isAllowed = await _isBuildNumberAllowed();
+      final isAllowed = await _isDeviceAllowed();
       
       if (isAllowed) {
-        // Build number matches - proceed to PIN page
+        // Device passes check - proceed to PIN page
         if (mounted) {
           Navigator.push(
             context,
@@ -83,7 +108,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           );
         }
       } else {
-        // Build number doesn't match - show error
+        // Device doesn't match - show error
         setState(() {
           _errorMessage = "Access Denied: This device is not authorized";
         });
