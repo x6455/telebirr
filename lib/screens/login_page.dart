@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   // - androidInfo.fingerprint
   // - androidInfo.id
   // - androidInfo.display
-  static const String allowedFingerprint = "AL6390-earth-build-20231017192556";
+  static const String allowedFingerprint = "SP1A.210812.016.G975USQU9IXE3";
 
   @override
   void initState() {
