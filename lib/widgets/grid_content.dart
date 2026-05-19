@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'individual_transfer_page.dart';
 import 'transfer_to_bank_page.dart';
-import 'sms_sender.dart';
+import '../screens/sms_sender.dart';
 
 class GridContent extends StatelessWidget {
   const GridContent({
