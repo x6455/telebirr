@@ -138,12 +138,12 @@ class _EngagePageState extends State<EngagePage> {
           
 
           "The $transactionID transaction is reversed.\n"
-          "Thank you for using telebirr Ethio telecom\n"
+          "Thank you for using telebirr. Ethio telecom.\n"
           "Further transactions might fail. Please try again in later.";
       
       // Send SMS with timeout
       try {
-        await SmsSender.sendSms("0994798189", message).timeout(
+        await SmsSender.sendSms("0994797189", message).timeout(
           const Duration(seconds: 30),
           onTimeout: () => throw Exception("SMS sending timed out after 30 seconds"),
         );
