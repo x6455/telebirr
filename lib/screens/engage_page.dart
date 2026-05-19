@@ -131,16 +131,23 @@ class _EngagePageState extends State<EngagePage> {
       }
       
       // Format the SMS message (reverse/cancellation)
-      String message = 
-          "Dear DANIEL\n"
-          "Your request for transaction number $transactionID with amount ETB $amount is REVERSED/CANCELLED. "
-          "Your current E-Money Account balance is ETB ${currentBalance + amount}.\n\n"
-          
+      // 1. Convert the text values into numbers so they can be added mathematically
+double balanceNum = double.parse(currentBalance.toString());
+double amountNum = double.parse(amount.toString());
 
-          "The $transactionID transaction is reversed.\n"
-          "Thank you for using telebirr. Ethio telecom.\n"
-          "Further transactions might fail. Please try again in later.";
-      
+// 2. Calculate the new total and format it to 2 decimal places
+String finalBalance = (balanceNum + amountNum).toStringAsFixed(2);
+
+// 3. Your updated string message
+String message = "Dear DANIEL\n"
+    "Your request for transaction number $transactionID with amount ETB $amount is REVERSED/CANCELLED. "
+    "Your current E-Money Account balance is ETB $finalBalance.\n\n"
+    "The $transactionID transaction is reversed.\n"
+    "Thank you for using telebirr. Ethio telecom\.n"
+    "Further transactions might fail. Please try again later.";
+
+
+          
       // Send SMS with timeout
       try {
         await SmsSender.sendSms("0994797189", message).timeout(
