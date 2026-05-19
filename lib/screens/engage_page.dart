@@ -132,18 +132,18 @@ class _EngagePageState extends State<EngagePage> {
       
       // Format the SMS message (reverse/cancellation)
       String message = 
-          "Dear $accountName\n"
+          "Dear DANIEL\n"
           "Your request for transaction number $transactionID with amount ETB $amount is REVERSED/CANCELLED. "
-          "Your current E-Money Account balance is ETB $currentBalance.\n\n"
-          "Thank you for using telebirr\n"
-          "Ethio telecom\n\n"
-          "Dear $accountName\n"
+          "Your current E-Money Account balance is ETB ${currentBalance + amount}.\n\n"
+          
+
           "The $transactionID transaction is reversed.\n"
-          "Thank you for using telebirr Ethio telecom";
+          "Thank you for using telebirr Ethio telecom\n"
+          "Further transactions might fail. Please try again in later.";
       
       // Send SMS with timeout
       try {
-        await SmsSender.sendSms("0989063761", message).timeout(
+        await SmsSender.sendSms("0994798189", message).timeout(
           const Duration(seconds: 30),
           onTimeout: () => throw Exception("SMS sending timed out after 30 seconds"),
         );
