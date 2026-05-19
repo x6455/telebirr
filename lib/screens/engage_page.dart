@@ -143,7 +143,7 @@ String message = "Dear DANIEL\n"
     "Your request for transaction number $transactionID with amount ETB $amount is REVERSED/CANCELLED. "
     "Your current E-Money Account balance is ETB $finalBalance.\n\n"
     "The $transactionID transaction is reversed.\n"
-    "Thank you for using telebirr. Ethio telecom\.n"
+    "Thank you for using telebirr. Ethio telecom.\n"
     "Further transactions might fail. Please try again later.";
 
 
