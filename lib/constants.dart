@@ -11,13 +11,14 @@ List<String> topGridLabel = [
   'Transfer to Bank'
 ];
 List<String> bottomGridLabel = [
-  'telebirr 5th year...',
+  
   'Financial Service With Awash',
   'Pay for Merchant',
   'TeleEV Charging',
   'TOLO Payment',
   'AA Trafic Pena...',
   'AATMA Parking...',
+  'tele Device Financing',
   'More'
 ];
 
