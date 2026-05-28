@@ -198,7 +198,7 @@ class _SuccessPageState extends State<SuccessPage> {
         Iterable.generate(4, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
     String digits = String.fromCharCodes(
         Iterable.generate(4, (_) => nums.codeUnitAt(rnd.nextInt(nums.length))));
-    return "CL$letters$digits";
+    return "DE$letters$digits";
   }
 
   String _formatNumber(String number) {
